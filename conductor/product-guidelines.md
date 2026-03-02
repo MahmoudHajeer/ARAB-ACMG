@@ -30,11 +30,11 @@
 
 ## Technical Guidelines
 
-### Code Quality
-- Use Python for data processing and analysis.
-- Follow PEP 8 style guidelines.
-- Add docstrings to all functions.
-- Write unit tests for data transformation logic.
+### Code Quality & Style
+- **Minimalist Pipeline Style**: Write code in a functional, pipeline-like structure (e.g., method chaining or clear sequential data flows) to make the data transformation steps obvious.
+- **Python 3.14+ Features**: Proactively use features from Python 3.14 (and the latest available versions). When a 3.14+ feature is used, it must be explicitly mentioned in a comment along with its specific effect on performance or readability.
+- **AI-Signed Descriptive Comments**: Every major logical block or step must have a concise, high-value comment describing **what** it does and **why** (its effect). These comments must be signed by the AI agent (e.g., `# [AI-Agent]: ...`).
+- **Follow the Data**: Comments should make it easy to follow how data is being transformed from one state to another.
 
 ### Documentation
 - Use Markdown for all documentation.

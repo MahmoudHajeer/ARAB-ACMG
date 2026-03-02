@@ -6,7 +6,7 @@ Establish a robust, reproducible development and analysis environment, both loca
 ## Requirements
 
 ### Local Environment
-- Python 3.10+ environment using Conda or Poetry.
+- Python 3.14+ environment using Conda or Poetry.
 - Essential bioinformatics CLI tools installed (bcftools, vt).
 - Git configuration for the project.
 

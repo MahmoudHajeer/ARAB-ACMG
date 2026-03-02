@@ -7,16 +7,16 @@
 - [x] 1.4 Create a base `README.md`.
 
 ## Phase 2: GCP Resource Provisioning
-- [ ] 2.1 Identify or confirm the GCP Project ID.
-- [ ] 2.2 Enable GCS, BigQuery, and Vertex AI APIs.
-- [ ] 2.3 Create a Cloud Storage bucket for variant data.
-- [ ] 2.4 Initialize BigQuery datasets for raw, harmonized, and final data layers.
+- [x] 2.1 Identify or confirm the GCP Project ID. (genome-services-platform)
+- [x] 2.2 Enable GCS, BigQuery, and Vertex AI APIs.
+- [x] 2.3 Create a Cloud Storage bucket for variant data. (mahmoud-arab-acmg-research-data)
+- [x] 2.4 Initialize BigQuery datasets for raw, harmonized, and final data layers.
 
 ## Phase 3: Infrastructure Verification
-- [ ] 3.1 Write a "Hello GCP" script in `scripts/` to verify bucket connectivity.
-- [ ] 3.2 Write a basic unit test for the GCP connectivity utility.
-- [ ] 3.3 Execute and confirm the verification script works as expected.
+- [x] 3.1 Write a "Hello GCP" script in `scripts/` to verify bucket connectivity.
+- [x] 3.2 Write a basic unit test for the GCP connectivity utility.
+- [x] 3.3 Execute and confirm the verification script works as expected.
 
 ---
-**Track Status**: `[ ]`
-**Checkpoint SHA**: `[checkpoint: TBA]`
+**Track Status**: `[x]`
+**Checkpoint SHA**: `[checkpoint: 1c1de3f]`
