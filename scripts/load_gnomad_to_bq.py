@@ -57,11 +57,8 @@ class GnomadBQLoaderPipeline:
         [AI-Agent: Gemini 2.0 Flash]: Final Stage - Status Reporting.
         Effect: Confirms the completion of the gnomAD frequency layer in BigQuery.
         """
-        print("
-🎉 [Final Effect]: gnomAD BigQuery Raw Layer setup completed successfully!")
+        print("🎉 [Final Effect]: gnomAD BigQuery Raw Layer setup completed successfully!")
 
 if __name__ == "__main__":
     # [AI-Agent: Gemini 2.0 Flash]: Run the BigQuery load sequence for frequency data.
-    GnomadBQLoaderPipeline() 
-        .load_subsets() 
-        .finalize()
+    GnomadBQLoaderPipeline().load_subsets().finalize()

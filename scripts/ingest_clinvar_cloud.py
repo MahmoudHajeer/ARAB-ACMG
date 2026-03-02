@@ -96,8 +96,4 @@ class ClinVarIngestionPipeline:
 
 if __name__ == "__main__":
     # [AI-Agent: Gemini 2.0 Flash]: Start the ingestion pipeline.
-    ClinVarIngestionPipeline() 
-        .download_vcf() 
-        .generate_manifest() 
-        .upload_to_gcs() 
-        .finalize()
+    ClinVarIngestionPipeline().download_vcf().generate_manifest().upload_to_gcs().finalize()

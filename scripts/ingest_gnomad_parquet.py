@@ -101,8 +101,7 @@ class GnomadParquetPipeline:
         vcf2 = self.extract_and_convert(BRCA2_REGION, GNOMAD_V4_CHR13, "BRCA2")
         self.upload_to_gcs(vcf2, "BRCA2")
         
-        print("
-🎉 [Final Effect]: gnomAD Ingestion Pipeline completed successfully!")
+        print("🎉 [Final Effect]: gnomAD Ingestion Pipeline completed successfully!")
 
 if __name__ == "__main__":
     GnomadParquetPipeline().run()

@@ -47,10 +47,7 @@ class InventoryReportPipeline:
         [AI-Agent: Gemini 2.0 Flash]: Final Stage - Report Generation.
         Effect: Confirms the completion of the raw-layer inventory report.
         """
-        print(f"
-🎉 [Final Effect]: Inventory Report for {len(self.report_entries)} tables completed!")
+        print(f"🎉 [Final Effect]: Inventory Report for {len(self.report_entries)} tables completed!")
 
 if __name__ == "__main__":
-    InventoryReportPipeline() 
-        .profile_tables() 
-        .finalize()
+    InventoryReportPipeline().profile_tables().finalize()

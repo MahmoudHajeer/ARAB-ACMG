@@ -62,11 +62,7 @@ class DataDocsPublicationPipeline:
         [AI-Agent: Gemini 2.0 Flash]: Final Stage - Status Reporting.
         Effect: Confirms the successful publication of the research quality report.
         """
-        print(f"
-🎉 [Final Effect]: Data Docs Publication Pipeline completed!")
+        print(f"🎉 [Final Effect]: Data Docs Publication Pipeline completed!")
 
 if __name__ == "__main__":
-    DataDocsPublicationPipeline() 
-        .build_docs() 
-        .upload_to_gcs() 
-        .finalize()
+    DataDocsPublicationPipeline().build_docs().upload_to_gcs().finalize()

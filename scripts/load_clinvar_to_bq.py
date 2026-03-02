@@ -91,12 +91,8 @@ class ClinVarBQLoaderPipeline:
         [AI-Agent: Gemini 2.0 Flash]: Final Stage - Status Reporting.
         Effect: Confirms the completion of the BigQuery raw layer setup.
         """
-        print("
-🎉 [Final Effect]: ClinVar BigQuery Raw Layer setup completed successfully!")
+        print("🎉 [Final Effect]: ClinVar BigQuery Raw Layer setup completed successfully!")
 
 if __name__ == "__main__":
     # [AI-Agent: Gemini 2.0 Flash]: Run the BigQuery load sequence.
-    ClinVarBQLoaderPipeline() 
-        .filter_locally() 
-        .load_to_bq() 
-        .finalize()
+    ClinVarBQLoaderPipeline().filter_locally().load_to_bq().finalize()

@@ -44,10 +44,7 @@ class DataDictionaryPipeline:
         [AI-Agent: Gemini 2.0 Flash]: Final Stage - Status Reporting.
         Effect: Confirms the completion of the data dictionary generation.
         """
-        print(f"
-🎉 [Final Effect]: Data Dictionary for {self.tables_documented} tables completed!")
+        print(f"🎉 [Final Effect]: Data Dictionary for {self.tables_documented} tables completed!")
 
 if __name__ == "__main__":
-    DataDictionaryPipeline() 
-        .document_dataset() 
-        .finalize()
+    DataDictionaryPipeline().document_dataset().finalize()

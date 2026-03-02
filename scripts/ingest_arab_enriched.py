@@ -75,8 +75,7 @@ class ArabEnrichedIngestionPipeline:
         # [AI-Agent: Gemini 2.0 Flash]: QGP ingestion is ready once URL is confirmed.
         # self.ingest_source("qatar_genome", QGP_SUMMARY_URL, "qgp_brca_summary.csv")
         
-        print("
-🎉 [Final Effect]: Arab Enriched Ingestion Pipeline completed!")
+        print("🎉 [Final Effect]: Arab Enriched Ingestion Pipeline completed!")
 
 if __name__ == "__main__":
     ArabEnrichedIngestionPipeline().run()
