@@ -5,15 +5,26 @@
 ### Reproducibility
 - All data analysis pipelines must be documented and repeatable.
 - Code should be written in a modular and clear manner.
-- Data sources and versions must be explicitly stated.
+- Data sources and versions (e.g., gnomAD version, access date) must be explicitly recorded.
+- Every threshold and parameter must be pre-defined and documented.
 
-### Data Integrity
+### Data Integrity & Quality Control (QC)
 - Maintain raw data in a read-only state.
-- All transformations and cleaning steps must be scripted (no manual Excel edits).
-- Use version control for all code and metadata.
+- All transformations and cleaning steps must be scripted.
+- **Variant Inclusion Criteria**: 
+    - Must have PASS filter in VCF.
+    - Minimum coverage (e.g., ≥ 20x).
+    - Allele Number (AN) must be reported.
+    - Exclude variants with low-complexity masking flags.
+
+### Data Harmonization
+- Genome build: **All data must be lifted over to GRCh38.**
+- Variant normalization: Use standard tools (e.g., `bcftools norm`).
+- Representation: Split multiallelic variants into biallelic; standardize indel left alignment.
+- Annotation: Use consistent tools (e.g., Ensembl VEP).
 
 ### Ethical Considerations
-- Ensure all datasets are properly de-identified (if applicable).
+- Ensure all datasets are properly de-identified.
 - Adhere to international and regional regulations regarding genetic data privacy.
 - Acknowledge all data sources correctly.
 
@@ -22,7 +33,7 @@
 ### Code Quality
 - Use Python for data processing and analysis.
 - Follow PEP 8 style guidelines.
-- Add docstrings to all major functions.
+- Add docstrings to all functions.
 - Write unit tests for data transformation logic.
 
 ### Documentation
@@ -32,9 +43,9 @@
 
 ## User Experience (UX) for Research Deliverables
 - Tables and plots should be clear, high-resolution, and self-explanatory.
-- Any software tools should be simple to install and run (e.g., using `pip` or `conda`).
-- Provide clear error messages for data formatting issues.
+- Provide a clear data dictionary for the master dataset.
+- Any software tools should be simple to install and run.
 
 ## Communication
-- Use Git commit messages that follow the Conventional Commits specification.
-- Use Git notes to summarize major task completions.
+- Use Conventional Commits.
+- Use Git notes for task summaries.

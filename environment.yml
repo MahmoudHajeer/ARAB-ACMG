@@ -1,0 +1,30 @@
+name: arab-acmg
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.10
+  - pandas
+  - numpy
+  - scipy
+  - statsmodels
+  - matplotlib
+  - seaborn
+  - plotly
+  - bcftools
+  - vt
+  - cyvcf2
+  - pysam
+  - liftover
+  - pytest
+  - pytest-cov
+  - flake8
+  - black
+  - mypy
+  - google-cloud-storage
+  - google-cloud-bigquery
+  - google-cloud-aiplatform
+  - pip
+  - pip:
+    - dask[complete]

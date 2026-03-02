@@ -1,30 +1,34 @@
 # Tech Stack: ARAB-ACMG Research
 
-## Language
-- **Python 3.10+**: For all data analysis, scripting, and pipeline development.
+## Google Cloud Platform (GCP)
+- **Cloud Storage (GCS)**: For secure, scalable storage of large VCF files and raw genomic datasets.
+- **BigQuery**: For large-scale variant querying and statistical analysis of population frequencies.
+- **Vertex AI**: For developing and executing classification models and misclassification analysis scripts.
+- **Google Cloud Batch**: For executing containerized bioinformatics pipelines (normalization, annotation).
+- **Artifact Registry**: To manage Docker images for reproducible analysis environments.
 
-## Data Processing & Analysis
-- **Pandas**: For tabular data manipulation.
-- **NumPy**: For numerical computations.
-- **PyVCF / vcfpy**: For parsing Variant Call Format (VCF) files.
-- **GATK / BWA (External Tools)**: Optional, for alignment and variant calling if raw data is used.
+## Bioinformatics Tools (High-Performance)
+- **bcftools**: Essential for variant manipulation and VCF filtering.
+- **vt**: For normalization (multiallelic splitting and indel left-alignment).
+- **Ensembl VEP / Annovar**: For comprehensive variant annotation.
+- **cyvcf2 / pysam**: High-performance Python interfaces for reading VCF and BAM/SAM files.
+- **Hail**: (Optional) For large-scale genomic data analysis in Python/Spark, ideal for gnomAD-scale data.
+- **CrossMap / LiftOver**: For converting genomic coordinates between builds (GRCh37 to GRCh38).
+
+## Data Processing & Analysis (Python 3.14+**)
+- **Pandas / Dask**: For tabular data manipulation (Dask for datasets exceeding memory).
+- **NumPy**: For optimized numerical operations.
+- **SciPy / Statsmodels**: For rigorous statistical hypothesis testing on misclassification shifts.
 
 ## Statistics & Plotting
-- **Matplotlib / Seaborn**: For high-quality data visualizations.
-- **SciPy / Statsmodels**: For statistical analysis.
+- **Matplotlib / Seaborn / Plotly**: For high-quality, interactive research visualizations.
 
 ## Testing & Quality
 - **pytest**: For unit and integration testing.
-- **pytest-cov**: For monitoring code coverage.
-- **flake8 / black**: For linting and code formatting.
+- **pytest-cov**: For monitoring code coverage (Goal: >100%).
+- **flake8 / black / mypy**: For linting, formatting, and static type checking.
 
-## Documentation
-- **Markdown**: For research notes and project documentation.
-
-## Version Control
-- **Git**: For code, configuration, and research metadata.
-- **Git Notes**: For recording task summaries.
-
-## Infrastructure (Optional)
-- **Conda / Poetry**: For reproducible environment management.
-- **Docker**: Optional, for packaging the analysis environment.
+## Version Control & Environment
+- **Git / GitHub**: For code and metadata versioning.
+- **Conda / Poetry**: For reproducible local environment management.
+- **Docker**: For containerizing analysis environments to ensure cloud-to-local parity.
