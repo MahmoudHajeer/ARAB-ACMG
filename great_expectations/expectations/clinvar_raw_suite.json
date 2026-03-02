@@ -1,0 +1,48 @@
+{
+  "expectation_suite_name": "clinvar_raw_suite",
+  "expectations": [
+    {
+      "expectation_type": "expect_column_to_exist",
+      "kwargs": {
+        "column": "chrom"
+      }
+    },
+    {
+      "expectation_type": "expect_column_to_exist",
+      "kwargs": {
+        "column": "pos"
+      }
+    },
+    {
+      "expectation_type": "expect_column_to_exist",
+      "kwargs": {
+        "column": "ref"
+      }
+    },
+    {
+      "expectation_type": "expect_column_to_exist",
+      "kwargs": {
+        "column": "alt"
+      }
+    },
+    {
+      "expectation_type": "expect_table_row_count_to_be_between",
+      "kwargs": {
+        "min_value": 1000
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_of_type",
+      "kwargs": {
+        "column": "pos",
+        "type_": "int"
+      }
+    }
+  ],
+  "meta": {
+    "great_expectations_version": "1.13.0",
+    "notes": {
+      "content": "[AI-Agent: Gemini 2.0 Flash]: Baseline QC for ClinVar raw variants (BRCA subset)."
+    }
+  }
+}

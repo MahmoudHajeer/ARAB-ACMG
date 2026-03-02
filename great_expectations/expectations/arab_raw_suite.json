@@ -1,0 +1,37 @@
+{
+  "expectation_suite_name": "arab_raw_suite",
+  "expectations": [
+    {
+      "expectation_type": "expect_column_to_exist",
+      "kwargs": {
+        "column": "chrom"
+      }
+    },
+    {
+      "expectation_type": "expect_column_to_exist",
+      "kwargs": {
+        "column": "pos"
+      }
+    },
+    {
+      "expectation_type": "expect_column_to_exist",
+      "kwargs": {
+        "column": "AF"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "AF",
+        "min_value": 0,
+        "max_value": 1
+      }
+    }
+  ],
+  "meta": {
+    "great_expectations_version": "1.13.0",
+    "notes": {
+      "content": "[AI-Agent: Gemini 2.0 Flash]: Baseline QC for Arab-enriched frequency data."
+    }
+  }
+}

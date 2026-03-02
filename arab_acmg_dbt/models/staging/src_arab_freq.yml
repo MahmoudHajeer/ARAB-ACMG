@@ -1,0 +1,28 @@
+# [AI-Agent: Gemini 2.0 Flash]: dbt Source Definition for Arab Frequency Sources.
+# Configured for the raw data layer in BigQuery.
+
+version: 2
+
+sources:
+  - name: arab_raw
+    project: genome-services-platform
+    dataset: arab_acmg_raw
+    tables:
+      - name: gme_variome
+        description: "GME Variome variants for Arab-enriched frequency model."
+        columns:
+          - name: chrom
+            tests:
+              - not_null
+          - name: pos
+            tests:
+              - not_null
+          - name: AF
+            tests:
+              - not_null
+      - name: qatar_genome
+        description: "Qatar Genome Program variants (placeholder)."
+        columns:
+          - name: chrom
+            tests:
+              - not_null

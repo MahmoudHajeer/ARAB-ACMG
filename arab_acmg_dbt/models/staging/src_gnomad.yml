@@ -1,0 +1,25 @@
+# [AI-Agent: Gemini 2.0 Flash]: dbt Source Definition for gnomAD.
+# Configured for the raw frequency data layer in BigQuery.
+
+version: 2
+
+sources:
+  - name: gnomad_raw
+    project: genome-services-platform
+    dataset: arab_acmg_raw
+    tables:
+      - name: gnomad_v4_1
+        description: "gnomAD v4.1 variants filtered for BRCA1/2 subset."
+        columns:
+          - name: chrom
+            tests:
+              - not_null
+          - name: pos
+            tests:
+              - not_null
+          - name: ref
+            tests:
+              - not_null
+          - name: alt
+            tests:
+              - not_null

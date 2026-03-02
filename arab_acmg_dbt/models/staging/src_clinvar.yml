@@ -1,0 +1,27 @@
+# [AI-Agent: Gemini 2.0 Flash]: dbt Source Definition for ClinVar.
+# Configured for the raw data layer in BigQuery.
+
+version: 2
+
+sources:
+  - name: clinvar_raw
+    project: genome-services-platform
+    dataset: arab_acmg_raw
+    tables:
+      - name: clinvar
+        description: "Bulk ClinVar variants filtered for BRCA1/2 subset."
+        columns:
+          - name: chrom
+            description: "Genomic chromosome (source representation)."
+            tests:
+              - not_null
+          - name: pos
+            description: "Genomic position (1-based)."
+            tests:
+              - not_null
+          - name: ref
+            tests:
+              - not_null
+          - name: alt
+            tests:
+              - not_null
