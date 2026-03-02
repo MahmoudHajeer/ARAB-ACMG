@@ -1,22 +1,19 @@
 # Implementation Plan: T003-Data Harmonization & Normalization
 
-## Phase 1: Canonical Key + Transform Contracts
-- [ ] 1.1 Define the harmonized variant key (GRCh38 chr/pos/ref/alt) and validation rules.
-- [ ] 1.2 Define transformation metadata fields (source_build, liftover_status, norm_status).
+## Phase 1: Variant Normalization Pipeline
+- [ ] 1.1 Create automated normalization script using `bcftools` and `vt`.
+- [ ] 1.2 Implement multiallelic splitting and indel left-alignment logic.
+- [ ] 1.3 Apply normalization to ClinVar and gnomAD raw subsets.
 
-## Phase 2: Build Alignment (If Needed)
-- [ ] 2.1 Identify sources not in GRCh38 and document build per source.
-- [ ] 2.2 Implement liftover pipeline + failure tracking for GRCh37 inputs.
-- [ ] 2.3 QC: liftover success rates and failure examples.
+## Phase 2: Genome Build Standardization (LiftOver)
+- [ ] 2.1 Identify any datasets requiring LiftOver to GRCh38 (e.g., legacy GME).
+- [ ] 2.2 Create automated LiftOver script for coordinate conversion.
+- [ ] 2.3 Verify GRCh38 alignment of the converted datasets.
 
-## Phase 3: Variant Normalization
-- [ ] 3.1 Normalize each source (split multiallelics, left-align indels, trim bases).
-- [ ] 3.2 QC: duplicates after normalization, ref/alt validity checks, position bounds.
-- [ ] 3.3 Persist normalized outputs to BigQuery `harmonized_*` tables.
-
-## Phase 4: Cross-Source Consistency Checks
-- [ ] 4.1 Verify that the same biological variant maps to a single canonical key.
-- [ ] 4.2 Produce a harmonization report (counts per source, merges, collisions).
+## Phase 3: Harmonization Verification & Staging
+- [ ] 3.1 Write an automated script to verify Ref/Alt consistency in the harmonized data.
+- [ ] 3.2 Implement a basic validation unit test for the normalization pipeline.
+- [ ] 3.3 Stage the final harmonized datasets in `gs://mahmoud-arab-acmg-research-data/harmonized/`.
 
 ---
 **Track Status**: `[ ]`

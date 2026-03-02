@@ -1,32 +1,31 @@
 # Specification: T003-Data Harmonization & Normalization
 
 ## Goal
-Transform all ingested raw variant datasets into a single consistent, GRCh38-aligned, normalized representation suitable for deterministic joins and downstream ACMG evaluation.
+Standardize all ingested datasets (ClinVar, gnomAD, Arab frequency) into a consistent genomic representation to enable accurate downstream integration and misclassification analysis.
 
-## Inputs
-- BigQuery raw-layer tables produced in T002 (ClinVar, gnomAD, Arab-frequency sources)
-- Raw snapshots in GCS with provenance manifests
+## Scope
+- **Genome Build**: Standardize all datasets to **GRCh38**.
+- **Normalization**: Ensure all variants are parsimonious and left-aligned.
+- **Multiallelic Handling**: Split all multiallelic variants into biallelic records.
+- **Target Genes**: BRCA1, BRCA2.
 
 ## Requirements
-- Coordinate system:
-  - All harmonized outputs must be GRCh38
-  - If any raw source is GRCh37, perform liftover with explicit tracking of failures
-- Variant normalization:
-  - split multiallelics into biallelic records
-  - left-align and normalize indels
-  - trim common bases and enforce consistent REF/ALT representation
-- Canonical variant key:
-  - stable key used across all harmonized tables (chr38/pos38/ref/alt)
-- Auditability:
-  - preserve source identifiers (ClinVar VariationID, gnomAD ID where available)
-  - record transformation metadata (tool versions, params, counts)
 
-## Tooling (Current Stack)
-- `bcftools norm` and `vt normalize` for normalization
-- Liftover via CrossMap/LiftOver (GRCh37 -> GRCh38) when needed
-- Python (pandas/dask) for tabular transforms and validation
+### LiftOver Pipeline
+- **Coordinate Conversion**: Use `bcftools` or `CrossMap` to lift over any legacy datasets (e.g., GME or older ClinVar) to GRCh38.
+- **Verification**: Confirm that lifted-over variants align with the GRCh38 reference genome.
+
+### Variant Normalization
+- **bcftools norm**: Use `bcftools norm -m -any` to split multiallelics.
+- **vt normalize**: Use `vt normalize` to left-align indels and ensure parsimony.
+- **Ref/Alt Consistency**: Verify that REF alleles match the reference genome at the specified positions.
+
+### Cloud Storage Integration
+- **Output Storage**: Save harmonized datasets to `gs://mahmoud-arab-acmg-research-data/harmonized/`.
+- **Naming Convention**: Follow a clear suffix pattern (e.g., `*_grch38_norm.vcf.gz`).
 
 ## Success Criteria
-- [ ] Harmonized BigQuery dataset exists with per-source normalized tables and a shared variant key.
-- [ ] Liftover + normalization reports exist (input count, output count, dropped/failed records).
-- [ ] Joins across sources are deterministic and reproducible from raw snapshots.
+- [ ] All datasets are in GRCh38 coordinates.
+- [ ] No multiallelic records remain in the harmonized files.
+- [ ] Indels are consistently left-aligned.
+- [ ] Automated harmonization report generated for each dataset.
