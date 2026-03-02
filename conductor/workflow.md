@@ -28,7 +28,7 @@ All tasks follow a strict lifecycle:
 4. **Implement to Pass Tests (Green Phase):**
    - Write the minimum Python code necessary to make the tests pass.
    - **Architectural Style**: Follow a minimalist, pipeline-like structure to make data flow obvious and easy to track.
-   - **AI-Signed Comments**: Each significant step must include an AI-signed comment (`# [AI-Agent]: ...`) explaining its purpose and its effect on the data.
+   - **AI-Signed Comments**: Each significant step must include an AI-signed comment (`# [AI-Agent: Gemini 2.0 Flash]: ...`) explaining its purpose and its effect on the data.
    - **Modern Python**: Use Python 3.14+ features whenever possible. Explicitly document these features and their effects in the comments.
    - Run the test suite and confirm all tests pass.
 

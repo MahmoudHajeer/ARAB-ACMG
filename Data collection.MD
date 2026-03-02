@@ -1,1 +1,121 @@
-<p>Excellent — this is the right question now.<br />Your proposal is strong conceptually. What will make or break it in Year 1 is <strong>how clean and reproducible your data collection phase is structured</strong>.</p><p>Since your project is computational and based on <strong>HBOC (BRCA1/BRCA2)</strong>, your “data collection” is not biological sampling — it is <strong>structured dataset acquisition + harmonization + quality control</strong>.</p><p>Below is a <strong>clear, PhD-level operational roadmap</strong> for your Data Collection Phase.</p><p><strong>🎯 DATA COLLECTION PHASE – WHAT YOU SHOULD DO</strong></p><p><strong>Phase 1 — Define the Exact Variant Universe (Very Important)</strong></p><p>Before downloading anything, define:</p><ul><li>✔ Genes: <strong>BRCA1, BRCA2</strong></li><li>✔ Genome build: <strong>GRCh38 only</strong> (avoid mixing builds)</li><li>✔ Variant types:<ul><li>SNVs</li><li>small indels<br />(exclude large structural variants unless you explicitly model them)</li></ul></li></ul><p>💡 Why this matters:<br />If you don’t freeze scope now, your dataset explodes and becomes unmanageable.</p><p><strong>Phase 2 — Primary Data Sources to Collect</strong></p><p>You need <strong>three structured data layers</strong>.</p><p><strong>1️⃣ ClinVar (Classification Layer)</strong></p><p><strong>What to download:</strong></p><ul><li>All BRCA1 and BRCA2 variants</li><li>Current clinical significance</li><li>Review status (★ levels)</li><li>Submitter count</li><li>Conflicts</li></ul><p><strong>How:</strong></p><ul><li>Use ClinVar FTP bulk download (VCF or XML)</li><li>Filter by:<ul><li>Gene symbol</li><li>Germline only</li><li>GRCh38</li></ul></li></ul><p><strong>What you will extract:</strong></p><table><thead><tr><th><p><strong>Field</strong></p></th><th><p><strong>Why</strong></p></th></tr></thead><tbody><tr><td><p>Variant ID</p></td><td><p>Unique key</p></td></tr><tr><td><p>Clinical classification</p></td><td><p>Baseline global classification</p></td></tr><tr><td><p>Review status</p></td><td><p>Confidence weight</p></td></tr><tr><td><p>Condition</p></td><td><p>HBOC filter</p></td></tr><tr><td><p>Conflicts</p></td><td><p>For discordance analysis</p></td></tr></tbody></table><p><strong>2️⃣ gnomAD (Global Frequency Layer)</strong></p><p><strong>What to download:</strong></p><ul><li>Allele frequency (global)</li><li>Allele frequency by ancestry group</li><li>Homozygote counts</li><li>Allele number (AN)</li><li>Coverage metrics</li></ul><p>Use:</p><ul><li>gnomAD v4 (exomes + genomes)</li><li>GRCh38</li></ul><p><strong>Important:</strong></p><p>Document:</p><ul><li>Which version</li><li>Date accessed</li><li>Whether you use exomes, genomes, or combined</li></ul><p>💡 Your misclassification modelling depends heavily on AF and AN values.</p><p><strong>3️⃣ Arab / Middle Eastern Frequency Layer</strong></p><p>You need to construct an <strong>Arab-enriched frequency model</strong> from:</p><p><strong>A) GME Variome (Scott et al., 2016)</strong></p><ul><li>Extract BRCA1/2 variants</li><li>Obtain allele frequencies (if available)</li></ul><p><strong>B) Qatar Genome Program (Mbarek et al., 2022)</strong></p><ul><li>Use published allele frequencies (if available)</li><li>If individual-level data not accessible, use summary AF tables</li></ul><p><strong>C) gnomAD Middle Eastern ancestry group</strong></p><ul><li>Extract AF for “Middle Eastern” subset</li><li>If small sample size → report AN</li></ul><p><strong>Phase 3 — Define “High-Quality Data” (Operational Definition)</strong></p><p>You already mention QC — now define it practically:</p><p>Include variants only if:</p><ul><li>PASS filter in VCF</li><li>Coverage ≥ 20x (or documented coverage threshold)</li><li>Allele Number (AN) reported</li><li>No low-complexity masking flags</li></ul><p>This protects you during viva.</p><p><strong>Phase 4 — Data Harmonization (Critical Step)</strong></p><p>You MUST harmonize:</p><table><thead><tr><th><p><strong>Issue</strong></p></th><th><p><strong>What to do</strong></p></th></tr></thead><tbody><tr><td><p>Genome build differences</p></td><td><p>LiftOver to GRCh38</p></td></tr><tr><td><p>Variant representation differences</p></td><td><p>Normalize using bcftools norm</p></td></tr><tr><td><p>Multiallelic splitting</p></td><td><p>Split into biallelic</p></td></tr><tr><td><p>Indel left alignment</p></td><td><p>Standardize</p></td></tr></tbody></table><p>Use:</p><ul><li>bcftools</li><li>vt normalize</li><li>Python (pandas)</li><li>Ensembl VEP for annotation consistency</li></ul><p>This step is where many PhDs fail technically.</p><p><strong>Phase 5 — Build the Master Dataset</strong></p><p>Create a single master table:</p><p>| Variant | ClinVar class | gnomAD global AF | gnomAD ME AF | GME AF | Qatar AF | Review status | Gene |</p><p>This becomes your working dataset.</p><p><strong>Phase 6 — Define Misclassification Model BEFORE Analysis</strong></p><p>Define clearly:</p><p><strong>Scenario A: Global model</strong></p><p>Apply PM2/BS1 based on global AF thresholds.</p><p><strong>Scenario B: Arab-enriched model</strong></p><p>Apply PM2/BS1 using Arab AF.</p><p>Then measure:</p><ul><li>% variants that shift classification</li><li>Direction of shift</li><li>Impact severity</li></ul><p>This must be pre-defined (not post-hoc).</p><p><strong>Phase 7 — Document Everything</strong></p><p>For reproducibility:</p><ul><li>Version control (Git)</li><li>Document software versions</li><li>Document thresholds</li><li>Store intermediate files</li><li>Write a data dictionary</li></ul><p>Examiners love this.</p><p><strong>⚠️ Things You MUST Decide Early</strong></p><ol><li>What AF threshold will you use for BS1?</li><li>What threshold defines “absent from controls” for PM2?</li><li>Will you weight by AN (allele number)?</li><li>How will you handle conflicting ClinVar submissions?</li><li>Will you restrict to 2-star or higher review status?</li></ol><p>These decisions should be pre-registered in your methods chapter.</p><p><strong>🔬 Realistic Data Volume Expectation</strong></p><p>BRCA1 + BRCA2 in ClinVar:</p><ul><li>Likely 5,000–10,000 unique variants</li></ul><p>After QC filtering:</p><ul><li>Probably 3,000–6,000 usable variants</li></ul><p>Manageable. Good PhD size.</p><p><strong>🧠 What Makes This Scientifically Strong</strong></p><p>You are not just “comparing frequencies”.</p><p>You are testing:</p><p>How sensitive are ACMG frequency rules to ancestry-dependent denominator distortions?</p><p>That’s methodological genomics. That’s publishable.</p><p><strong>📅 Practical Timeline for Data Collection</strong></p><table><thead><tr><th><p><strong>Month</strong></p></th><th><p><strong>Task</strong></p></th></tr></thead><tbody><tr><td><p>1–2</p></td><td><p>Download + filter ClinVar</p></td></tr><tr><td><p>2–3</p></td><td><p>Download + filter gnomAD</p></td></tr><tr><td><p>3–4</p></td><td><p>Compile Arab datasets</p></td></tr><tr><td><p>4–5</p></td><td><p>Harmonize + normalize</p></td></tr><tr><td><p>5–6</p></td><td><p>Build master table</p></td></tr></tbody></table><p>After month 6 → modelling phase.</p><p><strong>🎓 My Honest Advice</strong></p><p>The biggest risk in your project is <strong>data inconsistency</strong>, not scientific logic.</p><p>If you build a clean harmonized BRCA master dataset, your PhD becomes very strong.</p><p>If you want, next I can:</p><ul><li>Draft a <strong>Data Management Plan section</strong> for your proposal</li><li>Help you define <strong>PM2/BS1 operational thresholds</strong></li><li>Or design your <strong>misclassification statistical model</strong></li></ul><p>Tell me which direction you want.</p>
+# Data Collection Phase (Operational Roadmap)
+
+This project is computational. "Data collection" means dataset acquisition, versioning, quality control (QC), and preparation for harmonization.
+
+## Phase 1: Freeze Scope (Do This First)
+- Genes: BRCA1, BRCA2
+- Preferred genome build: GRCh38
+- Variant types: SNVs and small indels (exclude SVs unless explicitly modeled)
+
+Why this matters: without a frozen scope, the dataset becomes unbounded and hard to reproduce.
+
+## Phase 2: Primary Data Layers To Collect
+
+### 1) ClinVar (Classification Layer)
+Collect:
+- Clinical significance (Pathogenic/Likely Pathogenic/VUS/Likely Benign/Benign)
+- Review status (stars) and submitter count
+- Conflicts and interpretation details
+- Stable identifiers (VariationID, RCV/SCV when available)
+
+Recommended ingestion approach:
+- Use the official ClinVar bulk downloads (VCF or XML)
+- Filter to germline BRCA1/2 variants
+- Record version and access date
+
+### 2) gnomAD (Global Frequency Layer)
+Collect:
+- Global AF (allele frequency)
+- AF by ancestry group (including Middle Eastern subset if available)
+- AN (allele number) and AC (allele count)
+- Homozygote counts (when available)
+- Coverage metrics (where available)
+
+Recommended ingestion approach:
+- Use GRCh38 sources and freeze the exact gnomAD version (for example v4)
+- Record whether exomes, genomes, or combined were used
+- Record version and access date
+
+### 3) Arab / Middle Eastern Frequency Layer
+Goal: build an Arab-enriched frequency model from summary sources that are accessible and license-permitted.
+
+Candidate sources (depending on access):
+- GME Variome (summary frequencies)
+- Qatar Genome Program (published summary AF tables when accessible)
+- gnomAD Middle Eastern ancestry subset (if present and sample size is sufficient)
+
+Important:
+- Always track sample size / AN. Small AN can make AF unstable and must be handled explicitly later.
+
+## Phase 3: Define "High Quality Data" (QC Gate)
+Define QC rules operationally and apply them consistently across sources:
+- PASS filter (for VCF sources)
+- Coverage threshold policy (document the threshold and how it is measured)
+- AN must be reported for any AF used in modeling
+- Exclude low-complexity / masked regions if a source flags them
+
+QC outputs to keep:
+- Row counts by gene and by source
+- Missingness report for critical fields (chr/pos/ref/alt, AF, AN)
+- Duplicate report under the chosen variant key
+
+## Phase 4: Harmonization (Handled In Conductor Track T003)
+You must harmonize:
+- Build differences: liftover GRCh37 -> GRCh38 (with explicit failure tracking)
+- Variant representation: normalize (split multiallelics, left-align indels, trim common bases)
+
+Recommended tools:
+- `bcftools norm`
+- `vt normalize`
+- CrossMap/LiftOver (if needed)
+
+## Phase 5: Master Dataset (Handled In Conductor Track T004)
+Build a single master table with one row per canonical variant (GRCh38 chr/pos/ref/alt), including:
+- ClinVar classification + review/conflict metadata
+- gnomAD global AF + ancestry AF + AN/AC
+- Arab/Middle Eastern AF + AN/AC (per source)
+
+This becomes the working dataset for the ACMG engine.
+
+## Phase 6: Misclassification Model (Tracks T004/T005)
+Pre-declare your comparison scenarios:
+- Scenario A (Global): apply frequency rules using global AF thresholds
+- Scenario B (Arab-enriched): apply frequency rules using Arab/Middle Eastern AF thresholds
+
+Measure:
+- Percent of variants that shift classification
+- Direction of shift
+- Stratification by gene (BRCA1 vs BRCA2) and ClinVar review confidence
+
+## Phase 7: Documentation & Reproducibility
+For every source, record:
+- Version, access date, and license notes
+- Checksums for raw files
+- Exact ingestion command/script versions
+
+Also produce:
+- Data dictionary for raw and harmonized tables
+- Provenance table that links each BigQuery table to its raw GCS snapshot
+
+## Decisions To Freeze Early (Avoid Post-hoc Choices)
+- AF threshold(s) for BS1/BA1 and the definition of "absent from controls" for PM2
+- Whether to weight by AN and how to handle small AN
+- ClinVar inclusion filter (for example: stars >= 2)
+- How to handle conflicting ClinVar submissions
+
+## Expected Volume (Rough)
+- ClinVar BRCA1/BRCA2 variants: typically thousands (order of 5,000-10,000)
+- After QC + harmonization: typically a smaller, manageable subset
+
+## Suggested Timeline (Example)
+- Months 1-2: ClinVar ingestion + QC
+- Months 2-3: gnomAD ingestion + QC
+- Months 3-4: Arab/Middle Eastern layer compilation
+- Months 4-5: Harmonization + normalization
+- Months 5-6: Master dataset build + pre-registered scenario definitions
+
+## Mapping To Conductor Tracks
+- T002 (Data Ingestion & QC): acquire sources, store raw snapshots, initial QC + schemas
+- T003 (Harmonization & Normalization): liftover + normalization + canonical variant key
+- T004 (Master Dataset & Analysis Engine): join master table + implement frequency-rule evaluation
+- T005 (Stats & Results): quantify shifts, sensitivity analyses, and produce figures/tables

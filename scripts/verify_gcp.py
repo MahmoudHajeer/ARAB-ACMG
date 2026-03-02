@@ -1,20 +1,20 @@
-# [AI-Agent]: This script follows the project's minimalist pipeline-style architecture.
-# Each function represents a clear stage in the infrastructure verification pipeline.
+# [AI-Agent: Gemini 2.0 Flash]: This script implements the project's minimalist pipeline architecture.
+# Each class method is a stage in the infrastructure verification pipeline.
 
 import sys
-from typing import Final, Self # [AI-Agent]: Self (introduced in 3.11) and typing for robust contracts.
+from typing import Final, Self
 from google.cloud import storage
 from google.cloud import bigquery
 
-# [AI-Agent]: Constants for pipeline configuration.
+# [AI-Agent: Gemini 2.0 Flash]: Define pipeline configuration parameters.
 PROJECT_ID: Final[str] = "genome-services-platform"
 BUCKET_NAME: Final[str] = "mahmoud-arab-acmg-research-data"
 DATASETS: Final[list[str]] = ["arab_acmg_raw", "arab_acmg_harmonized", "arab_acmg_results"]
 
 class InfrastructurePipeline:
     """
-    [AI-Agent]: Manages the verification pipeline for GCP resources.
-    The goal is to provide clear feedback on connectivity to GCS and BigQuery.
+    [AI-Agent: Gemini 2.0 Flash]: Manages the verification of GCP resources.
+    The goal is to ensure GCS and BigQuery are ready for data ingestion.
     """
 
     def __init__(self) -> None:
@@ -23,7 +23,7 @@ class InfrastructurePipeline:
 
     def verify_gcs(self) -> Self:
         """
-        [AI-Agent]: Stage 1 - GCS Verification.
+        [AI-Agent: Gemini 2.0 Flash]: Pipeline Stage 1 - GCS Connectivity check.
         Effect: Confirms the presence and accessibility of the primary data bucket.
         """
         print(f"--- [Pipeline Stage 1]: Verifying GCS Bucket: {BUCKET_NAME} ---")
@@ -39,7 +39,7 @@ class InfrastructurePipeline:
 
     def verify_bq(self) -> Self:
         """
-        [AI-Agent]: Stage 2 - BigQuery Verification.
+        [AI-Agent: Gemini 2.0 Flash]: Pipeline Stage 2 - BigQuery Dataset check.
         Effect: Confirms that all three required datasets exist in the project.
         """
         print("--- [Pipeline Stage 2]: Verifying BigQuery Datasets ---")
@@ -63,10 +63,10 @@ class InfrastructurePipeline:
 
     def finalize(self) -> None:
         """
-        [AI-Agent]: Final Stage - Result Aggregation.
+        [AI-Agent: Gemini 2.0 Flash]: Final Stage - Status Aggregation.
         Effect: Determines the exit status of the pipeline based on previous stages.
         """
-        # [AI-Agent]: Pattern matching (match/case) introduced in 3.10, utilized for clear flow control.
+        # [AI-Agent: Gemini 2.0 Flash]: Python 3.10+ match/case for terminal flow control.
         match (self.gcs_ok, self.bq_ok):
             case (True, True):
                 print("\n🎉 [Final Effect]: All GCP resources verified successfully!")
@@ -76,7 +76,7 @@ class InfrastructurePipeline:
                 sys.exit(1)
 
 if __name__ == "__main__":
-    # [AI-Agent]: Execute the pipeline stages in sequence.
+    # [AI-Agent: Gemini 2.0 Flash]: Run the infrastructure verification pipeline sequence.
     InfrastructurePipeline() \
         .verify_gcs() \
         .verify_bq() \

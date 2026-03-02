@@ -30,11 +30,17 @@
 
 ## Technical Guidelines
 
-### Code Quality & Style
-- **Minimalist Pipeline Style**: Write code in a functional, pipeline-like structure (e.g., method chaining or clear sequential data flows) to make the data transformation steps obvious.
-- **Python 3.14+ Features**: Proactively use features from Python 3.14 (and the latest available versions). When a 3.14+ feature is used, it must be explicitly mentioned in a comment along with its specific effect on performance or readability.
-- **AI-Signed Descriptive Comments**: Every major logical block or step must have a concise, high-value comment describing **what** it does and **why** (its effect). These comments must be signed by the AI agent (e.g., `# [AI-Agent]: ...`).
-- **Follow the Data**: Comments should make it easy to follow how data is being transformed from one state to another.
+### Code Quality & Style (The "Pipeline" Protocol)
+- **Minimalist Pipeline Architecture**: Code must be written as a series of discrete, sequential stages. Data transformations should be linear and obvious, prioritizing readability over complex abstractions.
+- **AI-Signed Documentation**: Every major logic step or function must be preceded by a descriptive comment block. These comments must follow the format: `[AI-Agent: Gemini 2.0 Flash]: <Explanation>`.
+- **"What & Why" Comments**: Comments must explain both the action (what) and the intended effect on the data (why/result).
+- **Modern Python 3.14+**: Always utilize the latest Python features (e.g., improved type hinting, deferred evaluations). When using 3.14+ specific features, explicitly document their performance or architectural benefits.
+
+### Example Signature
+```python
+# [AI-Agent: Gemini 2.0 Flash]: Stage 1 - Filter variants by BRCA1/2 coordinates.
+# Effect: Reduces dataset size from millions to a few thousand targeted variants.
+```
 
 ### Documentation
 - Use Markdown for all documentation.
