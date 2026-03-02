@@ -1,0 +1,15 @@
+# [AI-Agent: Gemini 2.0 Flash]: dbt Profile for ARAB-ACMG Research.
+# Configured for BigQuery in the europe-west1 region.
+
+arab_acmg_profile:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: oauth
+      project: genome-services-platform
+      dataset: arab_acmg_raw # [AI-Agent: Gemini 2.0 Flash]: Default dataset, overridden in project config.
+      threads: 4
+      timeout_seconds: 300
+      location: europe-west1
+      priority: interactive

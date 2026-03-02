@@ -11,9 +11,12 @@
 ### Data Integrity & Quality Control (QC)
 - Maintain raw data in a read-only state.
 - All transformations and cleaning steps must be scripted.
+- **Cloud-First Data Policy**:
+    - Store raw snapshots in **GCS** first (versioned paths + checksums).
+    - Load an unmodified just the large datasets "raw copy" into **BigQuery** datasets before any transformations.
+    - Avoid downloading large datasets to local disk; local data should be limited to small test fixtures.
 - **Variant Inclusion Criteria**: 
     - Must have PASS filter in VCF.
-    - Minimum coverage (e.g., ≥ 20x).
     - Allele Number (AN) must be reported.
     - Exclude variants with low-complexity masking flags.
 
@@ -32,13 +35,13 @@
 
 ### Code Quality & Style (The "Pipeline" Protocol)
 - **Minimalist Pipeline Architecture**: Code must be written as a series of discrete, sequential stages. Data transformations should be linear and obvious, prioritizing readability over complex abstractions.
-- **AI-Signed Documentation**: Every major logic step or function must be preceded by a descriptive comment block. These comments must follow the format: `[AI-Agent: Gemini 2.0 Flash]: <Explanation>`.
+- **AI-Signed Documentation**: Every major logic step or function must be preceded by a descriptive comment block. Use the format: `[AI-Agent: <AgentName>]: <Explanation>`.
 - **"What & Why" Comments**: Comments must explain both the action (what) and the intended effect on the data (why/result).
 - **Modern Python 3.14+**: Always utilize the latest Python features (e.g., improved type hinting, deferred evaluations). When using 3.14+ specific features, explicitly document their performance or architectural benefits.
 
 ### Example Signature
 ```python
-# [AI-Agent: Gemini 2.0 Flash]: Stage 1 - Filter variants by BRCA1/2 coordinates.
+# [AI-Agent: Codex]: Stage 1 - Filter variants by BRCA1/2 coordinates.
 # Effect: Reduces dataset size from millions to a few thousand targeted variants.
 ```
 

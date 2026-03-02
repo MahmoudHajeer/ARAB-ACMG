@@ -1,0 +1,32 @@
+# [AI-Agent: Gemini 2.0 Flash]: dbt Project Configuration for ARAB-ACMG Research.
+# Configured for a cloud-first workflow on BigQuery.
+
+name: 'arab_acmg_dbt'
+version: '1.0.0'
+config-version: 2
+
+profile: 'arab_acmg_profile'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  arab_acmg_dbt:
+    staging:
+      +materialized: view
+      +schema: raw
+    harmonized:
+      +materialized: table
+      +schema: harmonized
+    results:
+      +materialized: table
+      +schema: results

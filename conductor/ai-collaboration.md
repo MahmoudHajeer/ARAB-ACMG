@@ -8,6 +8,10 @@ This document defines how both agents coordinate work without losing progress.
 - `conductor/setup_state.json`: Latest successful checkpoint (must keep key `last_successful_step`).
 - `conductor/tracks/<TRACK>/index.md`: Append-only handoff journal.
 
+## Shared Contracts (Do Not Diverge)
+- `conductor/data-contracts.md`: Variant keys, schemas, provenance manifests, and cloud-first policy.
+- `Data collection.MD`: Narrative roadmap that maps to T002-T005.
+
 ## Execution Order
 1. Select active track from `conductor/tracks.md` (`[~]` first, otherwise first `[ ]`).
 2. Select active task from track `plan.md` (`[~]` first, otherwise first `[ ]`).
