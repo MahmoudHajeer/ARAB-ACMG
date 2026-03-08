@@ -38,3 +38,7 @@
 - **Git / GitHub**: For code and metadata versioning.
 - **Conda / Poetry**: For reproducible local environment management.
 - **Docker**: For containerizing analysis environments to ensure cloud-to-local parity.
+
+## Supervisor Runtime Interface
+- **FastAPI**: Lightweight backend for the supervisor UI so sample requests hit live BigQuery tables instead of relying only on static snapshots.
+- **Uvicorn**: ASGI runtime for local testing and Cloud Run deployment of the supervisor service.

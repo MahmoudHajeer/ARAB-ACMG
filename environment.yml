@@ -28,3 +28,6 @@ dependencies:
   - pip
   - pip:
     - dask[complete]
+    - fastapi
+    - uvicorn
+    - httpx

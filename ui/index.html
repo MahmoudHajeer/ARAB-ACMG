@@ -14,9 +14,9 @@
   <main class="layout">
     <header class="hero">
       <p class="kicker">ARAB-ACMG / Supervisor View</p>
-      <h1>Conductor Progress and Runtime Truth</h1>
+      <h1>Live evidence from raw datasets and the first joined registry</h1>
       <p class="sub">
-        Live summary of tracks, tasks, cloud artifacts, and local execution outcomes.
+        The top half shows conductor progress and frozen raw assets. The lower half lets the supervisor pull live 50-row samples from BigQuery and inspect how the first registry table is built step by step.
       </p>
       <p id="generated-at" class="generated-at">Loading snapshot...</p>
     </header>
@@ -44,17 +44,38 @@
         <div id="gcs-metrics" class="metric-stack"></div>
       </div>
       <div>
-        <h2>Data Collection Roadmap (T002 Input)</h2>
-        <div id="roadmap-phases" class="roadmap-phases"></div>
+        <h2>Public BigQuery Access</h2>
+        <p class="panel-note">The user requested the datasets themselves to be public. This panel shows the live dataset ACL state from BigQuery.</p>
+        <div id="public-datasets" class="metric-stack"></div>
       </div>
     </section>
 
     <section class="panel">
-      <h2>Raw Dataset Samples</h2>
+      <h2>Live Raw Dataset Explorer</h2>
       <p class="panel-note">
-        Fixed preview of 10 rows from each raw dataset. The `info` field is truncated in the UI for readability.
+        Each button issues a live query to BigQuery, asks for 50 random rows, and shows the exact SQL that was used. Row numbers shown here are query-result row numbers, because BigQuery tables do not store a stable physical row index.
       </p>
-      <div id="bq-samples" class="sample-stack"></div>
+      <div id="dataset-explorer" class="explorer-stack"></div>
+    </section>
+
+    <section class="panel">
+      <h2>How the Registry Table Is Built</h2>
+      <p class="panel-note">
+        The build is split into small evidence steps so a supervisor can inspect the join logic before trusting the final table.
+      </p>
+      <div id="registry-steps" class="explorer-stack"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Supervisor Registry Table</h2>
+      <div id="registry-meta" class="registry-meta"></div>
+      <div id="registry-columns" class="glossary-grid"></div>
+      <div class="action-row">
+        <button id="registry-sample-button" class="action-button">Fetch 50 random registry rows</button>
+      </div>
+      <div id="registry-sample" class="query-result"></div>
+      <h3 class="subheading">Build SQL</h3>
+      <pre id="registry-build-sql" class="sql-box"></pre>
     </section>
   </main>
 
