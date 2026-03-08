@@ -1,3 +1,3 @@
 {
-  "last_successful_step": "Restart: Added cloud-first data contracts and Conductor tracks T002-T005 (GE/Parquet/dbt) for sequential execution"
+  "last_successful_step": "T002 step 3.3 complete on 2026-03-08: ClinVar raw plus gnomAD raw genomes/exomes for chr13 and chr17 are loaded in arab_acmg_raw, BigQuery health passes, and the supervisor UI shows fixed 10-row samples for each dataset."
 }

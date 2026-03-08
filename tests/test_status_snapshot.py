@@ -7,6 +7,7 @@ from scripts.update_status_snapshot import (
     SAMPLE_COLUMNS,
     format_sample_value,
     get_bigquery_samples,
+    parse_latest_t002_verification,
 )
 
 
@@ -70,3 +71,20 @@ def test_get_bigquery_samples_handles_missing_table(mock_bq_client):
 
     assert result["tables"][0]["status"] == "missing"
     assert result["tables"][0]["rows"] == []
+
+
+@patch("scripts.update_status_snapshot.T002_INDEX_FILE")
+def test_parse_latest_t002_verification_supports_new_handoff_field(mock_index_file):
+    mock_index_file.read_text.return_value = (
+        "### Entry 8\n"
+        "- verification: `old check (fail)`\n"
+        "### Entry 9\n"
+        "- Verification run + result: `pytest -q tests (8 passed)`, `python3 scripts/verify_bq_health.py (pass)`\n"
+    )
+
+    result = parse_latest_t002_verification()
+
+    assert result[0]["command"] == "pytest -q tests (8 passed)"
+    assert result[0]["status"] == "pass"
+    assert result[1]["command"] == "python3 scripts/verify_bq_health.py (pass)"
+    assert result[1]["status"] == "pass"

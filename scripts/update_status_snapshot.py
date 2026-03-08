@@ -152,7 +152,10 @@ def parse_data_collection_phases() -> list[dict[str, object]]:
 def parse_latest_t002_verification() -> list[dict[str, str]]:
     verification_line = ""
     for line in T002_INDEX_FILE.read_text(encoding="utf-8").splitlines():
-        if line.strip().startswith("- verification:"):
+        stripped = line.strip()
+        if stripped.startswith("- verification:") or stripped.startswith(
+            "- Verification run + result:"
+        ):
             verification_line = line.strip()
 
     if not verification_line:

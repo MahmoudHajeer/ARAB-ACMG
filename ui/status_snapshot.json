@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-08T17:59:56.997566+00:00",
+  "generated_at": "2026-03-08T18:05:33.355386+00:00",
   "project_id": "genome-services-platform",
   "tracks": [
     {
@@ -59,11 +59,11 @@
     },
     "T002": {
       "total_tasks": 23,
-      "done_tasks": 10,
-      "in_progress_tasks": 1,
+      "done_tasks": 11,
+      "in_progress_tasks": 0,
       "todo_tasks": 12,
-      "done_pct": 43.5,
-      "progress_pct": 45.7
+      "done_pct": 47.8,
+      "progress_pct": 47.8
     },
     "T003": {
       "total_tasks": 14,
@@ -160,24 +160,28 @@
   ],
   "latest_t002_verification": [
     {
+      "command": "pytest -q tests (8 passed)",
+      "status": "pass"
+    },
+    {
       "command": "python3 scripts/verify_gcp.py (pass)",
       "status": "pass"
     },
     {
-      "command": "python3 scripts/ingest_clinvar_cloud.py (pass)",
+      "command": "python3 scripts/verify_bq_health.py (pass)",
       "status": "pass"
     },
     {
-      "command": "python3 scripts/load_clinvar_to_bq.py (pass, 4,388,226 rows)",
+      "command": "node --check ui/app.js (pass)",
       "status": "pass"
     },
     {
-      "command": "python3 scripts/ingest_gnomad_parquet.py (pass after copy fix)",
+      "command": "python3 scripts/update_status_snapshot.py (pass)",
       "status": "pass"
     },
     {
-      "command": "python3 scripts/load_gnomad_to_bq.py (fail: compressed CSV >4GB limit)",
-      "status": "fail"
+      "command": "BigQuery row counts confirmed: clinvar_raw_vcf=4,388,226; gnomad_v4_1_genomes_chr13_raw=24,993,778; gnomad_v4_1_genomes_chr17_raw=21,944,455; gnomad_v4_1_exomes_chr13_raw=3,549,140; gnomad_v4_1_exomes_chr17_raw=10,744,751",
+      "status": "info"
     }
   ],
   "bigquery_metrics": {
