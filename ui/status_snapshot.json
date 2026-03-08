@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-08T18:05:33.355386+00:00",
+  "generated_at": "2026-03-08T18:27:02.643388+00:00",
   "project_id": "genome-services-platform",
   "tracks": [
     {
@@ -60,10 +60,10 @@
     "T002": {
       "total_tasks": 23,
       "done_tasks": 11,
-      "in_progress_tasks": 0,
-      "todo_tasks": 12,
+      "in_progress_tasks": 1,
+      "todo_tasks": 11,
       "done_pct": 47.8,
-      "progress_pct": 47.8
+      "progress_pct": 50.0
     },
     "T003": {
       "total_tasks": 14,
@@ -160,27 +160,7 @@
   ],
   "latest_t002_verification": [
     {
-      "command": "pytest -q tests (8 passed)",
-      "status": "pass"
-    },
-    {
-      "command": "python3 scripts/verify_gcp.py (pass)",
-      "status": "pass"
-    },
-    {
-      "command": "python3 scripts/verify_bq_health.py (pass)",
-      "status": "pass"
-    },
-    {
-      "command": "node --check ui/app.js (pass)",
-      "status": "pass"
-    },
-    {
-      "command": "python3 scripts/update_status_snapshot.py (pass)",
-      "status": "pass"
-    },
-    {
-      "command": "BigQuery row counts confirmed: clinvar_raw_vcf=4,388,226; gnomad_v4_1_genomes_chr13_raw=24,993,778; gnomad_v4_1_genomes_chr17_raw=21,944,455; gnomad_v4_1_exomes_chr13_raw=3,549,140; gnomad_v4_1_exomes_chr17_raw=10,744,751",
+      "command": "source inspection only: gzip header read, 13 columns confirmed, 699,497 lines observed",
       "status": "info"
     }
   ],
@@ -258,6 +238,26 @@
           "qual",
           "filter",
           "info"
+        ],
+        "status": "present"
+      },
+      {
+        "table": "gme_hg38_raw",
+        "rows": 699496,
+        "fields": [
+          "chrom",
+          "start",
+          "end",
+          "ref",
+          "alt",
+          "gme_af",
+          "gme_nwa",
+          "gme_nea",
+          "gme_ap",
+          "gme_israel",
+          "gme_sd",
+          "gme_tp",
+          "gme_ca"
         ],
         "status": "present"
       }
@@ -847,7 +847,7 @@
         "status": "present"
       }
     ],
-    "error": null
+    "error": "400 Syntax error: Expected end of input but got keyword END at [1:22]; reason: invalidQuery, location: query, message: Syntax error: Expected end of input but got keyword END at [1:22]\n\nLocation: US\nJob ID: 5f51490e-4478-491f-87b5-685f72909bc0\n"
   },
   "gcs_metrics": {
     "bucket": "mahmoud-arab-acmg-research-data",
@@ -870,6 +870,14 @@
           "raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr13/snapshot_date=2026-03-03/manifest.json",
           "raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr17/snapshot_date=2026-03-03/gnomad.exomes.v4.1.sites.chr17.vcf.bgz",
           "raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr17/snapshot_date=2026-03-03/gnomad.exomes.v4.1.sites.chr17.vcf.bgz.tbi"
+        ]
+      },
+      {
+        "prefix": "raw/sources/gme/",
+        "count": 2,
+        "sample_paths": [
+          "raw/sources/gme/release=20161025-hg38/build=hg38/snapshot_date=2026-03-08/hg38_gme.txt.gz",
+          "raw/sources/gme/release=20161025-hg38/build=hg38/snapshot_date=2026-03-08/manifest.json"
         ]
       },
       {

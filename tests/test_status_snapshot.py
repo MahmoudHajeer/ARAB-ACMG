@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, patch
 from google.api_core.exceptions import NotFound
 
 from scripts.update_status_snapshot import (
-    SAMPLE_COLUMNS,
+    RAW_TABLES,
     format_sample_value,
     get_bigquery_samples,
     parse_latest_t002_verification,
@@ -23,7 +23,18 @@ def test_format_sample_value_truncates_long_values():
 def test_get_bigquery_samples_collects_rows(mock_bq_client):
     mock_client = MagicMock()
     mock_bq_client.return_value = mock_client
-    mock_client.get_table.return_value = object()
+    mock_table = MagicMock()
+    mock_table.schema = [
+        SimpleNamespace(name="chrom"),
+        SimpleNamespace(name="pos"),
+        SimpleNamespace(name="id"),
+        SimpleNamespace(name="ref"),
+        SimpleNamespace(name="alt"),
+        SimpleNamespace(name="qual"),
+        SimpleNamespace(name="filter"),
+        SimpleNamespace(name="info"),
+    ]
+    mock_client.get_table.return_value = mock_table
 
     long_info = "INFO=" + ("X" * 300)
 
@@ -48,8 +59,17 @@ def test_get_bigquery_samples_collects_rows(mock_bq_client):
     result = get_bigquery_samples()
 
     assert result["error"] is None
-    assert len(result["tables"]) == 5
-    assert result["tables"][0]["columns"] == SAMPLE_COLUMNS
+    assert len(result["tables"]) == len(RAW_TABLES)
+    assert result["tables"][0]["columns"] == [
+        "chrom",
+        "pos",
+        "id",
+        "ref",
+        "alt",
+        "qual",
+        "filter",
+        "info",
+    ]
     assert result["tables"][0]["rows"][0]["chrom"] == "chr13"
     assert result["tables"][0]["rows"][0]["info"].endswith("...")
 
@@ -58,7 +78,9 @@ def test_get_bigquery_samples_collects_rows(mock_bq_client):
 def test_get_bigquery_samples_handles_missing_table(mock_bq_client):
     mock_client = MagicMock()
     mock_bq_client.return_value = mock_client
-    mock_client.get_table.side_effect = [NotFound("missing")] + [object()] * 4
+    mock_table = MagicMock()
+    mock_table.schema = [SimpleNamespace(name="chrom")]
+    mock_client.get_table.side_effect = [NotFound("missing")] + [mock_table] * (len(RAW_TABLES) - 1)
 
     def query_side_effect(_query):
         query_job = MagicMock()

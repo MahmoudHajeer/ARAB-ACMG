@@ -22,6 +22,7 @@ DEFAULT_REQUIRED_TABLES: Final[list[str]] = [
     "gnomad_v4_1_genomes_chr17_raw",
     "gnomad_v4_1_exomes_chr13_raw",
     "gnomad_v4_1_exomes_chr17_raw",
+    "gme_hg38_raw",
 ]
 
 

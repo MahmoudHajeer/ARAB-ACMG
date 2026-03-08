@@ -38,6 +38,7 @@ TRACK_PLAN_PATHS: Final[dict[str, Path]] = {
 RAW_GCS_PREFIXES: Final[list[str]] = [
     "raw/sources/clinvar/",
     "raw/sources/gnomad_v4.1/",
+    "raw/sources/gme/",
     "raw/working/gnomad_v4.1/",
 ]
 
@@ -47,18 +48,9 @@ RAW_TABLES: Final[list[str]] = [
     "gnomad_v4_1_genomes_chr17_raw",
     "gnomad_v4_1_exomes_chr13_raw",
     "gnomad_v4_1_exomes_chr17_raw",
+    "gme_hg38_raw",
 ]
 
-SAMPLE_COLUMNS: Final[list[str]] = [
-    "chrom",
-    "pos",
-    "id",
-    "ref",
-    "alt",
-    "qual",
-    "filter",
-    "info",
-]
 SAMPLE_LIMIT: Final[int] = 10
 MAX_SAMPLE_VALUE_LENGTH: Final[int] = 160
 
@@ -229,24 +221,42 @@ def get_bigquery_samples() -> dict[str, object]:
         for table_name in RAW_TABLES:
             table_ref = f"{PROJECT_ID}.arab_acmg_raw.{table_name}"
             try:
-                client.get_table(table_ref)
+                table = client.get_table(table_ref)
+                columns = [field.name for field in table.schema]
                 query = (
-                    f"SELECT {', '.join(SAMPLE_COLUMNS)} "
+                    f"SELECT {', '.join(columns)} "
                     f"FROM `{table_ref}` "
-                    "ORDER BY chrom, pos, ref, alt "
                     f"LIMIT {SAMPLE_LIMIT}"
                 )
+                order_columns = [
+                    column
+                    for column in ("chrom", "pos", "start", "ref", "alt")
+                    if column in columns
+                ]
+                if order_columns:
+                    query = (
+                        f"SELECT {', '.join(columns)} "
+                        f"FROM `{table_ref}` "
+                        f"ORDER BY {', '.join(order_columns)} "
+                        f"LIMIT {SAMPLE_LIMIT}"
+                    )
+                else:
+                    query = (
+                        f"SELECT {', '.join(columns)} "
+                        f"FROM `{table_ref}` "
+                        f"LIMIT {SAMPLE_LIMIT}"
+                    )
                 rows = [
                     {
                         column: format_sample_value(getattr(row, column, ""))
-                        for column in SAMPLE_COLUMNS
+                        for column in columns
                     }
                     for row in client.query(query).result()
                 ]
                 sample_tables.append(
                     {
                         "table": table_name,
-                        "columns": SAMPLE_COLUMNS,
+                        "columns": columns,
                         "rows": rows,
                         "status": "present",
                     }
@@ -255,7 +265,7 @@ def get_bigquery_samples() -> dict[str, object]:
                 sample_tables.append(
                     {
                         "table": table_name,
-                        "columns": SAMPLE_COLUMNS,
+                        "columns": [],
                         "rows": [],
                         "status": "missing",
                     }
