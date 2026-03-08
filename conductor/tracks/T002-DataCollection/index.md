@@ -114,3 +114,23 @@ Do not rewrite previous entries.
 - Files changed: `scripts/ingest_gme_cloud.py`, `scripts/load_gme_to_bq.py`, `scripts/update_status_snapshot.py`, `scripts/verify_bq_health.py`, `tests/test_gme_paths.py`, `tests/test_status_snapshot.py`, `conductor/source-freeze.md`, `conductor/checkpoints/2026-03-08-t002-gme-raw-onboarding.md`, `ui/status_snapshot.json`, `conductor/tracks/T002-DataCollection/plan.md`, `conductor/tracks/T002-DataCollection/index.md`, `conductor/setup_state.json`
 - Verification run + result: `pytest -q tests (11 passed)`, `python3 scripts/ingest_gme_cloud.py (pass)`, `python3 scripts/load_gme_to_bq.py (pass, 699,496 rows)`, `python3 scripts/verify_bq_health.py (pass)`, `python3 scripts/update_status_snapshot.py (pass)`
 - Next exact action: Start `4.2` when another Arab/Middle Eastern raw source is available or when we choose to build the first supervisor-facing union table from the currently available raw datasets.
+
+### Entry 12
+- Timestamp: `2026-03-08T21:40:00+03:00`
+- Agent: `Codex`
+- Task ID: `5.4`
+- Status: `Started`
+- Summary: Extending the supervisor UI from static snapshots to live database-backed exploration: per-dataset random sample queries, fixed column descriptions, and a first registry table with exposed build SQL and live sample fetch.
+- Files changed: `conductor/tracks/T002-DataCollection/plan.md`, `conductor/tracks/T002-DataCollection/index.md`
+- Verification run + result: `planning/start only`
+- Next exact action: Add a backend API for live BigQuery queries, build the first supervisor registry table, test the UI with Playwright, and deploy the update to the existing `supervisor-ui` Cloud Run service.
+
+### Entry 13
+- Timestamp: `2026-03-09T00:04:10+03:00`
+- Agent: `Codex`
+- Task ID: `5.4`
+- Status: `Completed`
+- Summary: Replaced the static supervisor UI with a live FastAPI-backed explorer, materialized `arab_acmg_results.supervisor_variant_registry_v1`, and exposed stepwise evidence queries plus public dataset access state. GME completeness was also documented explicitly: current workspace file covers chr1-22 and chrX only and behaves as a legacy hg38 liftover-style summary source.
+- Files changed: `conductor/tech-stack.md`, `conductor/source-freeze.md`, `environment.yml`, `scripts/build_supervisor_registry.py`, `scripts/set_bigquery_datasets_public.py`, `scripts/verify_supervisor_registry.py`, `tests/test_registry_queries.py`, `tests/test_ui_catalog.py`, `tests/test_ui_service.py`, `ui/Dockerfile`, `ui/README.md`, `ui/catalog.py`, `ui/registry_queries.py`, `ui/service.py`, `ui/index.html`, `ui/app.js`, `ui/styles.css`, `conductor/checkpoints/2026-03-09-t002-supervisor-live-registry.md`, `conductor/tracks/T002-DataCollection/plan.md`, `conductor/setup_state.json`
+- Verification run + result: `python3 -m pytest -q tests (20 passed)`, `python3 scripts/verify_bq_health.py (pass)`, `python3 scripts/build_supervisor_registry.py (pass, 58,769,720 rows)`, `python3 scripts/set_bigquery_datasets_public.py (pass: arab_acmg_raw/arab_acmg_harmonized/arab_acmg_results shared to allAuthenticatedUsers)`, `python3 scripts/verify_supervisor_registry.py (pass)`, `node --check ui/app.js (pass)`, `Playwright browser check on http://127.0.0.1:8080/ (pass: raw sample query, registry step query, and registry sample query returned live BigQuery results)`
+- Next exact action: Start task `1.6` and build dbt sources/staging models for the now-frozen raw layer and the first supervisor registry table.

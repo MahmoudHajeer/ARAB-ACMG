@@ -32,6 +32,7 @@
 - [ ] 5.1 Publish GE Data Docs for this track to GCS.
 - [ ] 5.2 Produce a data dictionary and provenance table for all `arab_acmg_raw` tables.
 - [ ] 5.3 Create a raw-layer inventory report (row counts, null rates, duplicates).
+- [x] 5.4 Build a supervisor-facing query explorer with live 50-row sample fetches per dataset and a first registry table preview that can absorb new sources incrementally. `47995e0`
 
 ---
 **Track Status**: `[~]`

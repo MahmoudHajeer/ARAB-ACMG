@@ -1,3 +1,3 @@
 {
-  "last_successful_step": "T002 step 4.1 complete on 2026-03-08: GME hg38 raw source is documented as the accessible Arab/Middle Eastern dataset in the workspace, snapshotted to GCS raw vault, loaded into arab_acmg_raw.gme_hg38_raw, and exposed in the supervisor UI."
+  "last_successful_step": "T002 step 5.4 complete on 2026-03-09: the supervisor UI now uses a live FastAPI backend on top of BigQuery, every raw dataset has a 50-row on-demand sample query with fixed column explanations, supervisor_variant_registry_v1 is materialized in arab_acmg_results, and the three BigQuery datasets are shared to allAuthenticatedUsers."
 }

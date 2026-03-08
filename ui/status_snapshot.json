@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-08T18:30:45.300619+00:00",
+  "generated_at": "2026-03-08T21:05:07.845234+00:00",
   "project_id": "genome-services-platform",
   "tracks": [
     {
@@ -58,12 +58,12 @@
       "progress_pct": 100.0
     },
     "T002": {
-      "total_tasks": 23,
-      "done_tasks": 12,
+      "total_tasks": 24,
+      "done_tasks": 13,
       "in_progress_tasks": 0,
       "todo_tasks": 11,
-      "done_pct": 52.2,
-      "progress_pct": 52.2
+      "done_pct": 54.2,
+      "progress_pct": 54.2
     },
     "T003": {
       "total_tasks": 14,
@@ -160,15 +160,7 @@
   ],
   "latest_t002_verification": [
     {
-      "command": "pytest -q tests (11 passed)",
-      "status": "pass"
-    },
-    {
-      "command": "python3 scripts/ingest_gme_cloud.py (pass)",
-      "status": "pass"
-    },
-    {
-      "command": "python3 scripts/load_gme_to_bq.py (pass, 699,496 rows)",
+      "command": "python3 -m pytest -q tests (20 passed)",
       "status": "pass"
     },
     {
@@ -176,7 +168,23 @@
       "status": "pass"
     },
     {
-      "command": "python3 scripts/update_status_snapshot.py (pass)",
+      "command": "python3 scripts/build_supervisor_registry.py (pass, 58,769,720 rows)",
+      "status": "pass"
+    },
+    {
+      "command": "python3 scripts/set_bigquery_datasets_public.py (pass: arab_acmg_raw/arab_acmg_harmonized/arab_acmg_results shared to allAuthenticatedUsers)",
+      "status": "pass"
+    },
+    {
+      "command": "python3 scripts/verify_supervisor_registry.py (pass)",
+      "status": "pass"
+    },
+    {
+      "command": "node --check ui/app.js (pass)",
+      "status": "pass"
+    },
+    {
+      "command": "Playwright browser check on http://127.0.0.1:8080/ (pass: raw sample query, registry step query, and registry sample query returned live BigQuery results)",
       "status": "pass"
     }
   ],
@@ -863,7 +871,7 @@
         "status": "present"
       }
     ],
-    "error": "400 Syntax error: Expected end of input but got keyword END at [1:22]; reason: invalidQuery, location: query, message: Syntax error: Expected end of input but got keyword END at [1:22]\n\nLocation: US\nJob ID: 0a36962f-a857-4fee-8320-8595149a5ac7\n"
+    "error": "400 Syntax error: Expected end of input but got keyword END at [1:22]; reason: invalidQuery, location: query, message: Syntax error: Expected end of input but got keyword END at [1:22]\n\nLocation: US\nJob ID: 87571ac6-9679-4de6-948a-898dcb130a21\n"
   },
   "gcs_metrics": {
     "bucket": "mahmoud-arab-acmg-research-data",
