@@ -94,3 +94,23 @@ Do not rewrite previous entries.
 - Files changed: `cloudbuild/gnomad_raw_to_bq.yaml`, `scripts/cloud_gnomad_raw_to_bq.sh`, `scripts/load_gnomad_to_bq.py`, `scripts/verify_bq_health.py`, `scripts/update_status_snapshot.py`, `tests/test_bq_health.py`, `tests/test_status_snapshot.py`, `ui/index.html`, `ui/app.js`, `ui/styles.css`, `ui/status_snapshot.json`, `conductor/source-freeze.md`, `conductor/checkpoints/2026-03-03-t002-clinvar-raw-gnomad-raw-snapshot.md`, `conductor/checkpoints/2026-03-08-t002-raw-load-ui-samples.md`, `conductor/tracks/T002-DataCollection/plan.md`, `conductor/setup_state.json`
 - Verification run + result: `pytest -q tests (8 passed)`, `python3 scripts/verify_gcp.py (pass)`, `python3 scripts/verify_bq_health.py (pass)`, `node --check ui/app.js (pass)`, `python3 scripts/update_status_snapshot.py (pass)`, `BigQuery row counts confirmed: clinvar_raw_vcf=4,388,226; gnomad_v4_1_genomes_chr13_raw=24,993,778; gnomad_v4_1_genomes_chr17_raw=21,944,455; gnomad_v4_1_exomes_chr13_raw=3,549,140; gnomad_v4_1_exomes_chr17_raw=10,744,751`
 - Next exact action: Start task `1.6` in `conductor/tracks/T002-DataCollection/plan.md`, then implement dbt sources and staging models for the now-frozen raw tables before GE/dbt QC closure.
+
+### Entry 10
+- Timestamp: `2026-03-08T21:14:00+03:00`
+- Agent: `Codex`
+- Task ID: `4.1`
+- Status: `Started`
+- Summary: Inspecting the locally provided GME source (`hg38_gme.txt.gz`) to register it as a raw Arab/Middle Eastern dataset with explicit schema, provenance, and supervisor visibility.
+- Files changed: `conductor/tracks/T002-DataCollection/plan.md`, `conductor/tracks/T002-DataCollection/index.md`
+- Verification run + result: `source inspection only: gzip header read, 13 columns confirmed, 699,497 lines observed`
+- Next exact action: Upload the untouched GME file to the raw vault, load a dedicated raw table in BigQuery, update source freeze/UI, and then propose the first supervisor-facing base table built from the currently available datasets.
+
+### Entry 11
+- Timestamp: `2026-03-08T21:29:00+03:00`
+- Agent: `Codex`
+- Task ID: `4.1`
+- Status: `Completed`
+- Summary: Completed the accessible-source enumeration for the current workspace by registering the local GME hg38 file, documenting its provenance/constraints, and onboarding it into the raw layer for supervisor visibility. Qatar Genome remains unstarted because no raw artifact is currently present in the environment.
+- Files changed: `scripts/ingest_gme_cloud.py`, `scripts/load_gme_to_bq.py`, `scripts/update_status_snapshot.py`, `scripts/verify_bq_health.py`, `tests/test_gme_paths.py`, `tests/test_status_snapshot.py`, `conductor/source-freeze.md`, `conductor/checkpoints/2026-03-08-t002-gme-raw-onboarding.md`, `ui/status_snapshot.json`, `conductor/tracks/T002-DataCollection/plan.md`, `conductor/tracks/T002-DataCollection/index.md`, `conductor/setup_state.json`
+- Verification run + result: `pytest -q tests (11 passed)`, `python3 scripts/ingest_gme_cloud.py (pass)`, `python3 scripts/load_gme_to_bq.py (pass, 699,496 rows)`, `python3 scripts/verify_bq_health.py (pass)`, `python3 scripts/update_status_snapshot.py (pass)`
+- Next exact action: Start `4.2` when another Arab/Middle Eastern raw source is available or when we choose to build the first supervisor-facing union table from the currently available raw datasets.

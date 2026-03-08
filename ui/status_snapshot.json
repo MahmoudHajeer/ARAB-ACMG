@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-08T18:27:02.643388+00:00",
+  "generated_at": "2026-03-08T18:30:45.300619+00:00",
   "project_id": "genome-services-platform",
   "tracks": [
     {
@@ -59,11 +59,11 @@
     },
     "T002": {
       "total_tasks": 23,
-      "done_tasks": 11,
-      "in_progress_tasks": 1,
+      "done_tasks": 12,
+      "in_progress_tasks": 0,
       "todo_tasks": 11,
-      "done_pct": 47.8,
-      "progress_pct": 50.0
+      "done_pct": 52.2,
+      "progress_pct": 52.2
     },
     "T003": {
       "total_tasks": 14,
@@ -160,8 +160,24 @@
   ],
   "latest_t002_verification": [
     {
-      "command": "source inspection only: gzip header read, 13 columns confirmed, 699,497 lines observed",
-      "status": "info"
+      "command": "pytest -q tests (11 passed)",
+      "status": "pass"
+    },
+    {
+      "command": "python3 scripts/ingest_gme_cloud.py (pass)",
+      "status": "pass"
+    },
+    {
+      "command": "python3 scripts/load_gme_to_bq.py (pass, 699,496 rows)",
+      "status": "pass"
+    },
+    {
+      "command": "python3 scripts/verify_bq_health.py (pass)",
+      "status": "pass"
+    },
+    {
+      "command": "python3 scripts/update_status_snapshot.py (pass)",
+      "status": "pass"
     }
   ],
   "bigquery_metrics": {
@@ -847,7 +863,7 @@
         "status": "present"
       }
     ],
-    "error": "400 Syntax error: Expected end of input but got keyword END at [1:22]; reason: invalidQuery, location: query, message: Syntax error: Expected end of input but got keyword END at [1:22]\n\nLocation: US\nJob ID: 5f51490e-4478-491f-87b5-685f72909bc0\n"
+    "error": "400 Syntax error: Expected end of input but got keyword END at [1:22]; reason: invalidQuery, location: query, message: Syntax error: Expected end of input but got keyword END at [1:22]\n\nLocation: US\nJob ID: 0a36962f-a857-4fee-8320-8595149a5ac7\n"
   },
   "gcs_metrics": {
     "bucket": "mahmoud-arab-acmg-research-data",

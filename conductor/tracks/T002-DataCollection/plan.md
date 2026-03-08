@@ -23,7 +23,7 @@
 - [ ] 3.5 dbt `source` + `stg_gnomad_*` models + dbt tests for gnomAD.
 
 ## Phase 4: Arab / Middle Eastern Frequency Sources
-- [ ] 4.1 Enumerate accessible sources (GME, Qatar Genome) and document license/access constraints. (Deferred until ClinVar + gnomAD raw freeze is complete.)
+- [x] 4.1 Enumerate accessible sources (GME, Qatar Genome) and document license/access constraints. `3a5a856` *(Accessible now: local GME hg38 raw file. Not yet accessible in workspace: Qatar Genome raw artifact.)*
 - [ ] 4.2 Persist untouched source snapshots to raw-as-is GCS vault, then load parsed working tables to `arab_acmg_raw`. (Deferred.)
 - [ ] 4.3 GE suite + checkpoint per source (required fields, AF/AN sanity, missingness).
 - [ ] 4.4 dbt `source` + `stg_*` models + dbt tests per Arab/ME source.
