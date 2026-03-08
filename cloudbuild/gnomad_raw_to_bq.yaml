@@ -1,0 +1,35 @@
+steps:
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    entrypoint: bash
+    args:
+      - -ceu
+      - |
+        set -euo pipefail
+        apt-get update >/dev/null
+        DEBIAN_FRONTEND=noninteractive apt-get install -y bcftools >/dev/null
+
+        export PROJECT_ID="${PROJECT_ID}"
+        export BUCKET="${_BUCKET}"
+        export DATASET="${_DATASET}"
+        export SNAPSHOT_DATE="${_SNAPSHOT_DATE}"
+        export COHORT="${_COHORT}"
+        export CHROM="${_CHROM}"
+        export WINDOW_BP="${_WINDOW_BP}"
+        export CLEAN_WORKING="${_CLEAN_WORKING}"
+
+        bash scripts/cloud_gnomad_raw_to_bq.sh
+
+substitutions:
+  _BUCKET: mahmoud-arab-acmg-research-data
+  _DATASET: arab_acmg_raw
+  _SNAPSHOT_DATE: '2026-03-03'
+  _COHORT: genomes
+  _CHROM: chr13
+  _WINDOW_BP: '10000000'
+  _CLEAN_WORKING: 'false'
+
+timeout: 86400s
+
+options:
+  machineType: E2_HIGHCPU_32
+  logging: CLOUD_LOGGING_ONLY

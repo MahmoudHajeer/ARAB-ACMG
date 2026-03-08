@@ -1,0 +1,9 @@
+# Source Freeze Register
+
+| Source | Source Version | Snapshot Date | Upstream URL | Raw Vault Prefix | Notes |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| clinvar | lastmod-20260302 | 2026-03-03 | https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/clinvar.vcf.gz | `gs://mahmoud-arab-acmg-research-data/raw/sources/clinvar/lastmod-20260302/snapshot_date=2026-03-03/` | last_modified=Mon, 02 Mar 2026 20:44:22 GMT; etag="b56e982-64c10a6d4c0b3" |
+| gnomad_v4.1_genomes_chr13 | 4.1 | 2026-03-03 | gs://gcp-public-data--gnomad/release/4.1/vcf/genomes/gnomad.genomes.v4.1.sites.chr13.vcf.bgz | `gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr13/snapshot_date=2026-03-03/` | Raw-as-is snapshot copied byte-for-byte (`.vcf.bgz` + `.tbi`) with manifest. |
+| gnomad_v4.1_genomes_chr17 | 4.1 | 2026-03-03 | gs://gcp-public-data--gnomad/release/4.1/vcf/genomes/gnomad.genomes.v4.1.sites.chr17.vcf.bgz | `gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr17/snapshot_date=2026-03-03/` | Raw-as-is snapshot copied byte-for-byte (`.vcf.bgz` + `.tbi`) with manifest. |
+| gnomad_v4.1_exomes_chr13 | 4.1 | 2026-03-03 | gs://gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr13.vcf.bgz | `gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr13/snapshot_date=2026-03-03/` | Raw-as-is snapshot copied byte-for-byte (`.vcf.bgz` + `.tbi`) with manifest. |
+| gnomad_v4.1_exomes_chr17 | 4.1 | 2026-03-03 | gs://gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr17.vcf.bgz | `gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr17/snapshot_date=2026-03-03/` | Raw-as-is snapshot copied byte-for-byte (`.vcf.bgz` + `.tbi`) with manifest. |

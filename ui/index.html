@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ARAB-ACMG Supervisor Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="bg-noise"></div>
+  <main class="layout">
+    <header class="hero">
+      <p class="kicker">ARAB-ACMG / Supervisor View</p>
+      <h1>Conductor Progress and Runtime Truth</h1>
+      <p class="sub">
+        Live summary of tracks, tasks, cloud artifacts, and local execution outcomes.
+      </p>
+      <p id="generated-at" class="generated-at">Loading snapshot...</p>
+    </header>
+
+    <section class="panel">
+      <h2>Track Status Overview</h2>
+      <div id="status-cards" class="status-cards"></div>
+      <div id="track-grid" class="track-grid"></div>
+    </section>
+
+    <section class="panel two-col">
+      <div>
+        <h2>Latest T002 Execution</h2>
+        <div id="runtime-results" class="runtime-results"></div>
+      </div>
+      <div>
+        <h2>BigQuery Raw Metrics</h2>
+        <div id="bq-metrics" class="metric-stack"></div>
+      </div>
+    </section>
+
+    <section class="panel two-col">
+      <div>
+        <h2>GCS Raw Artifacts</h2>
+        <div id="gcs-metrics" class="metric-stack"></div>
+      </div>
+      <div>
+        <h2>Data Collection Roadmap (T002 Input)</h2>
+        <div id="roadmap-phases" class="roadmap-phases"></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Raw Dataset Samples</h2>
+      <p class="panel-note">
+        Fixed preview of 10 rows from each raw dataset. The `info` field is truncated in the UI for readability.
+      </p>
+      <div id="bq-samples" class="sample-stack"></div>
+    </section>
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>
