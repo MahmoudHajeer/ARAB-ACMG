@@ -6,21 +6,21 @@
 - [x] 1.3 Define GCS raw-as-is vault layout: `raw/sources/<source>/<version>/snapshot_date=<YYYY-MM-DD>/...`.
 - [x] 1.4 Define provenance manifests (minimum fields + checksum policy) for every raw artifact.
 - [x] 1.5 Create Great Expectations project scaffolding (suites + checkpoints + Data Docs path on GCS).
-- [ ] 1.6 Create dbt project scaffolding for BigQuery (sources + staging models + baseline tests).
+- [x] 1.6 Create dbt project scaffolding for BigQuery (sources + staging models + baseline tests). `e040d66`
 
 ## Phase 2: ClinVar (Classification Layer)
 - [x] 2.1 Decide ingestion route (NCBI bulk VCF) and record `source_version`/`snapshot_date`.
 - [x] 2.2 Persist untouched ClinVar files in raw-as-is GCS vault with checksum/provenance.
 - [x] 2.3 Create BigQuery raw table(s) for raw-as-is ClinVar in `arab_acmg_raw`.
-- [ ] 2.4 GE suite + checkpoint for ClinVar raw tables (required fields, key sanity, counts).
-- [ ] 2.5 dbt `source` + `stg_clinvar_*` models + dbt tests for ClinVar.
+- [x] 2.4 GE suite + checkpoint for ClinVar raw tables (required fields, key sanity, counts). `e040d66`
+- [x] 2.5 dbt `source` + `stg_clinvar_*` models + dbt tests for ClinVar. `e040d66`
 
 ## Phase 3: gnomAD (Global + Ancestry Frequencies)
 - [x] 3.1 Freeze the exact gnomAD version (v4.1) and dataset choice (genomes + exomes).
 - [x] 3.2 Persist untouched gnomAD source files in raw-as-is GCS vault for required chromosomes only (`chr13`,`chr17`) before any subset extraction.
 - [x] 3.3 Load raw-as-is required chromosome datasets to `arab_acmg_raw` (genomes/exomes, chr13/chr17), then perform subset extraction in later steps. `f8b5351`
-- [ ] 3.4 GE suite + checkpoint for gnomAD raw tables (AF range, AN sanity, duplicates).
-- [ ] 3.5 dbt `source` + `stg_gnomad_*` models + dbt tests for gnomAD.
+- [x] 3.4 GE suite + checkpoint for gnomAD raw tables (AF range, AN sanity, duplicates). `e040d66` *(Checkpoint runs against raw-derived dbt staging views because direct Great Expectations query-asset reflection on the largest raw tables exceeds BigQuery response-size limits.)*
+- [x] 3.5 dbt `source` + `stg_gnomad_*` models + dbt tests for gnomAD. `e040d66`
 
 ## Phase 4: Arab / Middle Eastern Frequency Sources
 - [x] 4.1 Enumerate accessible sources (GME, Qatar Genome) and document license/access constraints. `3a5a856` *(Accessible now: local GME hg38 raw file. Not yet accessible in workspace: Qatar Genome raw artifact.)*
