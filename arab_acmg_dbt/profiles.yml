@@ -1,15 +1,12 @@
-# [AI-Agent: Gemini 2.0 Flash]: dbt Profile for ARAB-ACMG Research.
-# Configured for BigQuery in the europe-west1 region.
-
 arab_acmg_profile:
   target: dev
   outputs:
     dev:
       type: bigquery
       method: oauth
-      project: genome-services-platform
-      dataset: arab_acmg_raw # [AI-Agent: Gemini 2.0 Flash]: Default dataset, overridden in project config.
+      project: "{{ env_var('DBT_BIGQUERY_PROJECT', 'genome-services-platform') }}"
+      dataset: "{{ env_var('DBT_BIGQUERY_DATASET', 'arab_acmg_raw') }}"
       threads: 4
       timeout_seconds: 300
-      location: europe-west1
+      location: "{{ env_var('DBT_BIGQUERY_LOCATION', 'US') }}"
       priority: interactive

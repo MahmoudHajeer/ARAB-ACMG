@@ -28,6 +28,9 @@ dependencies:
   - pip
   - pip:
     - dask[complete]
+    - dbt-bigquery
     - fastapi
+    - great-expectations
     - uvicorn
     - httpx
+    - sqlalchemy-bigquery

@@ -1,0 +1,155 @@
+version: 2
+
+models:
+  - name: stg_gnomad_genomes_variants
+    description: "gnomAD v4.1 genomes staging view for chr13 and chr17 with allele-level parsing of the INFO payload."
+    columns:
+      - name: record_key
+        data_tests:
+          - not_null
+          - unique
+      - name: variant_key
+        data_tests:
+          - not_null
+      - name: cohort
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['genomes']
+      - name: source_version
+        data_tests:
+          - not_null
+      - name: snapshot_date
+        data_tests:
+          - not_null
+      - name: chrom_norm
+        data_tests:
+          - not_null
+      - name: pos
+        data_tests:
+          - not_null
+          - positive_when_present
+      - name: ref
+        data_tests:
+          - not_null
+      - name: alt
+        data_tests:
+          - not_null
+      - name: ac
+        data_tests:
+          - not_null
+          - non_negative_when_present
+      - name: an
+        data_tests:
+          - not_null
+          - positive_when_present
+      - name: af
+        data_tests:
+          - value_between:
+              arguments:
+                min_value: 0
+                max_value: 1
+      - name: grpmax_faf95
+        description: "gnomAD faf95 field used as the current grpmax FAF proxy in the raw INFO payload."
+        data_tests:
+          - value_between:
+              arguments:
+                min_value: 0
+                max_value: 1
+      - name: depth
+        data_tests:
+          - non_negative_when_present
+      - name: ac_afr
+        data_tests:
+          - non_negative_when_present
+      - name: af_afr
+        data_tests:
+          - value_between:
+              arguments:
+                min_value: 0
+                max_value: 1
+      - name: ac_eur_proxy
+        data_tests:
+          - non_negative_when_present
+      - name: af_eur_proxy
+        data_tests:
+          - value_between:
+              arguments:
+                min_value: 0
+                max_value: 1
+
+  - name: stg_gnomad_exomes_variants
+    description: "gnomAD v4.1 exomes staging view for chr13 and chr17 with allele-level parsing of the INFO payload."
+    columns:
+      - name: record_key
+        data_tests:
+          - not_null
+          - unique
+      - name: variant_key
+        data_tests:
+          - not_null
+      - name: cohort
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['exomes']
+      - name: source_version
+        data_tests:
+          - not_null
+      - name: snapshot_date
+        data_tests:
+          - not_null
+      - name: chrom_norm
+        data_tests:
+          - not_null
+      - name: pos
+        data_tests:
+          - not_null
+          - positive_when_present
+      - name: ref
+        data_tests:
+          - not_null
+      - name: alt
+        data_tests:
+          - not_null
+      - name: ac
+        data_tests:
+          - not_null
+          - non_negative_when_present
+      - name: an
+        data_tests:
+          - not_null
+          - positive_when_present
+      - name: af
+        data_tests:
+          - value_between:
+              arguments:
+                min_value: 0
+                max_value: 1
+      - name: grpmax_faf95
+        data_tests:
+          - value_between:
+              arguments:
+                min_value: 0
+                max_value: 1
+      - name: depth
+        data_tests:
+          - non_negative_when_present
+      - name: ac_afr
+        data_tests:
+          - non_negative_when_present
+      - name: af_afr
+        data_tests:
+          - value_between:
+              arguments:
+                min_value: 0
+                max_value: 1
+      - name: ac_eur_proxy
+        data_tests:
+          - non_negative_when_present
+      - name: af_eur_proxy
+        data_tests:
+          - value_between:
+              arguments:
+                min_value: 0
+                max_value: 1

@@ -1,27 +1,32 @@
-# [AI-Agent: Gemini 2.0 Flash]: dbt Source Definition for ClinVar.
-# Configured for the raw data layer in BigQuery.
-
 version: 2
 
 sources:
   - name: clinvar_raw
+    description: "Frozen ClinVar GRCh38 raw VCF table captured on 2026-03-03."
     project: genome-services-platform
     dataset: arab_acmg_raw
     tables:
-      - name: clinvar
-        description: "Bulk ClinVar variants filtered for BRCA1/2 subset."
+      - name: clinvar_raw_vcf
+        description: "Untouched ClinVar rows loaded into BigQuery with the standard raw VCF column layout."
         columns:
           - name: chrom
-            description: "Genomic chromosome (source representation)."
-            tests:
+            description: "Source chromosome string from the raw VCF."
+            data_tests:
               - not_null
           - name: pos
-            description: "Genomic position (1-based)."
-            tests:
+            description: "1-based genomic position from the raw VCF."
+            data_tests:
               - not_null
+              - positive_when_present
           - name: ref
-            tests:
+            description: "Reference allele from the raw VCF row."
+            data_tests:
               - not_null
           - name: alt
-            tests:
+            description: "Comma-delimited alternate allele payload from the raw VCF row."
+            data_tests:
+              - not_null
+          - name: info
+            description: "ClinVar INFO payload preserved as a raw semicolon-delimited string."
+            data_tests:
               - not_null

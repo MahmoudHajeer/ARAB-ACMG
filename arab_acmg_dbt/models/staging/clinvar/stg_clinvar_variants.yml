@@ -1,0 +1,44 @@
+version: 2
+
+models:
+  - name: stg_clinvar_variants
+    description: "ClinVar allele-level staging view with one row per alternate allele and typed classification fields parsed from INFO."
+    columns:
+      - name: record_key
+        description: "Stable staging-row identifier built from raw source table and canonical allele coordinates."
+        data_tests:
+          - not_null
+          - unique
+      - name: variant_key
+        description: "Canonical allele key used downstream for cross-source joins."
+        data_tests:
+          - not_null
+      - name: source_name
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['clinvar']
+      - name: source_version
+        data_tests:
+          - not_null
+      - name: snapshot_date
+        data_tests:
+          - not_null
+      - name: chrom_norm
+        description: "Chromosome without a leading chr prefix."
+        data_tests:
+          - not_null
+      - name: pos
+        data_tests:
+          - not_null
+          - positive_when_present
+      - name: ref
+        data_tests:
+          - not_null
+      - name: alt
+        data_tests:
+          - not_null
+      - name: clinvar_significance
+        description: "Raw CLNSIG token from ClinVar INFO."
+      - name: clinvar_review_status
+        description: "Raw CLNREVSTAT token from ClinVar INFO."

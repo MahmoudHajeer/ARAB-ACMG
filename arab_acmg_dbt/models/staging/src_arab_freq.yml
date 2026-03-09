@@ -1,28 +1,30 @@
-# [AI-Agent: Gemini 2.0 Flash]: dbt Source Definition for Arab Frequency Sources.
-# Configured for the raw data layer in BigQuery.
-
 version: 2
 
 sources:
   - name: arab_raw
+    description: "Arab and Middle Eastern frequency sources currently frozen into the raw layer."
     project: genome-services-platform
     dataset: arab_acmg_raw
     tables:
-      - name: gme_variome
-        description: "GME Variome variants for Arab-enriched frequency model."
+      - name: gme_hg38_raw
+        description: "Frozen GME hg38 frequency table loaded on 2026-03-08. Staging models are deferred to Phase 4."
         columns:
           - name: chrom
-            tests:
+            data_tests:
               - not_null
-          - name: pos
-            tests:
+          - name: start
+            data_tests:
               - not_null
-          - name: AF
-            tests:
+              - positive_when_present
+          - name: ref
+            data_tests:
               - not_null
-      - name: qatar_genome
-        description: "Qatar Genome Program variants (placeholder)."
-        columns:
-          - name: chrom
-            tests:
+          - name: alt
+            data_tests:
               - not_null
+          - name: gme_af
+            data_tests:
+              - value_between:
+                  arguments:
+                    min_value: 0
+                    max_value: 1
