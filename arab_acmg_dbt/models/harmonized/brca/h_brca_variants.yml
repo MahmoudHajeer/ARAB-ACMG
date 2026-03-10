@@ -1,0 +1,168 @@
+version: 2
+
+models:
+  - name: h_brca_gene_windows
+    description: "Authoritative BRCA1/BRCA2 GRCh38 windows used for harmonized extraction."
+    columns:
+      - name: gene_symbol
+        data_tests:
+          - not_null
+          - unique
+          - accepted_values:
+              arguments:
+                values: ['BRCA1', 'BRCA2']
+      - name: chrom38
+        data_tests:
+          - not_null
+      - name: start_pos38
+        data_tests:
+          - not_null
+          - positive_when_present
+      - name: end_pos38
+        data_tests:
+          - not_null
+          - positive_when_present
+      - name: accessed_at
+        data_tests:
+          - not_null
+
+  - name: h_brca_clinvar_variants
+    description: "ClinVar BRCA1/BRCA2 alleles harmonized to one row per canonical variant key."
+    columns:
+      - name: variant_key
+        data_tests:
+          - not_null
+          - unique
+      - name: gene_symbol
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['BRCA1', 'BRCA2']
+      - name: chrom38
+        data_tests:
+          - not_null
+      - name: pos38
+        data_tests:
+          - not_null
+          - positive_when_present
+      - name: liftover_status
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['not_needed', 'success', 'failed']
+      - name: norm_status
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['success', 'failed']
+
+  - name: h_brca_gnomad_genomes_variants
+    description: "gnomAD genomes BRCA1/BRCA2 alleles harmonized to one row per canonical variant key."
+    columns:
+      - name: variant_key
+        data_tests:
+          - not_null
+          - unique
+      - name: gene_symbol
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['BRCA1', 'BRCA2']
+      - name: pos38
+        data_tests:
+          - not_null
+          - positive_when_present
+      - name: an
+        data_tests:
+          - positive_when_present
+      - name: af
+        data_tests:
+          - value_between:
+              arguments:
+                min_value: 0
+                max_value: 1
+      - name: liftover_status
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['not_needed', 'success', 'failed']
+      - name: norm_status
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['success', 'failed']
+
+  - name: h_brca_gnomad_exomes_variants
+    description: "gnomAD exomes BRCA1/BRCA2 alleles harmonized to one row per canonical variant key."
+    columns:
+      - name: variant_key
+        data_tests:
+          - not_null
+          - unique
+      - name: gene_symbol
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['BRCA1', 'BRCA2']
+      - name: pos38
+        data_tests:
+          - not_null
+          - positive_when_present
+      - name: an
+        data_tests:
+          - positive_when_present
+      - name: af
+        data_tests:
+          - value_between:
+              arguments:
+                min_value: 0
+                max_value: 1
+      - name: liftover_status
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['not_needed', 'success', 'failed']
+      - name: norm_status
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['success', 'failed']
+
+  - name: h_brca_gme_variants
+    description: "GME BRCA1/BRCA2 alleles harmonized to one row per canonical variant key."
+    columns:
+      - name: variant_key
+        data_tests:
+          - not_null
+          - unique
+      - name: gene_symbol
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['BRCA1', 'BRCA2']
+      - name: pos38
+        data_tests:
+          - not_null
+          - positive_when_present
+      - name: gme_af
+        data_tests:
+          - value_between:
+              arguments:
+                min_value: 0
+                max_value: 1
+      - name: liftover_status
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['not_needed', 'success', 'failed']
+      - name: norm_status
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['success', 'failed']

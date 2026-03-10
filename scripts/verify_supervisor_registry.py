@@ -1,4 +1,4 @@
-"""Verify the supervisor registry table and public dataset access."""
+"""Verify the BRCA supervisor registry table and public dataset access."""
 
 from __future__ import annotations
 
@@ -26,7 +26,7 @@ def main() -> None:
     client = bigquery.Client(project=PROJECT_ID)
     ok = True
 
-    print("--- Supervisor Registry Verification ---")
+    print("--- BRCA Supervisor Registry Verification ---")
     try:
         table = client.get_table(REGISTRY_TABLE_REF)
         print(f"registry_table={REGISTRY_TABLE_REF} rows={table.num_rows}")

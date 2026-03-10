@@ -1,4 +1,4 @@
-"""Materialize the first supervisor-facing registry table in BigQuery."""
+"""Materialize the BRCA-focused supervisor registry table in BigQuery."""
 
 from __future__ import annotations
 
@@ -21,7 +21,7 @@ def main() -> None:
     client = bigquery.Client(project=PROJECT_ID)
     sql = build_registry_sql()
 
-    print(f"--- [Supervisor Registry Stage 1]: Building {REGISTRY_TABLE_REF} ---")
+    print(f"--- [Supervisor Registry Stage 1]: Building BRCA registry {REGISTRY_TABLE_REF} ---")
     try:
         # [AI-Agent: Codex]: Run one explicit CREATE OR REPLACE TABLE query so the
         # UI and downstream users can inspect a single authoritative SQL statement.
@@ -32,8 +32,8 @@ def main() -> None:
         print(f"❌ [Stage 1 Effect]: Registry build failed. Error: {exc}")
         sys.exit(1)
 
-    print(f"✅ [Stage 1 Effect]: Registry table ready with {table.num_rows} rows.")
-    print("🎉 [Final Effect]: supervisor_variant_registry_v1 is ready for supervisor review.")
+    print(f"✅ [Stage 1 Effect]: BRCA registry table ready with {table.num_rows} rows.")
+    print("🎉 [Final Effect]: supervisor_variant_registry_brca_v1 is ready for supervisor review.")
 
 
 if __name__ == "__main__":

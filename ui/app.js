@@ -92,74 +92,6 @@ function renderRuntimeResults(results) {
     .join("");
 }
 
-function renderBigQueryMetrics(metrics) {
-  const root = document.getElementById("bq-metrics");
-  if (metrics.error) {
-    root.innerHTML = `<article class="metric-item"><div class="metric-title">BigQuery Error</div><div class="metric-sub">${escapeHtml(metrics.error)}</div></article>`;
-    return;
-  }
-
-  const maxRows = Math.max(...metrics.tables.map((row) => row.rows), 1);
-  root.innerHTML = metrics.tables
-    .map((table) => {
-      const width = (table.rows / maxRows) * 100;
-      const fields = table.fields.join(", ");
-      const statusNote = table.status === "missing" ? "status: missing (not loaded yet)" : "status: present";
-      return `
-        <article class="metric-item">
-          <div class="metric-title">${table.table}</div>
-          <div class="metric-sub">rows: ${table.rows.toLocaleString()}</div>
-          <div class="metric-sub">${statusNote}</div>
-          <div class="metric-sub">fields: ${escapeHtml(fields || "n/a")}</div>
-          <div class="bar-inline"><span style="width: ${width}%"></span></div>
-        </article>
-      `;
-    })
-    .join("");
-}
-
-function renderGcsMetrics(metrics) {
-  const root = document.getElementById("gcs-metrics");
-  if (metrics.error) {
-    root.innerHTML = `<article class="metric-item"><div class="metric-title">GCS Error</div><div class="metric-sub">${escapeHtml(metrics.error)}</div></article>`;
-    return;
-  }
-
-  const maxCount = Math.max(...metrics.prefixes.map((row) => row.count), 1);
-  root.innerHTML = metrics.prefixes
-    .map((entry) => {
-      const width = (entry.count / maxCount) * 100;
-      const samples = entry.sample_paths.length
-        ? entry.sample_paths.map((path) => `<div>${escapeHtml(path)}</div>`).join("")
-        : "<div>(no objects)</div>";
-
-      return `
-        <article class="metric-item">
-          <div class="metric-title">${entry.prefix}</div>
-          <div class="metric-sub">objects: ${entry.count}</div>
-          <div class="bar-inline"><span style="width: ${width}%"></span></div>
-          <div class="metric-sub">${samples}</div>
-        </article>
-      `;
-    })
-    .join("");
-}
-
-function renderPublicDatasets(payload) {
-  const root = document.getElementById("public-datasets");
-  root.innerHTML = payload.datasets
-    .map(
-      (entry) => `
-      <article class="metric-item">
-        <div class="metric-title">${entry.dataset_id}</div>
-        <div class="metric-sub">public read: ${entry.is_public ? "true" : "false"}</div>
-        <div class="metric-sub">${escapeHtml(entry.access_entries.map((row) => `${row.role}:${row.entity_id}`).join(", "))}</div>
-      </article>
-    `
-    )
-    .join("");
-}
-
 function renderGlossary(columns) {
   return `
     <div class="glossary-grid">
@@ -174,6 +106,35 @@ function renderGlossary(columns) {
         )
         .join("")}
     </div>
+  `;
+}
+
+function renderScientificMetrics(metrics) {
+  const windows = metrics.gene_windows || [];
+  const clinvarAudit = metrics.clinvar_gene_audit || [];
+  const sourceCounts = metrics.source_row_counts || [];
+
+  return `
+    <details class="details-card" open>
+      <summary>Live scientific evidence</summary>
+      <div class="note-stack">
+        ${windows
+          .map(
+            (row) => `<div class="note-item">${row.gene_symbol}: ${row.chrom38}:${row.start_pos38}-${row.end_pos38} | source ${row.coordinate_source} | url ${row.coordinate_source_url} | accessed ${row.accessed_at}</div>`
+          )
+          .join("")}
+        ${clinvarAudit
+          .map(
+            (row) => `<div class="note-item">ClinVar ${row.gene_symbol}: ${Number(row.gene_info_mismatch_rows || 0).toLocaleString()} gene-label mismatches inside ${Number(row.clinvar_window_rows || 0).toLocaleString()} harmonized window rows, and ${Number(row.gene_label_outside_window_rows || 0).toLocaleString()} BRCA-labeled rows outside the strict Ensembl window in staging.</div>`
+          )
+          .join("")}
+        ${sourceCounts
+          .map(
+            (row) => `<div class="note-item">${row.source_name}: ${Number(row.row_count || 0).toLocaleString()} harmonized BRCA rows.</div>`
+          )
+          .join("")}
+      </div>
+    </details>
   `;
 }
 
@@ -201,10 +162,12 @@ function renderQueryResult(targetId, payload) {
     .join("");
 
   root.innerHTML = `
-    <div class="query-meta">
-      <div class="query-meta-title">Query used</div>
-      <pre class="sql-box">${escapeHtml(payload.query_sql)}</pre>
-    </div>
+    <details class="details-card">
+      <summary>Query used</summary>
+      <div class="query-meta">
+        <pre class="sql-box">${escapeHtml(payload.query_sql)}</pre>
+      </div>
+    </details>
     <div class="sample-table-wrap">
       <table class="sample-table live-table">
         <thead><tr>${head}</tr></thead>
@@ -234,13 +197,19 @@ function renderDatasetExplorer(payload) {
             <div class="metric-sub">${entry.table_ref}</div>
             <div class="metric-sub">row count: ${(entry.row_count || 0).toLocaleString()}</div>
           </div>
-          <button class="action-button" data-dataset-sample="${entry.key}">Fetch 50 random rows</button>
+          <button class="action-button" data-dataset-sample="${entry.key}">Fetch 10 random rows</button>
         </div>
         <p class="card-summary">${entry.simple_summary}</p>
-        <div class="note-stack">
-          ${entry.notes.map((note) => `<div class="note-item">${note}</div>`).join("")}
-        </div>
-        ${renderGlossary(entry.columns)}
+        <details class="details-card">
+          <summary>How this source was extracted</summary>
+          <div class="note-stack">
+            ${entry.notes.map((note) => `<div class="note-item">${note}</div>`).join("")}
+          </div>
+        </details>
+        <details class="details-card">
+          <summary>Column glossary</summary>
+          ${renderGlossary(entry.columns)}
+        </details>
         <div id="dataset-sample-${entry.key}" class="query-result"></div>
       </article>
     `
@@ -270,10 +239,13 @@ function renderRegistrySteps(steps) {
       <article class="explorer-card">
         <div class="card-head">
           <div class="sample-title">${step.title}</div>
-          <button class="action-button secondary" data-step-sample="${step.id}">Run this step</button>
+          <button class="action-button secondary" data-step-sample="${step.id}">Run 10-row sample</button>
         </div>
         <p class="card-summary">${step.simple}</p>
-        <div class="metric-sub">${step.technical}</div>
+        <details class="details-card">
+          <summary>Technical note</summary>
+          <div class="metric-sub">${step.technical}</div>
+        </details>
         <div id="step-sample-${step.id}" class="query-result"></div>
       </article>
     `
@@ -306,6 +278,13 @@ function renderRegistryMeta(payload) {
       <div class="note-stack">
         ${payload.accuracy_notes.map((note) => `<div class="note-item">${note}</div>`).join("")}
       </div>
+      <details class="details-card" open>
+        <summary>Scientific explanation</summary>
+        <div class="note-stack">
+          ${payload.scientific_notes.map((note) => `<div class="note-item">${note}</div>`).join("")}
+        </div>
+      </details>
+      ${payload.scientific_metrics ? renderScientificMetrics(payload.scientific_metrics) : ""}
     </article>
   `;
 
@@ -328,9 +307,8 @@ async function main() {
   const generatedAtNode = document.getElementById("generated-at");
 
   try {
-    const [snapshot, publicDatasets, datasetsPayload, registryPayload] = await Promise.all([
+    const [snapshot, datasetsPayload, registryPayload] = await Promise.all([
       fetchJson(snapshotPath),
-      fetchJson("/api/public-datasets"),
       fetchJson("/api/datasets"),
       fetchJson("/api/registry"),
     ]);
@@ -339,9 +317,6 @@ async function main() {
     renderStatusCards(snapshot.track_status_counts);
     renderTrackGrid(snapshot);
     renderRuntimeResults(snapshot.latest_t002_verification);
-    renderBigQueryMetrics(snapshot.bigquery_metrics);
-    renderGcsMetrics(snapshot.gcs_metrics);
-    renderPublicDatasets(publicDatasets);
     renderDatasetExplorer(datasetsPayload);
     renderRegistryMeta(registryPayload);
   } catch (error) {

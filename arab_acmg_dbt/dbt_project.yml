@@ -16,6 +16,22 @@ clean-targets:
   - "target"
   - "dbt_packages"
 
+seeds:
+  arab_acmg_dbt:
+    +schema: arab_acmg_harmonized
+    brca_gene_windows_seed:
+      +column_types:
+        gene_symbol: string
+        ensembl_gene_id: string
+        chrom38: string
+        chrom_nochr: string
+        start_pos38: int64
+        end_pos38: int64
+        coordinate_source: string
+        coordinate_source_url: string
+        accessed_at: date
+        coordinate_note: string
+
 models:
   arab_acmg_dbt:
     +persist_docs:
@@ -23,4 +39,7 @@ models:
       columns: true
     staging:
       +materialized: view
+      +schema: arab_acmg_harmonized
+    harmonized:
+      +materialized: table
       +schema: arab_acmg_harmonized

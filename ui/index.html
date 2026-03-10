@@ -14,9 +14,9 @@
   <main class="layout">
     <header class="hero">
       <p class="kicker">ARAB-ACMG / Supervisor View</p>
-      <h1>Live evidence from raw datasets and the first joined registry</h1>
+      <h1>BRCA harmonization evidence and the supervisor registry</h1>
       <p class="sub">
-        The top half shows conductor progress and frozen raw assets. The lower half lets the supervisor pull live 50-row samples from BigQuery and inspect how the first registry table is built step by step.
+        This view now follows the BRCA1 and BRCA2 workflow only: define the gene windows, extract harmonized rows from each source, then inspect the final joined supervisor table built from `arab_acmg_harmonized`.
       </p>
       <p id="generated-at" class="generated-at">Loading snapshot...</p>
     </header>
@@ -25,57 +25,44 @@
       <h2>Track Status Overview</h2>
       <div id="status-cards" class="status-cards"></div>
       <div id="track-grid" class="track-grid"></div>
-    </section>
-
-    <section class="panel two-col">
-      <div>
-        <h2>Latest T002 Execution</h2>
-        <div id="runtime-results" class="runtime-results"></div>
-      </div>
-      <div>
-        <h2>BigQuery Raw Metrics</h2>
-        <div id="bq-metrics" class="metric-stack"></div>
-      </div>
-    </section>
-
-    <section class="panel two-col">
-      <div>
-        <h2>GCS Raw Artifacts</h2>
-        <div id="gcs-metrics" class="metric-stack"></div>
-      </div>
-      <div>
-        <h2>Public BigQuery Access</h2>
-        <p class="panel-note">The user requested the datasets themselves to be public. This panel shows the live dataset ACL state from BigQuery.</p>
-        <div id="public-datasets" class="metric-stack"></div>
-      </div>
+      <div id="runtime-results" class="runtime-results compact"></div>
     </section>
 
     <section class="panel">
-      <h2>Live Raw Dataset Explorer</h2>
+      <h2>Scientific Method</h2>
+      <div id="registry-meta" class="registry-meta"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Harmonized BRCA Source Explorer</h2>
       <p class="panel-note">
-        Each button issues a live query to BigQuery, asks for 50 random rows, and shows the exact SQL that was used. Row numbers shown here are query-result row numbers, because BigQuery tables do not store a stable physical row index.
+        Each section samples 10 live rows from the harmonized BRCA tables. Details and column glossaries stay collapsed until needed so the page stays shorter.
       </p>
       <div id="dataset-explorer" class="explorer-stack"></div>
     </section>
 
     <section class="panel">
-      <h2>How the Registry Table Is Built</h2>
+      <h2>Step-by-Step Evidence</h2>
       <p class="panel-note">
-        The build is split into small evidence steps so a supervisor can inspect the join logic before trusting the final table.
+        Each step shows one small live sample from BigQuery so the join logic can be inspected before trusting the final registry.
       </p>
       <div id="registry-steps" class="explorer-stack"></div>
     </section>
 
     <section class="panel">
       <h2>Supervisor Registry Table</h2>
-      <div id="registry-meta" class="registry-meta"></div>
-      <div id="registry-columns" class="glossary-grid"></div>
       <div class="action-row">
-        <button id="registry-sample-button" class="action-button">Fetch 50 random registry rows</button>
+        <button id="registry-sample-button" class="action-button">Fetch 10 random registry rows</button>
       </div>
       <div id="registry-sample" class="query-result"></div>
-      <h3 class="subheading">Build SQL</h3>
-      <pre id="registry-build-sql" class="sql-box"></pre>
+      <details class="details-card">
+        <summary>Column glossary</summary>
+        <div id="registry-columns" class="glossary-grid"></div>
+      </details>
+      <details class="details-card">
+        <summary>Build SQL</summary>
+        <pre id="registry-build-sql" class="sql-box"></pre>
+      </details>
     </section>
   </main>
 

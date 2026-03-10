@@ -254,6 +254,35 @@ h1 {
   margin: 10px 0;
 }
 
+.details-card {
+  margin-top: 10px;
+  border: 1px solid rgba(130, 187, 255, 0.16);
+  border-radius: 12px;
+  background: rgba(4, 15, 26, 0.42);
+  overflow: hidden;
+}
+
+.details-card summary {
+  cursor: pointer;
+  padding: 12px 14px;
+  color: var(--accent-soft);
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  list-style: none;
+}
+
+.details-card summary::-webkit-details-marker {
+  display: none;
+}
+
+.details-card[open] summary {
+  border-bottom: 1px solid rgba(130, 187, 255, 0.12);
+}
+
+.details-card > *:not(summary) {
+  padding: 0 14px 14px;
+}
+
 .note-stack {
   margin: 10px 0 12px;
 }
@@ -369,6 +398,10 @@ h1 {
   padding: 12px;
   border-radius: 12px;
   background: rgba(5, 17, 28, 0.8);
+}
+
+.compact {
+  margin-top: 14px;
 }
 
 .loading-state {
