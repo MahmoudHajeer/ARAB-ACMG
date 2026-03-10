@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-10T19:31:48.649592+00:00",
+  "generated_at": "2026-03-10T19:35:44.356546+00:00",
   "project_id": "genome-services-platform",
   "tracks": [
     {
@@ -67,11 +67,11 @@
     },
     "T003": {
       "total_tasks": 14,
-      "done_tasks": 0,
-      "in_progress_tasks": 1,
+      "done_tasks": 1,
+      "in_progress_tasks": 0,
       "todo_tasks": 13,
-      "done_pct": 0.0,
-      "progress_pct": 3.6
+      "done_pct": 7.1,
+      "progress_pct": 7.1
     },
     "T004": {
       "total_tasks": 11,
@@ -847,7 +847,7 @@
         "status": "present"
       }
     ],
-    "error": "400 Syntax error: Expected end of input but got keyword END at [1:22]; reason: invalidQuery, location: query, message: Syntax error: Expected end of input but got keyword END at [1:22]\n\nLocation: US\nJob ID: f58f949d-3cb8-43c6-8049-41af121728cf\n"
+    "error": "400 Syntax error: Expected end of input but got keyword END at [1:22]; reason: invalidQuery, location: query, message: Syntax error: Expected end of input but got keyword END at [1:22]\n\nLocation: US\nJob ID: 431c9e56-452a-4963-9073-628bfd3d042a\n"
   },
   "gcs_metrics": {
     "bucket": "mahmoud-arab-acmg-research-data",

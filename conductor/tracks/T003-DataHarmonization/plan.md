@@ -1,7 +1,7 @@
 # Implementation Plan: T003-Data Harmonization & Normalization
 
 ## Phase 1: Canonical Keys and Transform Contracts
-- [ ] 1.1 Confirm harmonized schema and `variant_key` definition per [conductor/data-contracts.md](../../data-contracts.md).
+- [x] 1.1 Confirm harmonized schema and `variant_key` definition per [conductor/data-contracts.md](../../data-contracts.md). (`e7c50e8`)
 - [ ] 1.2 Define standardized chromosome naming for GRCh38: `chr1..chr22, chrX, chrY, chrMT`.
 - [ ] 1.3 Define required transformation metadata fields (`liftover_status`, `norm_status`, tool versions).
 
@@ -25,5 +25,5 @@
 - [ ] 5.2 Publish GE Data Docs for harmonized validation runs to GCS.
 
 ---
-**Track Status**: `[ ]`
-**Checkpoint SHA**: `[checkpoint: TBA]`
+**Track Status**: `[~]`
+**Checkpoint SHA**: `[checkpoint: e7c50e8]`
