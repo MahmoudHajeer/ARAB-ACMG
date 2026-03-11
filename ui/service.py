@@ -1,38 +1,69 @@
 from __future__ import annotations
 
+import datetime as dt
 from functools import lru_cache
 from pathlib import Path
-from typing import Final
+from typing import Final, Iterable
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse, Response
 from google.cloud import bigquery
 
 try:  # pragma: no cover - import path differs between local package and Cloud Run container
-    from ui.catalog import HARMONIZED_DATASETS, dataset_catalog_payload, registry_catalog_payload
+    from ui.catalog import (
+        FINAL_STEPS,
+        HARMONIZED_DATASETS,
+        HARMONIZATION_STEPS,
+        RAW_DATASETS,
+        WORKFLOW_PAGES,
+        dataset_catalog_payload,
+        pre_gme_catalog_payload,
+        raw_dataset_catalog_payload,
+        registry_catalog_payload,
+    )
+    from ui.export_workbook import PRE_GME_EXPORT_FILENAME, build_pre_gme_workbook_bytes
     from ui.registry_queries import (
         CLINVAR_TABLE_REF,
         GENE_WINDOWS_TABLE_REF,
         GME_TABLE_REF,
         GNOMAD_EXOMES_TABLE_REF,
         GNOMAD_GENOMES_TABLE_REF,
+        PRE_GME_REGISTRY_TABLE_REF,
         REGISTRY_TABLE_REF,
-        build_sample_sql,
+        build_pre_gme_export_sql,
+        build_pre_gme_sample_sql,
+        build_raw_sample_sql,
         build_registry_sample_sql,
         build_registry_step_sql,
+        build_sample_sql,
     )
 except ModuleNotFoundError:  # pragma: no cover - runtime fallback inside the ui/ build context
-    from catalog import HARMONIZED_DATASETS, dataset_catalog_payload, registry_catalog_payload
-    from registry_queries import (
+    from catalog import (  # type: ignore[no-redef]
+        FINAL_STEPS,
+        HARMONIZED_DATASETS,
+        HARMONIZATION_STEPS,
+        RAW_DATASETS,
+        WORKFLOW_PAGES,
+        dataset_catalog_payload,
+        pre_gme_catalog_payload,
+        raw_dataset_catalog_payload,
+        registry_catalog_payload,
+    )
+    from export_workbook import PRE_GME_EXPORT_FILENAME, build_pre_gme_workbook_bytes
+    from registry_queries import (  # type: ignore[no-redef]
         CLINVAR_TABLE_REF,
         GENE_WINDOWS_TABLE_REF,
         GME_TABLE_REF,
         GNOMAD_EXOMES_TABLE_REF,
         GNOMAD_GENOMES_TABLE_REF,
+        PRE_GME_REGISTRY_TABLE_REF,
         REGISTRY_TABLE_REF,
-        build_sample_sql,
+        build_pre_gme_export_sql,
+        build_pre_gme_sample_sql,
+        build_raw_sample_sql,
         build_registry_sample_sql,
         build_registry_step_sql,
+        build_sample_sql,
     )
 
 UI_ROOT: Final[Path] = Path(__file__).resolve().parent
@@ -44,7 +75,7 @@ PUBLIC_DATASETS: Final[tuple[str, ...]] = (
 )
 DEFAULT_LIMIT: Final[int] = 10
 
-app = FastAPI(title="ARAB-ACMG Supervisor UI", version="1.0.0")
+app = FastAPI(title="ARAB-ACMG Supervisor UI", version="1.1.0")
 
 
 @lru_cache(maxsize=1)
@@ -64,6 +95,22 @@ def run_query(sql: str) -> dict[str, object]:
     for row in result:
         rows.append({column: row[column] for column in columns})
     return {"columns": columns, "rows": rows}
+
+
+def iter_query_rows(sql: str) -> tuple[list[str], Iterable[dict[str, object]]]:
+    try:
+        query_job = bigquery_client().query(sql)
+        result = query_job.result()
+    except Exception as exc:  # pragma: no cover - exercised via runtime calls
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+    columns = [field.name for field in result.schema]
+
+    def row_iter() -> Iterable[dict[str, object]]:
+        for row in result:
+            yield {column: row[column] for column in columns}
+
+    return columns, row_iter()
 
 
 def table_row_count(table_ref: str) -> int | None:
@@ -98,6 +145,13 @@ def public_dataset_status() -> list[dict[str, object]]:
             }
         )
     return payload
+
+
+def pre_gme_row_count() -> int | None:
+    try:
+        return int(bigquery_client().get_table(PRE_GME_REGISTRY_TABLE_REF).num_rows)
+    except Exception:
+        return None
 
 
 def registry_row_count() -> int | None:
@@ -145,8 +199,7 @@ SELECT
   window_audit.gene_info_mismatch_rows,
   COALESCE(outside_window.gene_label_outside_window_rows, 0) AS gene_label_outside_window_rows
 FROM window_audit
-LEFT JOIN outside_window
-  USING (gene_symbol)
+LEFT JOIN outside_window USING (gene_symbol)
 ORDER BY gene_symbol
 """.strip()
     source_sql = f"""
@@ -162,6 +215,20 @@ ORDER BY source_name
     return {
         "gene_windows": run_query(window_sql)["rows"],
         "clinvar_gene_audit": run_query(mismatch_sql)["rows"],
+        "source_row_counts": run_query(source_sql)["rows"],
+    }
+
+
+def pre_gme_metrics() -> dict[str, object]:
+    source_sql = f"""
+SELECT 'clinvar' AS source_name, COUNT(*) AS row_count FROM `{CLINVAR_TABLE_REF}`
+UNION ALL
+SELECT 'gnomad_genomes', COUNT(*) FROM `{GNOMAD_GENOMES_TABLE_REF}`
+UNION ALL
+SELECT 'gnomad_exomes', COUNT(*) FROM `{GNOMAD_EXOMES_TABLE_REF}`
+ORDER BY source_name
+""".strip()
+    return {
         "source_row_counts": run_query(source_sql)["rows"],
     }
 
@@ -196,9 +263,44 @@ def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
+@app.get("/api/workflow")
+def workflow_meta() -> dict[str, object]:
+    return {
+        "pages": list(WORKFLOW_PAGES),
+        "harmonization_steps": list(HARMONIZATION_STEPS),
+        "final_steps": list(FINAL_STEPS),
+    }
+
+
 @app.get("/api/public-datasets")
 def public_datasets() -> dict[str, object]:
     return {"datasets": public_dataset_status()}
+
+
+@app.get("/api/raw-datasets")
+def raw_datasets() -> dict[str, object]:
+    payload = raw_dataset_catalog_payload()
+    for entry in payload:
+        entry["row_count"] = table_row_count(str(entry["table_ref"]))
+    return {"datasets": payload}
+
+
+@app.get("/api/raw-datasets/{dataset_key}/sample")
+def raw_dataset_sample(dataset_key: str, limit: int = DEFAULT_LIMIT) -> dict[str, object]:
+    entry = RAW_DATASETS.get(dataset_key)
+    if entry is None:
+        raise HTTPException(status_code=404, detail=f"Unknown raw dataset: {dataset_key}")
+
+    sql = build_raw_sample_sql(entry.table_ref, sample_percent=entry.sample_percent, limit=limit)
+    result = run_query(sql)
+    return {
+        "dataset_key": dataset_key,
+        "title": entry.title,
+        "table_ref": entry.table_ref,
+        "query_sql": sql,
+        "columns": result["columns"],
+        "rows": result["rows"],
+    }
 
 
 @app.get("/api/datasets")
@@ -225,6 +327,43 @@ def dataset_sample(dataset_key: str, limit: int = DEFAULT_LIMIT) -> dict[str, ob
         "columns": result["columns"],
         "rows": result["rows"],
     }
+
+
+@app.get("/api/pre-gme")
+def pre_gme_metadata() -> dict[str, object]:
+    payload = pre_gme_catalog_payload()
+    payload["row_count"] = pre_gme_row_count()
+    payload["scientific_metrics"] = pre_gme_metrics()
+    payload["download_url"] = "/api/exports/pre-gme.xlsx"
+    return payload
+
+
+@app.get("/api/pre-gme/sample")
+def pre_gme_sample(limit: int = DEFAULT_LIMIT) -> dict[str, object]:
+    sql = build_pre_gme_sample_sql(limit=limit)
+    result = run_query(sql)
+    return {
+        "table_ref": PRE_GME_REGISTRY_TABLE_REF,
+        "query_sql": sql,
+        "columns": result["columns"],
+        "rows": result["rows"],
+    }
+
+
+@app.get("/api/exports/pre-gme.xlsx")
+def pre_gme_export() -> Response:
+    sql = build_pre_gme_export_sql()
+    _, rows = iter_query_rows(sql)
+    timestamp = dt.datetime.now(dt.UTC).strftime("%d/%m/%Y %H:%M")
+    workbook_bytes = build_pre_gme_workbook_bytes(rows, created_at=timestamp)
+    headers = {
+        "Content-Disposition": f'attachment; filename="{PRE_GME_EXPORT_FILENAME}"',
+    }
+    return Response(
+        content=workbook_bytes,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers=headers,
+    )
 
 
 @app.get("/api/registry")

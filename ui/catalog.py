@@ -4,24 +4,46 @@ from dataclasses import dataclass
 from typing import Final
 
 try:  # pragma: no cover - import path differs between local package and Cloud Run container
+    from ui.export_workbook import PRE_GME_EXPORT_FILENAME, export_header_columns, export_metadata_lines
     from ui.registry_queries import (
+        CLINVAR_RAW_TABLE_REF,
         CLINVAR_TABLE_REF,
+        FINAL_REGISTRY_TABLE,
         GENE_WINDOWS_TABLE_REF,
+        GME_RAW_TABLE_REF,
         GME_TABLE_REF,
+        GNOMAD_EXOMES_CHR13_RAW_TABLE_REF,
+        GNOMAD_EXOMES_CHR17_RAW_TABLE_REF,
         GNOMAD_EXOMES_TABLE_REF,
+        GNOMAD_GENOMES_CHR13_RAW_TABLE_REF,
+        GNOMAD_GENOMES_CHR17_RAW_TABLE_REF,
         GNOMAD_GENOMES_TABLE_REF,
+        PRE_GME_REGISTRY_TABLE,
+        PRE_GME_REGISTRY_TABLE_REF,
         REGISTRY_TABLE_REF,
-        build_registry_sql,
+        build_final_registry_sql,
+        build_pre_gme_registry_sql,
     )
 except ModuleNotFoundError:  # pragma: no cover - runtime fallback inside the ui/ build context
+    from export_workbook import PRE_GME_EXPORT_FILENAME, export_header_columns, export_metadata_lines
     from registry_queries import (  # type: ignore[no-redef]
+        CLINVAR_RAW_TABLE_REF,
         CLINVAR_TABLE_REF,
+        FINAL_REGISTRY_TABLE,
         GENE_WINDOWS_TABLE_REF,
+        GME_RAW_TABLE_REF,
         GME_TABLE_REF,
+        GNOMAD_EXOMES_CHR13_RAW_TABLE_REF,
+        GNOMAD_EXOMES_CHR17_RAW_TABLE_REF,
         GNOMAD_EXOMES_TABLE_REF,
+        GNOMAD_GENOMES_CHR13_RAW_TABLE_REF,
+        GNOMAD_GENOMES_CHR17_RAW_TABLE_REF,
         GNOMAD_GENOMES_TABLE_REF,
+        PRE_GME_REGISTRY_TABLE,
+        PRE_GME_REGISTRY_TABLE_REF,
         REGISTRY_TABLE_REF,
-        build_registry_sql,
+        build_final_registry_sql,
+        build_pre_gme_registry_sql,
     )
 
 
@@ -35,6 +57,168 @@ class DatasetCatalogEntry:
     notes: tuple[str, ...]
     columns: tuple[tuple[str, str], ...]
 
+
+WORKFLOW_PAGES: Final[tuple[dict[str, str], ...]] = (
+    {
+        "id": "overview",
+        "title": "Overview",
+        "summary": "Track progress and workflow navigation for the supervisor.",
+    },
+    {
+        "id": "raw",
+        "title": "Raw Sources",
+        "summary": "Untouched upstream tables as frozen in BigQuery before harmonization.",
+    },
+    {
+        "id": "harmonization",
+        "title": "Harmonization",
+        "summary": "BRCA gene-window rules and source-specific harmonized tables.",
+    },
+    {
+        "id": "pre-gme",
+        "title": "Pre-GME Review",
+        "summary": "Supervisor review checkpoint after ClinVar + gnomAD integration and before adding GME.",
+    },
+    {
+        "id": "final",
+        "title": "Final Registry",
+        "summary": "Final BRCA registry after adding GME evidence to the harmonized integration.",
+    },
+)
+
+RAW_DATASETS: Final[dict[str, DatasetCatalogEntry]] = {
+    "clinvar_raw_vcf": DatasetCatalogEntry(
+        key="clinvar_raw_vcf",
+        title="ClinVar raw VCF table",
+        table_ref=CLINVAR_RAW_TABLE_REF,
+        sample_percent=0.8,
+        simple_summary="Untouched ClinVar raw rows loaded into BigQuery before any BRCA-specific extraction or harmonization.",
+        notes=(
+            "This table stays raw-as-is with the original VCF slots: CHROM, POS, ID, REF, ALT, QUAL, FILTER, INFO.",
+            "Scientific interpretation happens later in staging and harmonization. This page exists to prove the untouched upstream structure.",
+        ),
+        columns=(
+            ("chrom", "Original chromosome label from the raw ClinVar VCF row."),
+            ("pos", "Original VCF POS value."),
+            ("id", "Original ClinVar VCF identifier field."),
+            ("ref", "Original VCF reference allele."),
+            ("alt", "Original VCF alternate allele string."),
+            ("qual", "Original VCF QUAL field."),
+            ("filter", "Original VCF FILTER field."),
+            ("info", "Original VCF INFO payload before staging extraction."),
+        ),
+    ),
+    "gnomad_v4_1_genomes_chr13_raw": DatasetCatalogEntry(
+        key="gnomad_v4_1_genomes_chr13_raw",
+        title="gnomAD genomes chr13 raw",
+        table_ref=GNOMAD_GENOMES_CHR13_RAW_TABLE_REF,
+        sample_percent=0.02,
+        simple_summary="Untouched gnomAD genomes chr13 rows as frozen from the v4.1 source file.",
+        notes=(
+            "This is the raw-as-is genomes stream for chr13, kept before any BRCA extraction or INFO parsing.",
+            "The large INFO payload is preserved intact so the supervisor can verify that derived fields come from traceable raw source tags.",
+        ),
+        columns=(
+            ("chrom", "Original chromosome label from the gnomAD raw VCF row."),
+            ("pos", "Original VCF POS value."),
+            ("id", "Original gnomAD ID field."),
+            ("ref", "Original VCF reference allele."),
+            ("alt", "Original VCF alternate allele string."),
+            ("qual", "Original VCF QUAL field."),
+            ("filter", "Original VCF FILTER field."),
+            ("info", "Original VCF INFO payload before parsing into AC/AN/AF and cohort metrics."),
+        ),
+    ),
+    "gnomad_v4_1_genomes_chr17_raw": DatasetCatalogEntry(
+        key="gnomad_v4_1_genomes_chr17_raw",
+        title="gnomAD genomes chr17 raw",
+        table_ref=GNOMAD_GENOMES_CHR17_RAW_TABLE_REF,
+        sample_percent=0.02,
+        simple_summary="Untouched gnomAD genomes chr17 rows as frozen from the v4.1 source file.",
+        notes=(
+            "This is the raw-as-is genomes stream for chr17, which includes the BRCA1 locus.",
+            "No harmonization or BRCA-specific filtering has happened yet on this page.",
+        ),
+        columns=(
+            ("chrom", "Original chromosome label from the gnomAD raw VCF row."),
+            ("pos", "Original VCF POS value."),
+            ("id", "Original gnomAD ID field."),
+            ("ref", "Original VCF reference allele."),
+            ("alt", "Original VCF alternate allele string."),
+            ("qual", "Original VCF QUAL field."),
+            ("filter", "Original VCF FILTER field."),
+            ("info", "Original VCF INFO payload before parsing into cohort metrics."),
+        ),
+    ),
+    "gnomad_v4_1_exomes_chr13_raw": DatasetCatalogEntry(
+        key="gnomad_v4_1_exomes_chr13_raw",
+        title="gnomAD exomes chr13 raw",
+        table_ref=GNOMAD_EXOMES_CHR13_RAW_TABLE_REF,
+        sample_percent=0.08,
+        simple_summary="Untouched gnomAD exomes chr13 rows as frozen from the v4.1 source file.",
+        notes=(
+            "Exomes and genomes are kept separate at the raw layer because they represent different upstream cohorts.",
+            "This page proves that any later cohort-specific interpretation started from separate untouched inputs.",
+        ),
+        columns=(
+            ("chrom", "Original chromosome label from the gnomAD raw VCF row."),
+            ("pos", "Original VCF POS value."),
+            ("id", "Original gnomAD ID field."),
+            ("ref", "Original VCF reference allele."),
+            ("alt", "Original VCF alternate allele string."),
+            ("qual", "Original VCF QUAL field."),
+            ("filter", "Original VCF FILTER field."),
+            ("info", "Original VCF INFO payload before parsing into exome cohort metrics."),
+        ),
+    ),
+    "gnomad_v4_1_exomes_chr17_raw": DatasetCatalogEntry(
+        key="gnomad_v4_1_exomes_chr17_raw",
+        title="gnomAD exomes chr17 raw",
+        table_ref=GNOMAD_EXOMES_CHR17_RAW_TABLE_REF,
+        sample_percent=0.05,
+        simple_summary="Untouched gnomAD exomes chr17 rows as frozen from the v4.1 source file.",
+        notes=(
+            "This raw table covers the BRCA1 chromosome in the exome cohort before any staging or harmonization.",
+            "The raw page stays intentionally simple so source provenance remains obvious.",
+        ),
+        columns=(
+            ("chrom", "Original chromosome label from the gnomAD raw VCF row."),
+            ("pos", "Original VCF POS value."),
+            ("id", "Original gnomAD ID field."),
+            ("ref", "Original VCF reference allele."),
+            ("alt", "Original VCF alternate allele string."),
+            ("qual", "Original VCF QUAL field."),
+            ("filter", "Original VCF FILTER field."),
+            ("info", "Original VCF INFO payload before parsing into exome cohort metrics."),
+        ),
+    ),
+    "gme_hg38_raw": DatasetCatalogEntry(
+        key="gme_hg38_raw",
+        title="GME hg38 raw summary table",
+        table_ref=GME_RAW_TABLE_REF,
+        sample_percent=100.0,
+        simple_summary="Untouched local GME hg38 summary table loaded into BigQuery as the raw Arab/Middle Eastern source.",
+        notes=(
+            "GME arrives as a summary-frequency table, not a VCF callset, so its raw schema differs from ClinVar and gnomAD.",
+            "This raw table is displayed separately so the supervisor can see exactly what was added when the Arab-specific layer entered the workflow.",
+        ),
+        columns=(
+            ("chrom", "Chromosome label in the frozen GME source file."),
+            ("start", "1-based start coordinate in hg38."),
+            ("end", "1-based end coordinate in hg38."),
+            ("ref", "Reference allele."),
+            ("alt", "Alternate allele."),
+            ("gme_af", "Overall GME alternate-allele frequency."),
+            ("gme_nwa", "North West Africa subgroup frequency."),
+            ("gme_nea", "North East Africa subgroup frequency."),
+            ("gme_ap", "Arabian Peninsula subgroup frequency."),
+            ("gme_israel", "Israel/Jewish subgroup frequency."),
+            ("gme_sd", "Syrian Desert subgroup frequency."),
+            ("gme_tp", "Turkish Peninsula subgroup frequency."),
+            ("gme_ca", "Central Asia subgroup frequency."),
+        ),
+    ),
+}
 
 HARMONIZED_DATASETS: Final[dict[str, DatasetCatalogEntry]] = {
     "h_brca_gene_windows": DatasetCatalogEntry(
@@ -208,18 +392,17 @@ HARMONIZED_DATASETS: Final[dict[str, DatasetCatalogEntry]] = {
     ),
 }
 
-REGISTRY_COLUMNS: Final[tuple[tuple[str, str], ...]] = (
+PRE_GME_REGISTRY_COLUMNS: Final[tuple[tuple[str, str], ...]] = (
     ("gene_symbol", "BRCA target gene assigned from the harmonized gene-window table."),
     ("variant_key", "Canonical cross-source join key built as chrom:pos:ref:alt."),
-    ("chrom", "Canonical GRCh38 chromosome label used in the final join."),
-    ("pos", "Canonical GRCh38 position used in the final join."),
-    ("ref", "Canonical reference allele used in the final join."),
-    ("alt", "Canonical alternate allele used in the final join."),
+    ("chrom", "Canonical GRCh38 chromosome label used in the pre-GME review table."),
+    ("pos", "Canonical GRCh38 position used in the pre-GME review table."),
+    ("ref", "Canonical reference allele."),
+    ("alt", "Canonical alternate allele."),
     ("present_in_clinvar", "True when the harmonized ClinVar BRCA table contains the allele."),
     ("present_in_gnomad_genomes", "True when the harmonized gnomAD genomes BRCA table contains the allele."),
     ("present_in_gnomad_exomes", "True when the harmonized gnomAD exomes BRCA table contains the allele."),
-    ("present_in_gme", "True when the harmonized GME BRCA table contains the allele."),
-    ("clinvar_ids", "Distinct ClinVar IDs observed for this allele after harmonized collapse."),
+    ("clinvar_ids", "Distinct ClinVar IDs observed for this allele."),
     ("clinvar_significance_values", "Distinct ClinVar significance labels observed for this allele."),
     ("clinvar_review_status_values", "Distinct ClinVar review-status labels observed for this allele."),
     ("clinvar_record_count", "How many ClinVar harmonized rows contributed to this final allele row."),
@@ -229,8 +412,8 @@ REGISTRY_COLUMNS: Final[tuple[tuple[str, str], ...]] = (
     ("gnomad_genomes_an", "gnomAD genomes allele number."),
     ("gnomad_genomes_af", "gnomAD genomes allele frequency."),
     ("gnomad_genomes_grpmax", "gnomAD genomes population label with the highest observed frequency."),
-    ("gnomad_genomes_grpmax_faf95", "gnomAD genomes faf95 value carried into the supervisor table."),
-    ("gnomad_genomes_depth", "Depth slot from genomes staging. Null when the raw source does not expose depth."),
+    ("gnomad_genomes_grpmax_faf95", "gnomAD genomes faf95 value carried into the pre-GME review table."),
+    ("gnomad_genomes_depth", "Depth slot from genomes staging."),
     ("gnomad_genomes_ac_afr", "African-ancestry allele count from gnomAD genomes."),
     ("gnomad_genomes_af_afr", "African-ancestry allele frequency from gnomAD genomes."),
     ("gnomad_genomes_ac_eur_proxy", "Europe proxy allele count from gnomAD genomes."),
@@ -239,12 +422,18 @@ REGISTRY_COLUMNS: Final[tuple[tuple[str, str], ...]] = (
     ("gnomad_exomes_an", "gnomAD exomes allele number."),
     ("gnomad_exomes_af", "gnomAD exomes allele frequency."),
     ("gnomad_exomes_grpmax", "gnomAD exomes population label with the highest observed frequency."),
-    ("gnomad_exomes_grpmax_faf95", "gnomAD exomes faf95 value carried into the supervisor table."),
-    ("gnomad_exomes_depth", "Depth slot from exomes staging. Null when the raw source does not expose depth."),
+    ("gnomad_exomes_grpmax_faf95", "gnomAD exomes faf95 value carried into the pre-GME review table."),
+    ("gnomad_exomes_depth", "Depth slot from exomes staging."),
     ("gnomad_exomes_ac_afr", "African-ancestry allele count from gnomAD exomes."),
     ("gnomad_exomes_af_afr", "African-ancestry allele frequency from gnomAD exomes."),
     ("gnomad_exomes_ac_eur_proxy", "Europe proxy allele count from gnomAD exomes."),
     ("gnomad_exomes_af_eur_proxy", "Europe proxy allele frequency from gnomAD exomes."),
+    ("source_count", "How many non-GME source streams support the exact allele."),
+    ("last_refresh_date", "Date when the pre-GME review table was rebuilt."),
+)
+
+FINAL_REGISTRY_COLUMNS: Final[tuple[tuple[str, str], ...]] = PRE_GME_REGISTRY_COLUMNS + (
+    ("present_in_gme", "True when the harmonized GME BRCA table contains the allele."),
     ("gme_af", "Overall GME alternate-allele frequency."),
     ("gme_nwa", "North West Africa subgroup frequency from GME."),
     ("gme_nea", "North East Africa subgroup frequency from GME."),
@@ -253,90 +442,127 @@ REGISTRY_COLUMNS: Final[tuple[tuple[str, str], ...]] = (
     ("gme_sd", "Syrian Desert subgroup frequency from GME."),
     ("gme_tp", "Turkish Peninsula subgroup frequency from GME."),
     ("gme_ca", "Central Asia subgroup frequency from GME."),
-    ("source_count", "How many harmonized source streams support the exact allele."),
-    ("last_refresh_date", "Date when the BRCA supervisor registry table was rebuilt."),
 )
 
-REGISTRY_STEPS: Final[tuple[dict[str, str], ...]] = (
+HARMONIZATION_STEPS: Final[tuple[dict[str, str], ...]] = (
     {
         "id": "gene_windows",
-        "title": "Step 1: Fix the BRCA windows",
-        "simple": "First we freeze the exact GRCh38 windows for BRCA1 and BRCA2, because every source has to be sliced by the same coordinates.",
-        "technical": "The workflow uses Ensembl GRCh38 coordinates for BRCA1 and BRCA2 and stores them in a small harmonized reference table.",
+        "title": "Step 1: Freeze the BRCA windows",
+        "simple": "The workflow starts by freezing the GRCh38 BRCA1 and BRCA2 gene windows from Ensembl so every source is sliced by the same coordinates.",
+        "technical": "The gene-window table is small on purpose: it is the frozen scientific source of truth used to control all later joins and audits.",
     },
     {
         "id": "clinvar_brca",
-        "title": "Step 2: Extract ClinVar BRCA alleles",
-        "simple": "ClinVar rows are kept when they land inside the BRCA window. GENEINFO is kept as an audit signal, not as the primary cross-source rule.",
-        "technical": "Coordinate overlap is the authoritative extraction rule for cross-source joins. The live scientific-evidence panel reports current ClinVar GENEINFO agreement and disagreement counts from BigQuery rather than embedding fixed numbers in the UI.",
+        "title": "Step 2: Harmonize ClinVar into BRCA windows",
+        "simple": "ClinVar rows are kept when they land inside the BRCA window. GENEINFO remains an audit signal, not the cross-source rule.",
+        "technical": "This preserves the coordinate-first logic while keeping a live audit trail for label-vs-window disagreements.",
     },
     {
         "id": "gnomad_genomes_brca",
-        "title": "Step 3: Extract gnomAD genomes BRCA alleles",
-        "simple": "The genomes cohort is sliced by the same BRCA windows and kept as its own harmonized evidence stream.",
-        "technical": "Genome-wide sequencing covers the same GRCh38 positions as exomes; the difference is discovery breadth and cohort composition, not genomic coordinates.",
+        "title": "Step 3: Harmonize gnomAD genomes",
+        "simple": "gnomAD genomes rows are reduced to BRCA alleles inside the same frozen windows.",
+        "technical": "Genomes are kept separate because whole-genome coverage and cohort structure differ from exomes.",
     },
     {
         "id": "gnomad_exomes_brca",
-        "title": "Step 4: Extract gnomAD exomes BRCA alleles",
-        "simple": "The exomes cohort uses the same BRCA windows, but its evidence mainly reflects targeted exome capture rather than whole-genome coverage.",
-        "technical": "Positions do not shift between genomes and exomes. What changes is which alleles are observed because exomes concentrate on captured coding regions and nearby splice context.",
+        "title": "Step 4: Harmonize gnomAD exomes",
+        "simple": "gnomAD exomes rows are reduced to BRCA alleles inside the same frozen windows.",
+        "technical": "Exomes use the same coordinates but represent a different upstream capture design and cohort.",
+    },
+)
+
+FINAL_STEPS: Final[tuple[dict[str, str], ...]] = (
+    {
+        "id": "pre_gme_registry",
+        "title": "Step 5: Build the pre-GME review table",
+        "simple": "Before adding GME, ClinVar + gnomAD genomes + gnomAD exomes are joined into a supervisor review checkpoint.",
+        "technical": "This step exists so the supervisor can review the global+clinical integration and export the full artifact to Excel before Arab-specific frequencies are introduced.",
     },
     {
         "id": "gme_brca",
-        "title": "Step 5: Extract GME BRCA alleles",
-        "simple": "GME has no gene label column in the frozen hg38 file, so BRCA rows are selected purely by coordinate overlap.",
-        "technical": "The GME stream stays summary-style: it contributes frequency evidence only and does not try to mimic ClinVar labels or gnomAD cohort structure.",
+        "title": "Step 6: Harmonize GME into BRCA windows",
+        "simple": "GME BRCA rows are added after the pre-GME review checkpoint so the Arab-specific contribution is visible as a distinct workflow step.",
+        "technical": "GME remains a summary-frequency source, so it is layered into the final registry after the pre-GME table has been inspected.",
     },
     {
         "id": "registry_final",
-        "title": "Step 6: Join the harmonized BRCA tables",
-        "simple": "The final supervisor table now reads only from harmonized BRCA tables, so sampling it is a direct table read rather than a complex raw parse-and-join query.",
-        "technical": "A union of harmonized canonical keys is left-joined to the ClinVar, gnomAD genomes, gnomAD exomes, and GME BRCA tables so every observed BRCA allele stays visible.",
+        "title": "Step 7: Build the final registry",
+        "simple": "The final registry adds GME evidence to the already reviewed pre-GME integration.",
+        "technical": "A union of harmonized canonical keys is left-joined to ClinVar, gnomAD genomes, gnomAD exomes, and GME so every observed BRCA allele remains visible.",
     },
 )
 
 
+def raw_dataset_catalog_payload() -> list[dict[str, object]]:
+    return [_dataset_payload(entry) for entry in RAW_DATASETS.values()]
+
+
 def dataset_catalog_payload() -> list[dict[str, object]]:
-    payload: list[dict[str, object]] = []
-    for entry in HARMONIZED_DATASETS.values():
-        payload.append(
-            {
-                "key": entry.key,
-                "title": entry.title,
-                "table_ref": entry.table_ref,
-                "row_count": None,
-                "sample_percent": entry.sample_percent,
-                "simple_summary": entry.simple_summary,
-                "notes": list(entry.notes),
-                "columns": [
-                    {"name": name, "description": description}
-                    for name, description in entry.columns
-                ],
-            }
-        )
-    return payload
+    return [_dataset_payload(entry) for entry in HARMONIZED_DATASETS.values()]
+
+
+def _dataset_payload(entry: DatasetCatalogEntry) -> dict[str, object]:
+    return {
+        "key": entry.key,
+        "title": entry.title,
+        "table_ref": entry.table_ref,
+        "row_count": None,
+        "sample_percent": entry.sample_percent,
+        "simple_summary": entry.simple_summary,
+        "notes": list(entry.notes),
+        "columns": [
+            {"name": name, "description": description}
+            for name, description in entry.columns
+        ],
+    }
+
+
+def pre_gme_catalog_payload() -> dict[str, object]:
+    return {
+        "title": PRE_GME_REGISTRY_TABLE,
+        "table_ref": PRE_GME_REGISTRY_TABLE_REF,
+        "scope_note": "This is the review checkpoint built after BRCA harmonization of ClinVar + gnomAD genomes + gnomAD exomes, and before adding GME.",
+        "accuracy_notes": [
+            "The pre-GME table excludes GME on purpose so the supervisor can inspect the global+clinical integration independently.",
+            "Rows are built only from harmonized BRCA tables, not from raw joins.",
+            "The downloadable Excel artifact mirrors this table one-for-one and keeps a metadata block ahead of the header.",
+        ],
+        "scientific_notes": [
+            "This checkpoint exists to surface errors before Arab-specific frequency evidence changes the interpretation context.",
+            "The Excel export uses a VCF-style metadata block inspired by the provided example workbook so review remains traceable and human-readable.",
+            "The exported header is fully described in-app before download.",
+        ],
+        "columns": [
+            {"name": name, "description": description}
+            for name, description in PRE_GME_REGISTRY_COLUMNS
+        ],
+        "build_sql": build_pre_gme_registry_sql(),
+        "export_filename": PRE_GME_EXPORT_FILENAME,
+        "export_metadata_preview": export_metadata_lines(created_at="DD/MM/YYYY HH:MM"),
+        "export_header_columns": export_header_columns(),
+    }
 
 
 def registry_catalog_payload() -> dict[str, object]:
     return {
-        "title": "supervisor_variant_registry_brca_v1",
+        "title": FINAL_REGISTRY_TABLE,
         "table_ref": REGISTRY_TABLE_REF,
-        "scope_note": "The final supervisor table is now BRCA-only and is rebuilt from harmonized BRCA source tables inside arab_acmg_harmonized.",
+        "scope_note": "The final supervisor table is BRCA-only and is rebuilt from harmonized BRCA source tables after the GME layer is added.",
         "accuracy_notes": [
             "All current sources in this workspace already use GRCh38 coordinates, so liftover is not needed for the BRCA workflow.",
             "Genomes and exomes share the same BRCA coordinates; the difference is cohort coverage and capture design, not position.",
             "ClinVar GENEINFO is preserved as an audit signal, but coordinate windows are the authoritative cross-source extraction rule.",
+            "GME is added only after the pre-GME checkpoint, so the Arab-specific contribution remains auditable as a separate step.",
         ],
         "scientific_notes": [
             "BRCA1 window and BRCA2 window definitions are frozen from an Ensembl-backed seed artifact, not ad-hoc literals in the UI logic.",
             "ClinVar GENEINFO disagreement is reported from live harmonized counts rather than fixed explanatory numbers.",
-            "Step 1 exposes the exact source URLs and access date used for the BRCA target definition.",
+            "The final registry is intentionally downstream of the pre-GME review checkpoint to reduce silent integration mistakes.",
         ],
         "columns": [
             {"name": name, "description": description}
-            for name, description in REGISTRY_COLUMNS
+            for name, description in FINAL_REGISTRY_COLUMNS
         ],
-        "steps": list(REGISTRY_STEPS),
-        "build_sql": build_registry_sql(),
+        "steps": list(FINAL_STEPS),
+        "build_sql": build_final_registry_sql(),
     }

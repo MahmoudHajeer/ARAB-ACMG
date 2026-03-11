@@ -1,4 +1,4 @@
-"""Verify the BRCA supervisor registry table and public dataset access."""
+"""Verify the BRCA supervisor review tables and public dataset access."""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ ROOT: Final[Path] = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from ui.registry_queries import REGISTRY_TABLE_REF
+from ui.registry_queries import PRE_GME_REGISTRY_TABLE_REF, REGISTRY_TABLE_REF
 
 PROJECT_ID: Final[str] = "genome-services-platform"
 DATASETS: Final[tuple[str, ...]] = (
@@ -27,14 +27,15 @@ def main() -> None:
     ok = True
 
     print("--- BRCA Supervisor Registry Verification ---")
-    try:
-        table = client.get_table(REGISTRY_TABLE_REF)
-        print(f"registry_table={REGISTRY_TABLE_REF} rows={table.num_rows}")
-        if int(table.num_rows) <= 0:
+    for table_ref in (PRE_GME_REGISTRY_TABLE_REF, REGISTRY_TABLE_REF):
+        try:
+            table = client.get_table(table_ref)
+            print(f"registry_table={table_ref} rows={table.num_rows}")
+            if int(table.num_rows) <= 0:
+                ok = False
+        except Exception as exc:
+            print(f"registry_table_error[{table_ref}]={exc}")
             ok = False
-    except Exception as exc:
-        print(f"registry_table_error={exc}")
-        ok = False
 
     for dataset_id in DATASETS:
         dataset = client.get_dataset(f"{PROJECT_ID}.{dataset_id}")

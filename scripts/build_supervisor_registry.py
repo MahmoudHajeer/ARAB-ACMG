@@ -1,4 +1,4 @@
-"""Materialize the BRCA-focused supervisor registry table in BigQuery."""
+"""Materialize the BRCA-focused supervisor review tables in BigQuery."""
 
 from __future__ import annotations
 
@@ -12,28 +12,38 @@ ROOT: Final[Path] = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from ui.registry_queries import REGISTRY_TABLE_REF, build_registry_sql
+from ui.registry_queries import (
+    PRE_GME_REGISTRY_TABLE_REF,
+    REGISTRY_TABLE_REF,
+    build_pre_gme_registry_sql,
+    build_registry_sql,
+)
 
 PROJECT_ID: Final[str] = "genome-services-platform"
 
 
 def main() -> None:
     client = bigquery.Client(project=PROJECT_ID)
-    sql = build_registry_sql()
+    stages = (
+        ("pre-GME review", PRE_GME_REGISTRY_TABLE_REF, build_pre_gme_registry_sql()),
+        ("final registry", REGISTRY_TABLE_REF, build_registry_sql()),
+    )
 
-    print(f"--- [Supervisor Registry Stage 1]: Building BRCA registry {REGISTRY_TABLE_REF} ---")
-    try:
-        # [AI-Agent: Codex]: Run one explicit CREATE OR REPLACE TABLE query so the
-        # UI and downstream users can inspect a single authoritative SQL statement.
-        job = client.query(sql)
-        job.result()
-        table = client.get_table(REGISTRY_TABLE_REF)
-    except Exception as exc:
-        print(f"❌ [Stage 1 Effect]: Registry build failed. Error: {exc}")
-        sys.exit(1)
+    for stage_name, table_ref, sql in stages:
+        print(f"--- [Supervisor Registry Stage]: Building {stage_name} table {table_ref} ---")
+        try:
+            # [AI-Agent: Codex]: Materialize each review checkpoint with one explicit
+            # CREATE OR REPLACE TABLE query so the UI exposes a single authoritative SQL statement.
+            job = client.query(sql)
+            job.result()
+            table = client.get_table(table_ref)
+        except Exception as exc:
+            print(f"❌ [Stage Effect]: {stage_name} build failed. Error: {exc}")
+            sys.exit(1)
 
-    print(f"✅ [Stage 1 Effect]: BRCA registry table ready with {table.num_rows} rows.")
-    print("🎉 [Final Effect]: supervisor_variant_registry_brca_v1 is ready for supervisor review.")
+        print(f"✅ [Stage Effect]: {stage_name} table ready with {table.num_rows} rows.")
+
+    print("🎉 [Final Effect]: BRCA pre-GME and final registry tables are ready for supervisor review.")
 
 
 if __name__ == "__main__":

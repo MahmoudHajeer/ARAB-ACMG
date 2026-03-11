@@ -14,53 +14,91 @@
   <main class="layout">
     <header class="hero">
       <p class="kicker">ARAB-ACMG / Supervisor View</p>
-      <h1>BRCA harmonization evidence and the supervisor registry</h1>
+      <h1>BRCA workflow dashboard for raw data, harmonization, pre-GME review, and final registry</h1>
       <p class="sub">
-        This view now follows the BRCA1 and BRCA2 workflow only: define the gene windows, extract harmonized rows from each source, then inspect the final joined supervisor table built from `arab_acmg_harmonized`.
+        This dashboard is organized as workflow pages so the supervisor can move from the untouched upstream data, through harmonization, to the pre-GME review checkpoint, and finally to the completed BRCA registry after GME is added.
       </p>
       <p id="generated-at" class="generated-at">Loading snapshot...</p>
     </header>
 
-    <section class="panel">
-      <h2>Track Status Overview</h2>
+    <nav id="workflow-nav" class="workflow-nav"></nav>
+
+    <section class="panel page-panel" data-page="overview">
+      <h2>Overview</h2>
       <div id="status-cards" class="status-cards"></div>
       <div id="track-grid" class="track-grid"></div>
       <div id="runtime-results" class="runtime-results compact"></div>
+      <h3 class="subheading">Workflow guide</h3>
+      <div id="workflow-map" class="workflow-map"></div>
     </section>
 
-    <section class="panel">
-      <h2>Scientific Method</h2>
-      <div id="registry-meta" class="registry-meta"></div>
-    </section>
-
-    <section class="panel">
-      <h2>Harmonized BRCA Source Explorer</h2>
+    <section class="panel page-panel" data-page="raw">
+      <h2>Raw Sources</h2>
       <p class="panel-note">
-        Each section samples 10 live rows from the harmonized BRCA tables. Details and column glossaries stay collapsed until needed so the page stays shorter.
+        These are the untouched BigQuery raw tables. The point of this page is to prove what the pipeline started with before any BRCA-specific logic or harmonization.
       </p>
-      <div id="dataset-explorer" class="explorer-stack"></div>
+      <div id="raw-dataset-explorer" class="explorer-stack"></div>
     </section>
 
-    <section class="panel">
-      <h2>Step-by-Step Evidence</h2>
+    <section class="panel page-panel" data-page="harmonization">
+      <h2>Harmonization</h2>
       <p class="panel-note">
-        Each step shows one small live sample from BigQuery so the join logic can be inspected before trusting the final registry.
+        This page shows the BRCA scientific method, the frozen gene windows, and the harmonized source tables that feed the downstream review checkpoints.
       </p>
-      <div id="registry-steps" class="explorer-stack"></div>
+      <div id="harmonization-science" class="registry-meta"></div>
+      <div id="harmonized-dataset-explorer" class="explorer-stack"></div>
+      <h3 class="subheading">Step-by-step evidence</h3>
+      <div id="harmonization-steps" class="explorer-stack"></div>
     </section>
 
-    <section class="panel">
-      <h2>Supervisor Registry Table</h2>
+    <section class="panel page-panel" data-page="pre-gme">
+      <h2>Pre-GME Review</h2>
+      <p class="panel-note">
+        This checkpoint is the last full review stage before GME is added. It joins ClinVar with gnomAD genomes and exomes only, then exports the complete table to Excel for supervisor review.
+      </p>
+      <div id="pre-gme-meta" class="registry-meta"></div>
       <div class="action-row">
-        <button id="registry-sample-button" class="action-button">Fetch 10 random registry rows</button>
+        <button id="pre-gme-sample-button" class="action-button">Fetch 10 random pre-GME rows</button>
+        <a id="pre-gme-download-link" class="action-button secondary-link" href="/api/exports/pre-gme.xlsx">Download full pre-GME Excel file</a>
+      </div>
+      <div id="pre-gme-sample" class="query-result"></div>
+      <details class="details-card">
+        <summary>Excel metadata preview</summary>
+        <pre id="pre-gme-metadata-preview" class="sql-box"></pre>
+      </details>
+      <details class="details-card">
+        <summary>Excel header preview</summary>
+        <div id="pre-gme-header-preview" class="header-preview-grid"></div>
+      </details>
+      <details class="details-card">
+        <summary>Pre-GME column glossary</summary>
+        <div id="pre-gme-columns" class="glossary-grid"></div>
+      </details>
+      <details class="details-card">
+        <summary>Pre-GME build SQL</summary>
+        <pre id="pre-gme-build-sql" class="sql-box"></pre>
+      </details>
+    </section>
+
+    <section class="panel page-panel" data-page="final">
+      <h2>Final Registry</h2>
+      <p class="panel-note">
+        This page shows what changed after GME entered the workflow and exposes the final BRCA registry that will keep evolving as the project expands.
+      </p>
+      <div id="final-gme-card" class="explorer-stack"></div>
+      <div id="registry-meta" class="registry-meta"></div>
+      <h3 class="subheading">Final-stage evidence</h3>
+      <div id="final-steps" class="explorer-stack"></div>
+      <div class="action-row">
+        <button id="registry-sample-button" class="action-button">Fetch 10 random final-registry rows</button>
       </div>
       <div id="registry-sample" class="query-result"></div>
       <details class="details-card">
-        <summary>Column glossary</summary>
+        <summary>Final registry column glossary</summary>
         <div id="registry-columns" class="glossary-grid"></div>
       </details>
       <details class="details-card">
-        <summary>Build SQL</summary>
+        <summary>Final build SQL</summary>
         <pre id="registry-build-sql" class="sql-box"></pre>
       </details>
     </section>
