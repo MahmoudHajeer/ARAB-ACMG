@@ -1,3 +1,7 @@
+from pathlib import Path
+
+import ui.registry_queries as registry_queries
+
 from ui.registry_queries import (
     PRE_GME_REGISTRY_TABLE_REF,
     REGISTRY_TABLE_REF,
@@ -10,6 +14,7 @@ from ui.registry_queries import (
     build_registry_sample_sql,
     build_registry_sql,
     build_registry_step_sql,
+    resolve_gene_window_seed,
 )
 
 
@@ -73,3 +78,17 @@ def test_build_pre_gme_export_sql_orders_rows_for_excel_export():
 def test_source_count_queries_read_raw_based_ctes():
     assert "gnomad_genomes_agg" in build_pre_gme_source_count_sql()
     assert "gme_agg" in build_final_source_count_sql()
+
+
+def test_resolve_gene_window_seed_falls_back_to_ui_bundle(monkeypatch, tmp_path):
+    missing_repo_seed = tmp_path / "missing.csv"
+    bundled_seed = tmp_path / "bundled.csv"
+    bundled_seed.write_text("gene_symbol\nBRCA1\n", encoding="utf-8")
+
+    monkeypatch.setattr(
+        registry_queries,
+        "GENE_WINDOW_SEED_CANDIDATES",
+        (missing_repo_seed, bundled_seed),
+    )
+
+    assert resolve_gene_window_seed() == Path(bundled_seed)

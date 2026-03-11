@@ -30,8 +30,20 @@ RAW_TABLE_REFS: Final[dict[str, str]] = {
     "gme_hg38_raw": GME_RAW_TABLE_REF,
 }
 
-ROOT: Final[Path] = Path(__file__).resolve().parents[1]
-GENE_WINDOW_SEED: Final[Path] = ROOT / "arab_acmg_dbt" / "seeds" / "brca_gene_windows_seed.csv"
+UI_ROOT: Final[Path] = Path(__file__).resolve().parent
+REPO_ROOT: Final[Path] = UI_ROOT.parent
+GENE_WINDOW_SEED_CANDIDATES: Final[tuple[Path, ...]] = (
+    REPO_ROOT / "arab_acmg_dbt" / "seeds" / "brca_gene_windows_seed.csv",
+    UI_ROOT / "brca_gene_windows_seed.csv",
+)
+
+
+def resolve_gene_window_seed() -> Path:
+    for candidate in GENE_WINDOW_SEED_CANDIDATES:
+        if candidate.exists():
+            return candidate
+    joined = ", ".join(str(candidate) for candidate in GENE_WINDOW_SEED_CANDIDATES)
+    raise FileNotFoundError(f"BRCA gene-window seed was not found in any expected location: {joined}")
 
 
 def _quote(text: str) -> str:
@@ -39,7 +51,7 @@ def _quote(text: str) -> str:
 
 
 def load_gene_windows() -> list[dict[str, str]]:
-    with GENE_WINDOW_SEED.open("r", encoding="utf-8", newline="") as handle:
+    with resolve_gene_window_seed().open("r", encoding="utf-8", newline="") as handle:
         return list(csv.DictReader(handle))
 
 

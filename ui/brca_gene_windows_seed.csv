@@ -1,0 +1,3 @@
+gene_symbol,ensembl_gene_id,chrom38,chrom_nochr,start_pos38,end_pos38,coordinate_source,coordinate_source_url,accessed_at,coordinate_note
+BRCA1,ENSG00000012048,chr17,17,43044295,43170245,"Ensembl Homo sapiens Gene Summary (GRCh38)","https://www.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000012048","2026-03-10","Frozen BRCA1 gene window for BRCA-focused harmonization"
+BRCA2,ENSG00000139618,chr13,13,32315086,32400268,"Ensembl Homo sapiens Gene Summary (GRCh38)","https://www.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000139618","2026-03-10","Frozen BRCA2 gene window for BRCA-focused harmonization"
