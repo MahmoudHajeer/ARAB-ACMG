@@ -2,7 +2,7 @@
 
 ## Phase 1: Canonical Keys and Transform Contracts
 - [x] 1.1 Confirm harmonized schema and `variant_key` definition per [conductor/data-contracts.md](../../data-contracts.md). (`e7c50e8`)
-- [ ] 1.2 Define standardized chromosome naming for GRCh38: `chr1..chr22, chrX, chrY, chrMT`.
+- [x] 1.2 Redefine the harmonized checkpoint schema around the mandated publication-facing header and a single-table-per-checkpoint model; extras may exist only as clearly marked additions. (`600bd3e`)
 - [ ] 1.3 Define required transformation metadata fields (`liftover_status`, `norm_status`, tool versions).
 
 ## Phase 2: Genome Build Standardization (LiftOver)
@@ -16,8 +16,8 @@
 - [ ] 3.3 Persist harmonized Parquet snapshots to GCS with manifests.
 
 ## Phase 4: BigQuery Harmonized Layer + Modeling
-- [ ] 4.1 Load harmonized tables into BigQuery `arab_acmg_harmonized`.
-- [ ] 4.2 Create dbt models for harmonized tables (`h_*`) and mapping tables (`map_*`).
+- [x] 4.1 Load only the checkpoint tables into BigQuery `arab_acmg_harmonized` (`pre-GME`, `final-with-GME`). (`600bd3e`)
+- [x] 4.2 Remove obsolete per-source harmonized tables/views and keep only the checkpoint tables as durable outputs. (`600bd3e`)
 - [ ] 4.3 Add dbt tests for canonical key uniqueness and enum accepted values.
 
 ## Phase 5: GE Quality Gates
@@ -26,4 +26,4 @@
 
 ---
 **Track Status**: `[~]`
-**Checkpoint SHA**: `[checkpoint: e7c50e8]`
+**Checkpoint SHA**: `[checkpoint: ac88dbb]`

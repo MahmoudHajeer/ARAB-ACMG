@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-11T14:41:43.198154+00:00",
+  "generated_at": "2026-03-11T19:20:36.076243+00:00",
   "project_id": "genome-services-platform",
   "tracks": [
     {
@@ -67,11 +67,11 @@
     },
     "T003": {
       "total_tasks": 14,
-      "done_tasks": 1,
+      "done_tasks": 4,
       "in_progress_tasks": 0,
-      "todo_tasks": 13,
-      "done_pct": 7.1,
-      "progress_pct": 7.1
+      "todo_tasks": 10,
+      "done_pct": 28.6,
+      "progress_pct": 28.6
     },
     "T004": {
       "total_tasks": 11,
@@ -160,43 +160,15 @@
   ],
   "latest_t002_verification": [
     {
-      "command": "python3 -m pytest -q tests (41 passed)",
+      "command": "gcloud run deploy supervisor-ui --source ui --region europe-west1 --project genome-services-platform --allow-unauthenticated --quiet (pass: revision supervisor-ui-00008-dnp)",
       "status": "pass"
     },
     {
-      "command": "python3 -m pytest -q tests/test_status_snapshot.py (6 passed)",
+      "command": "curl -sS https://supervisor-ui-142306018756.europe-west1.run.app/status_snapshot.json (pass: generated_at=2026-03-11T14:41:43.198154+00:00)",
       "status": "pass"
     },
     {
-      "command": "python3 scripts/verify_supervisor_registry.py (pass: pre-GME=115,816 rows; final=115,836 rows)",
-      "status": "pass"
-    },
-    {
-      "command": "python3 scripts/update_status_snapshot.py (pass)",
-      "status": "pass"
-    },
-    {
-      "command": "gcloud run deploy supervisor-ui --source ui --region europe-west1 --project genome-services-platform --allow-unauthenticated --quiet (pass: revision supervisor-ui-00007-sxk)",
-      "status": "pass"
-    },
-    {
-      "command": "curl -sS https://supervisor-ui-142306018756.europe-west1.run.app/api/health (pass)",
-      "status": "pass"
-    },
-    {
-      "command": "curl -sS https://supervisor-ui-142306018756.europe-west1.run.app/api/workflow (pass: overview/raw/harmonization/pre-gme/final)",
-      "status": "pass"
-    },
-    {
-      "command": "curl -sS https://supervisor-ui-142306018756.europe-west1.run.app/api/pre-gme/sample (pass: 10 rows)",
-      "status": "pass"
-    },
-    {
-      "command": "curl -sS https://supervisor-ui-142306018756.europe-west1.run.app/api/registry (pass: row_count=115,836, columns=46)",
-      "status": "pass"
-    },
-    {
-      "command": "curl -sS https://supervisor-ui-142306018756.europe-west1.run.app/ (pass: dashboard HTML served)",
+      "command": "Playwright page evaluate fetch('./status_snapshot.json', { cache: 'no-store' }) (pass: generated_at=2026-03-11T14:41:43.198154+00:00)",
       "status": "pass"
     }
   ],
