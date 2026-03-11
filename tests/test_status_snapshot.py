@@ -8,6 +8,7 @@ from scripts.update_status_snapshot import (
     format_sample_value,
     get_bigquery_samples,
     parse_latest_t002_verification,
+    quote_identifier,
 )
 
 
@@ -17,6 +18,11 @@ def test_format_sample_value_truncates_long_values():
 
     assert formatted.endswith("...")
     assert len(formatted) < len(long_text)
+
+
+def test_quote_identifier_wraps_reserved_names():
+    assert quote_identifier("end") == "`end`"
+    assert quote_identifier("normal_name") == "`normal_name`"
 
 
 @patch("scripts.update_status_snapshot.bigquery.Client")
@@ -72,6 +78,48 @@ def test_get_bigquery_samples_collects_rows(mock_bq_client):
     ]
     assert result["tables"][0]["rows"][0]["chrom"] == "chr13"
     assert result["tables"][0]["rows"][0]["info"].endswith("...")
+
+
+@patch("scripts.update_status_snapshot.bigquery.Client")
+def test_get_bigquery_samples_quotes_reserved_columns(mock_bq_client):
+    mock_client = MagicMock()
+    mock_bq_client.return_value = mock_client
+    mock_table = MagicMock()
+    mock_table.schema = [
+        SimpleNamespace(name="chrom"),
+        SimpleNamespace(name="start"),
+        SimpleNamespace(name="end"),
+        SimpleNamespace(name="ref"),
+        SimpleNamespace(name="alt"),
+    ]
+
+    def get_table_side_effect(table_ref):
+        if table_ref.endswith(".gme_hg38_raw"):
+            return mock_table
+        raise NotFound("missing")
+
+    mock_client.get_table.side_effect = get_table_side_effect
+
+    def query_side_effect(query):
+        if "gme_hg38_raw" in query:
+            assert "SELECT `chrom`, `start`, `end`, `ref`, `alt`" in query
+            assert "ORDER BY `chrom`, `start`, `ref`, `alt`" in query
+            query_job = MagicMock()
+            query_job.result.return_value = [
+                SimpleNamespace(chrom="chr13", start=1, end=2, ref="A", alt="G")
+            ]
+            return query_job
+        query_job = MagicMock()
+        query_job.result.return_value = []
+        return query_job
+
+    mock_client.query.side_effect = query_side_effect
+
+    result = get_bigquery_samples()
+
+    gme_entry = next(table for table in result["tables"] if table["table"] == "gme_hg38_raw")
+    assert gme_entry["status"] == "present"
+    assert gme_entry["rows"][0]["end"] == "2"
 
 
 @patch("scripts.update_status_snapshot.bigquery.Client")

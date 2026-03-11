@@ -212,6 +212,11 @@ def format_sample_value(value: object) -> str:
     return f"{text[: MAX_SAMPLE_VALUE_LENGTH - 3]}..."
 
 
+def quote_identifier(identifier: str) -> str:
+    escaped = identifier.replace("`", "``")
+    return f"`{escaped}`"
+
+
 def get_bigquery_samples() -> dict[str, object]:
     sample_tables: list[dict[str, object]] = []
     error: str | None = None
@@ -223,8 +228,9 @@ def get_bigquery_samples() -> dict[str, object]:
             try:
                 table = client.get_table(table_ref)
                 columns = [field.name for field in table.schema]
+                select_columns = ", ".join(quote_identifier(column) for column in columns)
                 query = (
-                    f"SELECT {', '.join(columns)} "
+                    f"SELECT {select_columns} "
                     f"FROM `{table_ref}` "
                     f"LIMIT {SAMPLE_LIMIT}"
                 )
@@ -235,14 +241,14 @@ def get_bigquery_samples() -> dict[str, object]:
                 ]
                 if order_columns:
                     query = (
-                        f"SELECT {', '.join(columns)} "
+                        f"SELECT {select_columns} "
                         f"FROM `{table_ref}` "
-                        f"ORDER BY {', '.join(order_columns)} "
+                        f"ORDER BY {', '.join(quote_identifier(column) for column in order_columns)} "
                         f"LIMIT {SAMPLE_LIMIT}"
                     )
                 else:
                     query = (
-                        f"SELECT {', '.join(columns)} "
+                        f"SELECT {select_columns} "
                         f"FROM `{table_ref}` "
                         f"LIMIT {SAMPLE_LIMIT}"
                     )
