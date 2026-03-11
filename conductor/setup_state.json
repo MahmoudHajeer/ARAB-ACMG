@@ -1,3 +1,3 @@
 {
-  "last_successful_step": "T002 step 5.4 finalized on 2026-03-11: the supervisor UI was deployed as workflow pages on Cloud Run revision supervisor-ui-00007-sxk, the pre-GME BRCA review checkpoint and XLSX export remained available, and status snapshot sampling was stabilized by quoting reserved BigQuery column names."
+  "last_successful_step": "T002 step 5.4 finalized on 2026-03-11: the supervisor UI workflow pages, pre-GME BRCA review checkpoint, and XLSX export were redeployed after syncing the latest status snapshot, and live status sampling remained stable after quoting reserved BigQuery column names."
 }
