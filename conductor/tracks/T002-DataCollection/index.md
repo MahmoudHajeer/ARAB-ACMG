@@ -154,3 +154,43 @@ Do not rewrite previous entries.
 - Files changed: `arab_acmg_dbt/dbt_project.yml`, `arab_acmg_dbt/profiles.yml`, `arab_acmg_dbt/README.md`, `arab_acmg_dbt/macros/generate_schema_name.sql`, `arab_acmg_dbt/macros/info_fields.sql`, `arab_acmg_dbt/models/staging/src_arab_freq.yml`, `arab_acmg_dbt/models/staging/src_clinvar.yml`, `arab_acmg_dbt/models/staging/src_gnomad.yml`, `arab_acmg_dbt/models/staging/clinvar/stg_clinvar_variants.sql`, `arab_acmg_dbt/models/staging/clinvar/stg_clinvar_variants.yml`, `arab_acmg_dbt/models/staging/gnomad/stg_gnomad_genomes_variants.sql`, `arab_acmg_dbt/models/staging/gnomad/stg_gnomad_exomes_variants.sql`, `arab_acmg_dbt/models/staging/gnomad/stg_gnomad_variants.yml`, `arab_acmg_dbt/tests/generic/positive_when_present.sql`, `arab_acmg_dbt/tests/generic/non_negative_when_present.sql`, `arab_acmg_dbt/tests/generic/value_between.sql`, `great_expectations/checkpoints/clinvar_raw_checkpoint.json`, `great_expectations/checkpoints/gnomad_raw_checkpoint.json`, `great_expectations/expectations/clinvar_raw_suite.json`, `great_expectations/expectations/gnomad_raw_suite.json`, `scripts/ge_expectation_specs.py`, `scripts/run_ge_raw_validations.py`, `tests/test_ge_expectation_specs.py`, `environment.yml`
 - Verification run + result: `python3 -m pytest -q tests (25 passed)`, `python3 scripts/verify_gcp.py (pass)`, `python3 scripts/verify_bq_health.py (pass)`, `DBT_PROFILES_DIR=$PWD/arab_acmg_dbt /tmp/arab_acmg_tools/bin/dbt parse --project-dir arab_acmg_dbt (pass)`, `DBT_PROFILES_DIR=$PWD/arab_acmg_dbt /tmp/arab_acmg_tools/bin/dbt run --project-dir arab_acmg_dbt --select stg_clinvar_variants stg_gnomad_genomes_variants stg_gnomad_exomes_variants (pass)`, `DBT_PROFILES_DIR=$PWD/arab_acmg_dbt /tmp/arab_acmg_tools/bin/dbt test --project-dir arab_acmg_dbt --select stg_clinvar_variants stg_gnomad_genomes_variants stg_gnomad_exomes_variants source:clinvar_raw source:gnomad_raw (pass: 61 tests)`, `PYTHONPATH='' /tmp/arab_acmg_tools/bin/python scripts/run_ge_raw_validations.py (pass)`
 - Next exact action: Start task `4.2` by either freezing the next accessible Arab/Middle Eastern raw source into the raw vault and `arab_acmg_raw`, or recording a formal block if no additional raw artifact is currently available.
+
+### Entry 16
+- Timestamp: `2026-03-10T21:52:06+03:00`
+- Agent: `Codex`
+- Task ID: `4.2-5.3`
+- Status: `Blocked`
+- Summary: Remaining T002 tasks stay open, but execution is intentionally paused because the current user request pivots to BRCA1/BRCA2-only harmonization and supervisor evidence on top of the already frozen raw layer. The raw-layer prerequisite for T003 is satisfied; no additional Arab/Middle Eastern raw artifact beyond GME is currently available in the workspace to unblock `4.2`.
+- Files changed: `conductor/tracks/T002-DataCollection/index.md`, `conductor/tracks/T003-DataHarmonization/plan.md`, `conductor/tracks/T003-DataHarmonization/index.md`, `conductor/tracks.md`
+- Verification run + result: `state pivot only; no data mutation in this handoff`
+- Next exact action: Start `T003/1.1` and build BRCA1/BRCA2-focused harmonized tables plus a supervisor table sourced from `arab_acmg_harmonized`.
+
+### Entry 17
+- Timestamp: `2026-03-11T11:57:00+03:00`
+- Agent: `Codex`
+- Task ID: `5.4`
+- Status: `Started`
+- Summary: Reopening the supervisor dashboard task by explicit user request. The goal is to turn the single-page BRCA dashboard into workflow-specific pages and add a pre-GME Excel review export that mirrors the provided `example.xlsx` style. This does not close or bypass the still-open `4.2-5.3` ingestion tasks; it refines the already-started supervisor-review surface.
+- Files changed: `conductor/tracks/T002-DataCollection/plan.md`, `conductor/tracks/T002-DataCollection/index.md`
+- Verification run + result: `state update only before implementation`
+- Next exact action: Inspect `example.xlsx` header structure, materialize a pre-GME registry stage, then implement workflow-page navigation and XLSX export/download in the supervisor UI.
+
+### Entry 18
+- Timestamp: `2026-03-11T14:35:00+03:00`
+- Agent: `Codex`
+- Task ID: `5.4`
+- Status: `Completed`
+- Summary: Rebuilt the supervisor UI as workflow pages (`Overview`, `Raw Sources`, `Harmonization`, `Pre-GME Review`, `Final Registry`), materialized a separate pre-GME BRCA review table, and added a full Excel export checkpoint that follows the provided `example.xlsx` pattern with metadata rows before the header. The final registry remains distinct and visibly downstream of GME integration.
+- Files changed: `scripts/build_supervisor_registry.py`, `scripts/verify_supervisor_registry.py`, `scripts/export_pre_gme_registry_xlsx.py`, `tests/test_registry_queries.py`, `tests/test_ui_catalog.py`, `tests/test_ui_service.py`, `tests/test_export_workbook.py`, `ui/README.md`, `ui/app.js`, `ui/catalog.py`, `ui/export_workbook.py`, `ui/index.html`, `ui/registry_queries.py`, `ui/requirements.txt`, `ui/service.py`, `ui/styles.css`
+- Verification run + result: `python3 -m pytest -q tests (39 passed)`, `python3 -m pytest -q tests/test_registry_queries.py tests/test_ui_catalog.py tests/test_ui_service.py tests/test_export_workbook.py (23 passed)`, `node --check ui/app.js (pass)`, `python3 -m py_compile ui/registry_queries.py ui/catalog.py ui/service.py ui/export_workbook.py scripts/build_supervisor_registry.py scripts/verify_supervisor_registry.py scripts/export_pre_gme_registry_xlsx.py (pass)`, `python3 scripts/build_supervisor_registry.py (pass: pre-GME=115,816 rows; final=115,836 rows)`, `python3 scripts/verify_supervisor_registry.py (pass)`, `python3 scripts/verify_bq_health.py (pass)`, `python3 scripts/verify_gcp.py (pass)`, `python3 scripts/export_pre_gme_registry_xlsx.py (pass: output/spreadsheet/supervisor_variant_registry_brca_pre_gme_v1.xlsx)`, `python3 scripts/update_status_snapshot.py (pass)`, `Playwright browser check on http://127.0.0.1:8082/ (pass: workflow navigation, raw sample, pre-GME sample, and final registry sample rendered)`
+- Next exact action: Keep `4.2-5.3` blocked until a new Arab/Middle Eastern raw artifact is available or the user explicitly reprioritizes the next track.
+
+### Entry 19
+- Timestamp: `2026-03-11T17:45:00+03:00`
+- Agent: `Codex`
+- Task ID: `5.4`
+- Status: `Completed`
+- Summary: Finalized the deployed supervisor dashboard by fixing the live `status_snapshot.json` generator for reserved BigQuery column names such as `end`, then deployed the updated service to Cloud Run revision `supervisor-ui-00007-sxk`. The workflow pages, live JSON endpoints, and pre-GME sample endpoint were verified against the deployed URL.
+- Files changed: `scripts/update_status_snapshot.py`, `tests/test_status_snapshot.py`, `conductor/tracks/T002-DataCollection/plan.md`, `conductor/tracks/T002-DataCollection/index.md`, `conductor/setup_state.json`, `ui/status_snapshot.json`
+- Verification run + result: `python3 -m pytest -q tests (41 passed)`, `python3 -m pytest -q tests/test_status_snapshot.py (6 passed)`, `python3 scripts/verify_supervisor_registry.py (pass: pre-GME=115,816 rows; final=115,836 rows)`, `python3 scripts/update_status_snapshot.py (pass)`, `gcloud run deploy supervisor-ui --source ui --region europe-west1 --project genome-services-platform --allow-unauthenticated --quiet (pass: revision supervisor-ui-00007-sxk)`, `curl -sS https://supervisor-ui-142306018756.europe-west1.run.app/api/health (pass)`, `curl -sS https://supervisor-ui-142306018756.europe-west1.run.app/api/workflow (pass: overview/raw/harmonization/pre-gme/final)`, `curl -sS https://supervisor-ui-142306018756.europe-west1.run.app/api/pre-gme/sample (pass: 10 rows)`, `curl -sS https://supervisor-ui-142306018756.europe-west1.run.app/api/registry (pass: row_count=115,836, columns=46)`, `curl -sS https://supervisor-ui-142306018756.europe-west1.run.app/ (pass: dashboard HTML served)`
+- Next exact action: Keep `4.2-5.3` blocked until a new Arab/Middle Eastern raw artifact is available or the user explicitly reprioritizes the next track; otherwise continue T003 scientific harmonization beyond BRCA-only evidence views.
