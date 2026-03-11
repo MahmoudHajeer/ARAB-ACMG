@@ -144,8 +144,11 @@ function renderGlossary(columns) {
       ${columns
         .map(
           (column) => `
-          <article class="glossary-item">
-            <div class="glossary-name">${column.name}</div>
+          <article class="glossary-item ${column.kind || "required"}">
+            <div class="glossary-name">
+              ${column.name}
+              <span class="column-kind ${column.kind || "required"}">${(column.kind || "required").toUpperCase()}</span>
+            </div>
             <div class="glossary-desc">${column.description}</div>
           </article>
         `
@@ -371,8 +374,11 @@ function renderPreGmeMeta(payload) {
   document.getElementById("pre-gme-columns").innerHTML = payload.columns
     .map(
       (column) => `
-      <article class="glossary-item">
-        <div class="glossary-name">${column.name}</div>
+      <article class="glossary-item ${column.kind || "required"}">
+        <div class="glossary-name">
+          ${column.name}
+          <span class="column-kind ${column.kind || "required"}">${(column.kind || "required").toUpperCase()}</span>
+        </div>
         <div class="glossary-desc">${column.description}</div>
       </article>
     `
@@ -381,8 +387,9 @@ function renderPreGmeMeta(payload) {
 
   document.getElementById("pre-gme-build-sql").textContent = payload.build_sql;
   document.getElementById("pre-gme-metadata-preview").textContent = payload.export_metadata_preview.join("\n");
+  const kindByName = Object.fromEntries(payload.columns.map((column) => [column.name, column.kind || "required"]));
   document.getElementById("pre-gme-header-preview").innerHTML = payload.export_header_columns
-    .map((column) => `<div class="header-chip">${escapeHtml(column)}</div>`)
+    .map((column) => `<div class="header-chip ${kindByName[column] || "required"}">${escapeHtml(column)}</div>`)
     .join("");
   document.getElementById("pre-gme-download-link").setAttribute("href", payload.download_url);
 }
@@ -411,8 +418,11 @@ function renderFinalRegistryMeta(payload) {
   document.getElementById("registry-columns").innerHTML = payload.columns
     .map(
       (column) => `
-      <article class="glossary-item">
-        <div class="glossary-name">${column.name}</div>
+      <article class="glossary-item ${column.kind || "required"}">
+        <div class="glossary-name">
+          ${column.name}
+          <span class="column-kind ${column.kind || "required"}">${(column.kind || "required").toUpperCase()}</span>
+        </div>
         <div class="glossary-desc">${column.description}</div>
       </article>
     `
@@ -420,18 +430,6 @@ function renderFinalRegistryMeta(payload) {
     .join("");
 
   document.getElementById("registry-build-sql").textContent = payload.build_sql;
-}
-
-function renderGmeCard(payload) {
-  const gmeOnly = {
-    datasets: payload.datasets.filter((entry) => entry.key === "h_brca_gme_variants"),
-  };
-  renderDatasetCollection({
-    targetId: "final-gme-card",
-    payload: gmeOnly,
-    sampleAttr: "harmonized-final-sample",
-    samplePath: "/api/datasets",
-  });
 }
 
 function wireGlobalButtons() {
@@ -492,7 +490,6 @@ async function main() {
     });
     renderStepCards("harmonization-steps", workflow.harmonization_steps);
     renderPreGmeMeta(preGmePayload);
-    renderGmeCard(harmonizedPayload);
     renderFinalRegistryMeta(registryPayload);
     renderStepCards("final-steps", workflow.final_steps);
   } catch (error) {

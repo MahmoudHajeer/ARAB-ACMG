@@ -2,51 +2,70 @@ from io import BytesIO
 
 from openpyxl import load_workbook
 
-from ui.export_workbook import build_pre_gme_workbook_bytes, export_header_columns, export_metadata_lines
+from ui.export_workbook import build_pre_gme_workbook_bytes, export_column_payload, export_header_columns, export_metadata_lines
 
 
 def test_build_pre_gme_workbook_bytes_writes_metadata_header_and_rows():
     workbook_bytes = build_pre_gme_workbook_bytes(
         [
             {
-                "chrom": "chr13",
-                "pos": 32315086,
-                "end_pos": 32315086,
-                "export_id": "13:32315086:A:G",
-                "variant_key": "13:32315086:A:G",
-                "ref": "A",
-                "alt": "G",
-                "gene_symbol": "BRCA2",
-                "present_in_clinvar": True,
-                "present_in_gnomad_genomes": False,
-                "present_in_gnomad_exomes": True,
-                "clinvar_ids": "123",
-                "clinvar_significance_values": "Pathogenic",
-                "clinvar_review_status_values": "reviewed_by_expert_panel",
-                "clinvar_record_count": 1,
-                "clinvar_gene_info_match_count": 1,
-                "clinvar_gene_info_mismatch_count": 0,
-                "gnomad_genomes_ac": None,
-                "gnomad_genomes_an": None,
-                "gnomad_genomes_af": None,
-                "gnomad_genomes_grpmax": None,
-                "gnomad_genomes_grpmax_faf95": None,
-                "gnomad_genomes_depth": None,
-                "gnomad_genomes_ac_afr": None,
-                "gnomad_genomes_af_afr": None,
-                "gnomad_genomes_ac_eur_proxy": None,
-                "gnomad_genomes_af_eur_proxy": None,
-                "gnomad_exomes_ac": 4,
-                "gnomad_exomes_an": 1000,
-                "gnomad_exomes_af": 0.004,
-                "gnomad_exomes_grpmax": "nfe",
-                "gnomad_exomes_grpmax_faf95": 0.002,
-                "gnomad_exomes_depth": 88,
-                "gnomad_exomes_ac_afr": 0,
-                "gnomad_exomes_af_afr": 0.0,
-                "gnomad_exomes_ac_eur_proxy": 4,
-                "gnomad_exomes_af_eur_proxy": 0.004,
-                "source_count": 2,
+                "CHROM": "chr13",
+                "POS": 32315086,
+                "END": 32315086,
+                "ID": "chr13:32315086:A:G",
+                "REF": "A",
+                "ALT": "G",
+                "VARTYPE": "SNV",
+                "Repeat": None,
+                "Segdup": None,
+                "Blacklist": None,
+                "GENE": "BRCA2",
+                "EFFECT": None,
+                "HGVS_C": None,
+                "HGVS_P": None,
+                "PHENOTYPES_OMIM": None,
+                "PHENOTYPES_OMIM_ID": None,
+                "INHERITANCE_PATTERN": None,
+                "ALLELEID": "123",
+                "CLNSIG": "Pathogenic",
+                "TOPMED_AF": None,
+                "TOPMed_Hom": None,
+                "ALFA_AF": None,
+                "ALFA_Hom": None,
+                "GNOMAD_ALL_AF": 0.004,
+                "gnomAD_all_Hom": 0,
+                "GNOMAD_MID_AF": 0.0,
+                "gnomAD_mid_Hom": 0,
+                "ONEKGP_AF": None,
+                "REGENERON_AF": None,
+                "TGP_AF": None,
+                "QATARI": None,
+                "JGP_AF": None,
+                "JGP_MAF": None,
+                "JGP_Hom": None,
+                "JGP_Het": None,
+                "JGP_AC_Hemi": None,
+                "SIFT_PRED": None,
+                "POLYPHEN2_HDIV_PRED": None,
+                "POLYPHEN2_HVAR_PRED": None,
+                "PROVEAN_PRE": None,
+                "CLNREVSTAT": "reviewed_by_expert_panel",
+                "GNOMAD_GENOMES_AC": None,
+                "GNOMAD_GENOMES_AN": None,
+                "GNOMAD_GENOMES_AF": None,
+                "GNOMAD_GENOMES_HOM": None,
+                "GNOMAD_GENOMES_AF_AFR": None,
+                "GNOMAD_GENOMES_AF_EUR_PROXY": None,
+                "GNOMAD_EXOMES_AC": 4,
+                "GNOMAD_EXOMES_AN": 1000,
+                "GNOMAD_EXOMES_AF": 0.004,
+                "GNOMAD_EXOMES_HOM": 0,
+                "GNOMAD_EXOMES_AF_AFR": 0.0,
+                "GNOMAD_EXOMES_AF_EUR_PROXY": 0.004,
+                "GNOMAD_GENOMES_DEPTH": None,
+                "GNOMAD_EXOMES_DEPTH": 88,
+                "SOURCE_COUNT": 2,
+                "PIPELINE_STAGE": "PRE_GME_REVIEW",
             }
         ],
         created_at="11/03/2026 12:00",
@@ -60,4 +79,12 @@ def test_build_pre_gme_workbook_bytes_writes_metadata_header_and_rows():
     assert rows[1][0].startswith("##WORKFLOW=")
     assert rows[len(export_metadata_lines("11/03/2026 12:00"))][0] == export_header_columns()[0]
     assert rows[-1][0] == "chr13"
-    assert rows[-1][8] == "TRUE"
+    assert rows[-1][10] == "BRCA2"
+
+
+def test_export_column_payload_marks_required_and_extra_columns():
+    payload = export_column_payload()
+
+    assert payload[0]["name"] == "CHROM"
+    assert payload[0]["kind"] == "required"
+    assert any(column["name"] == "PIPELINE_STAGE" and column["kind"] == "extra" for column in payload)

@@ -1,4 +1,4 @@
-"""Materialize the BRCA-focused supervisor review tables in BigQuery."""
+"""Materialize the BRCA checkpoint tables directly from raw sources and prune obsolete harmonized outputs."""
 
 from __future__ import annotations
 
@@ -13,6 +13,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from ui.registry_queries import (
+    HARMONIZED_DATASET,
     PRE_GME_REGISTRY_TABLE_REF,
     REGISTRY_TABLE_REF,
     build_pre_gme_registry_sql,
@@ -20,6 +21,20 @@ from ui.registry_queries import (
 )
 
 PROJECT_ID: Final[str] = "genome-services-platform"
+KEEP_TABLES: Final[set[str]] = {
+    PRE_GME_REGISTRY_TABLE_REF,
+    REGISTRY_TABLE_REF,
+}
+
+
+def prune_harmonized_dataset(client: bigquery.Client) -> None:
+    dataset_ref = f"{PROJECT_ID}.{HARMONIZED_DATASET}"
+    for table_item in client.list_tables(dataset_ref):
+        table_ref = f"{PROJECT_ID}.{table_item.dataset_id}.{table_item.table_id}"
+        if table_ref in KEEP_TABLES:
+            continue
+        client.delete_table(table_ref, not_found_ok=True)
+        print(f"🧹 [Prune Effect]: deleted obsolete harmonized object {table_ref}")
 
 
 def main() -> None:
@@ -30,20 +45,23 @@ def main() -> None:
     )
 
     for stage_name, table_ref, sql in stages:
-        print(f"--- [Supervisor Registry Stage]: Building {stage_name} table {table_ref} ---")
+        print(f"--- [Checkpoint Build]: {stage_name} -> {table_ref} ---")
         try:
-            # [AI-Agent: Codex]: Materialize each review checkpoint with one explicit
-            # CREATE OR REPLACE TABLE query so the UI exposes a single authoritative SQL statement.
             job = client.query(sql)
             job.result()
             table = client.get_table(table_ref)
         except Exception as exc:
-            print(f"❌ [Stage Effect]: {stage_name} build failed. Error: {exc}")
+            print(f"❌ [Checkpoint Effect]: {stage_name} build failed. Error: {exc}")
             sys.exit(1)
+        print(f"✅ [Checkpoint Effect]: {stage_name} table ready with {table.num_rows} rows.")
 
-        print(f"✅ [Stage Effect]: {stage_name} table ready with {table.num_rows} rows.")
+    try:
+        prune_harmonized_dataset(client)
+    except Exception as exc:
+        print(f"❌ [Prune Effect]: failed to prune obsolete harmonized outputs. Error: {exc}")
+        sys.exit(1)
 
-    print("🎉 [Final Effect]: BRCA pre-GME and final registry tables are ready for supervisor review.")
+    print("🎉 [Final Effect]: only the checkpoint tables remain in arab_acmg_harmonized.")
 
 
 if __name__ == "__main__":

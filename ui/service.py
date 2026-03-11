@@ -23,19 +23,17 @@ try:  # pragma: no cover - import path differs between local package and Cloud R
     )
     from ui.export_workbook import PRE_GME_EXPORT_FILENAME, build_pre_gme_workbook_bytes
     from ui.registry_queries import (
-        CLINVAR_TABLE_REF,
-        GENE_WINDOWS_TABLE_REF,
-        GME_TABLE_REF,
-        GNOMAD_EXOMES_TABLE_REF,
-        GNOMAD_GENOMES_TABLE_REF,
         PRE_GME_REGISTRY_TABLE_REF,
         REGISTRY_TABLE_REF,
         build_pre_gme_export_sql,
+        build_pre_gme_source_count_sql,
         build_pre_gme_sample_sql,
+        build_final_source_count_sql,
         build_raw_sample_sql,
         build_registry_sample_sql,
         build_registry_step_sql,
         build_sample_sql,
+        gene_windows_payload,
     )
 except ModuleNotFoundError:  # pragma: no cover - runtime fallback inside the ui/ build context
     from catalog import (  # type: ignore[no-redef]
@@ -51,19 +49,17 @@ except ModuleNotFoundError:  # pragma: no cover - runtime fallback inside the ui
     )
     from export_workbook import PRE_GME_EXPORT_FILENAME, build_pre_gme_workbook_bytes
     from registry_queries import (  # type: ignore[no-redef]
-        CLINVAR_TABLE_REF,
-        GENE_WINDOWS_TABLE_REF,
-        GME_TABLE_REF,
-        GNOMAD_EXOMES_TABLE_REF,
-        GNOMAD_GENOMES_TABLE_REF,
         PRE_GME_REGISTRY_TABLE_REF,
         REGISTRY_TABLE_REF,
         build_pre_gme_export_sql,
+        build_pre_gme_source_count_sql,
         build_pre_gme_sample_sql,
+        build_final_source_count_sql,
         build_raw_sample_sql,
         build_registry_sample_sql,
         build_registry_step_sql,
         build_sample_sql,
+        gene_windows_payload,
     )
 
 UI_ROOT: Final[Path] = Path(__file__).resolve().parent
@@ -162,74 +158,16 @@ def registry_row_count() -> int | None:
 
 
 def registry_scientific_metrics() -> dict[str, object]:
-    window_sql = f"""
-SELECT gene_symbol, chrom38, start_pos38, end_pos38, coordinate_source, coordinate_source_url, accessed_at
-FROM `{GENE_WINDOWS_TABLE_REF}`
-ORDER BY gene_symbol
-""".strip()
-    mismatch_sql = f"""
-WITH gene_windows AS (
-  SELECT gene_symbol, chrom_nochr, start_pos38, end_pos38
-  FROM `{GENE_WINDOWS_TABLE_REF}`
-),
-window_audit AS (
-  SELECT
-    gene_symbol,
-    SUM(clinvar_record_count) AS clinvar_window_rows,
-    SUM(gene_info_mismatch_count) AS gene_info_mismatch_rows
-  FROM `{CLINVAR_TABLE_REF}`
-  GROUP BY gene_symbol
-),
-outside_window AS (
-  SELECT
-    gene_windows.gene_symbol,
-    COUNT(*) AS gene_label_outside_window_rows
-  FROM `genome-services-platform.arab_acmg_harmonized.stg_clinvar_variants` AS clinvar
-  JOIN gene_windows
-    ON REGEXP_CONTAINS(COALESCE(clinvar.gene_info, ''), CONCAT(r'(^|\\|)', gene_windows.gene_symbol, ':'))
-  WHERE NOT (
-    clinvar.chrom_norm = gene_windows.chrom_nochr
-    AND clinvar.pos BETWEEN gene_windows.start_pos38 AND gene_windows.end_pos38
-  )
-  GROUP BY gene_windows.gene_symbol
-)
-SELECT
-  window_audit.gene_symbol,
-  window_audit.clinvar_window_rows,
-  window_audit.gene_info_mismatch_rows,
-  COALESCE(outside_window.gene_label_outside_window_rows, 0) AS gene_label_outside_window_rows
-FROM window_audit
-LEFT JOIN outside_window USING (gene_symbol)
-ORDER BY gene_symbol
-""".strip()
-    source_sql = f"""
-SELECT 'clinvar' AS source_name, COUNT(*) AS row_count FROM `{CLINVAR_TABLE_REF}`
-UNION ALL
-SELECT 'gnomad_genomes', COUNT(*) FROM `{GNOMAD_GENOMES_TABLE_REF}`
-UNION ALL
-SELECT 'gnomad_exomes', COUNT(*) FROM `{GNOMAD_EXOMES_TABLE_REF}`
-UNION ALL
-SELECT 'gme', COUNT(*) FROM `{GME_TABLE_REF}`
-ORDER BY source_name
-""".strip()
     return {
-        "gene_windows": run_query(window_sql)["rows"],
-        "clinvar_gene_audit": run_query(mismatch_sql)["rows"],
-        "source_row_counts": run_query(source_sql)["rows"],
+        "gene_windows": gene_windows_payload(),
+        "source_row_counts": run_query(build_final_source_count_sql())["rows"],
     }
 
 
 def pre_gme_metrics() -> dict[str, object]:
-    source_sql = f"""
-SELECT 'clinvar' AS source_name, COUNT(*) AS row_count FROM `{CLINVAR_TABLE_REF}`
-UNION ALL
-SELECT 'gnomad_genomes', COUNT(*) FROM `{GNOMAD_GENOMES_TABLE_REF}`
-UNION ALL
-SELECT 'gnomad_exomes', COUNT(*) FROM `{GNOMAD_EXOMES_TABLE_REF}`
-ORDER BY source_name
-""".strip()
     return {
-        "source_row_counts": run_query(source_sql)["rows"],
+        "gene_windows": gene_windows_payload(),
+        "source_row_counts": run_query(build_pre_gme_source_count_sql())["rows"],
     }
 
 

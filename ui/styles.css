@@ -379,6 +379,40 @@ h1 {
 .glossary-name {
   color: var(--accent-soft);
   font-family: var(--mono);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.glossary-item.required {
+  border-left: 3px solid rgba(53, 167, 255, 0.55);
+  padding-left: 10px;
+}
+
+.glossary-item.extra {
+  border-left: 3px solid rgba(247, 185, 85, 0.65);
+  padding-left: 10px;
+}
+
+.column-kind {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+}
+
+.column-kind.required {
+  background: rgba(53, 167, 255, 0.16);
+  color: var(--accent-soft);
+}
+
+.column-kind.extra {
+  background: rgba(247, 185, 85, 0.16);
+  color: var(--progress);
 }
 
 .action-row {
@@ -426,6 +460,11 @@ h1 {
   color: var(--accent-soft);
   font-family: var(--mono);
   font-size: 0.8rem;
+}
+
+.header-chip.extra {
+  background: rgba(247, 185, 85, 0.18);
+  color: var(--progress);
 }
 
 .query-result {
