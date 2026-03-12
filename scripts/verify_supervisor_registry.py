@@ -1,66 +1,82 @@
-"""Verify the BRCA checkpoint tables and ensure obsolete harmonized outputs are gone."""
+"""Verify the frozen supervisor-review artifacts and the raw-only BigQuery posture."""
 
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
 from typing import Final
 
-from google.cloud import bigquery
+from google.cloud import bigquery, storage
 
 ROOT: Final[Path] = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
-
-from ui.registry_queries import HARMONIZED_DATASET, PRE_GME_REGISTRY_TABLE_REF, REGISTRY_TABLE_REF
-
+UI_BUNDLE: Final[Path] = ROOT / "ui" / "review_bundle.json"
 PROJECT_ID: Final[str] = "genome-services-platform"
-DATASETS: Final[tuple[str, ...]] = (
-    "arab_acmg_raw",
-    "arab_acmg_harmonized",
-    "arab_acmg_results",
+REQUIRED_RAW_TABLES: Final[tuple[str, ...]] = (
+    "clinvar_raw_vcf",
+    "gnomad_v4_1_genomes_chr13_raw",
+    "gnomad_v4_1_genomes_chr17_raw",
+    "gnomad_v4_1_exomes_chr13_raw",
+    "gnomad_v4_1_exomes_chr17_raw",
+    "gme_hg38_raw",
 )
-EXPECTED_HARMONIZED_TABLES: Final[set[str]] = {
-    PRE_GME_REGISTRY_TABLE_REF.split('.')[-1],
-    REGISTRY_TABLE_REF.split('.')[-1],
-}
 
 
 def main() -> None:
-    client = bigquery.Client(project=PROJECT_ID)
     ok = True
 
-    print("--- BRCA Checkpoint Verification ---")
-    for table_ref in (PRE_GME_REGISTRY_TABLE_REF, REGISTRY_TABLE_REF):
-        try:
-            table = client.get_table(table_ref)
-            print(f"checkpoint_table={table_ref} rows={table.num_rows}")
-            if int(table.num_rows) <= 0:
-                ok = False
-        except Exception as exc:
-            print(f"checkpoint_table_error[{table_ref}]={exc}")
-            ok = False
+    print("--- Frozen Supervisor Verification ---")
+    if not UI_BUNDLE.exists():
+        print(f"review_bundle_missing={UI_BUNDLE}")
+        sys.exit(1)
 
-    harmonized_tables = {table.table_id for table in client.list_tables(f"{PROJECT_ID}.{HARMONIZED_DATASET}")}
-    print(f"harmonized_tables={sorted(harmonized_tables)}")
-    if harmonized_tables != EXPECTED_HARMONIZED_TABLES:
+    bundle = json.loads(UI_BUNDLE.read_text(encoding="utf-8"))
+    artifacts = bundle.get("artifacts", {})
+    print(f"bundle_generated_at={bundle.get('generated_at')}")
+    print(f"freeze_prefix={artifacts.get('freeze_prefix')}")
+
+    bq_client = bigquery.Client(project=PROJECT_ID)
+    raw_tables = {table.table_id for table in bq_client.list_tables(f"{PROJECT_ID}.arab_acmg_raw")}
+    print(f"raw_tables={sorted(raw_tables)}")
+    if raw_tables != set(REQUIRED_RAW_TABLES):
         ok = False
 
-    for dataset_id in DATASETS:
-        dataset = client.get_dataset(f"{PROJECT_ID}.{dataset_id}")
-        is_public = any(
-            entry.role == "READER" and entry.entity_id == "allAuthenticatedUsers"
-            for entry in dataset.access_entries
-        )
-        print(f"dataset={dataset_id} public_reader={is_public}")
-        if not is_public:
+    for dataset_id in ("arab_acmg_harmonized", "arab_acmg_results"):
+        remaining = [table.table_id for table in bq_client.list_tables(f"{PROJECT_ID}.{dataset_id}")]
+        print(f"dataset={dataset_id} remaining_tables={remaining}")
+        if remaining:
             ok = False
 
+    storage_client = storage.Client(project=PROJECT_ID)
+    bucket = storage_client.bucket(artifacts["bucket"])
+    for key in ("pre_gme_parquet_uri", "pre_gme_xlsx_uri", "final_parquet_uri", "final_csv_uri", "bundle_uri", "manifest_uri"):
+        uri = artifacts.get(key)
+        if not uri or not uri.startswith("gs://"):
+            print(f"artifact_uri_invalid[{key}]={uri}")
+            ok = False
+            continue
+        _, remainder = uri.split("gs://", 1)
+        bucket_name, object_name = remainder.split("/", 1)
+        if bucket_name != artifacts["bucket"]:
+            print(f"artifact_bucket_mismatch[{key}]={uri}")
+            ok = False
+            continue
+        blob = bucket.blob(object_name)
+        exists = blob.exists()
+        print(f"artifact[{key}] exists={exists} uri={uri}")
+        if not exists:
+            ok = False
+
+    public_url = artifacts.get("final_csv_public_url")
+    print(f"final_csv_public_url={public_url}")
+    if not public_url or not public_url.startswith("https://storage.googleapis.com/"):
+        ok = False
+
     if ok:
-        print("✅ Checkpoint verification passed.")
+        print("✅ Frozen supervisor verification passed.")
         sys.exit(0)
 
-    print("❌ Checkpoint verification failed.")
+    print("❌ Frozen supervisor verification failed.")
     sys.exit(1)
 
 

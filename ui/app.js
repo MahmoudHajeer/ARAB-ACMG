@@ -204,10 +204,11 @@ function renderScientificMetrics(metrics) {
   const windows = metrics.gene_windows || [];
   const clinvarAudit = metrics.clinvar_gene_audit || [];
   const sourceCounts = metrics.source_row_counts || [];
+  const frozenAt = metrics.frozen_at || "frozen snapshot";
 
   return `
     <details class="details-card">
-      <summary>Live scientific evidence</summary>
+      <summary>Frozen scientific evidence (${escapeHtml(frozenAt)})</summary>
       <div class="note-stack">
         ${windows
           .map(
@@ -233,9 +234,10 @@ function renderScientificMetrics(metrics) {
 
 function renderSourceCounts(metrics) {
   const sourceCounts = metrics.source_row_counts || [];
+  const frozenAt = metrics.frozen_at || "frozen snapshot";
   return `
     <details class="details-card">
-      <summary>Live source counts</summary>
+      <summary>Frozen source counts (${escapeHtml(frozenAt)})</summary>
       <div class="note-stack">
         ${sourceCounts
           .map(
@@ -270,7 +272,7 @@ function renderQueryResult(targetId, payload) {
 
   root.innerHTML = `
     <details class="details-card">
-      <summary>Live query used</summary>
+      <summary>Frozen extraction evidence</summary>
       <div class="query-meta">
         <pre class="sql-box">${escapeHtml(payload.query_sql)}</pre>
       </div>
@@ -316,17 +318,21 @@ function renderDatasetCollection({ targetId, payload, sampleAttr, samplePath }) 
   const root = document.getElementById(targetId);
   root.innerHTML = payload.datasets
     .map(
-      (entry) => `
+      (entry) => {
+        const downloadLink = entry.download_url
+          ? `<a class="action-button secondary-link" href="${entry.download_url}">Download static file</a>`
+          : "";
+        return `
       <article class="explorer-card">
         <div class="card-head">
           <div>
             <div class="sample-title">${escapeHtml(entry.title)}</div>
             <div class="metric-sub">${escapeHtml(entry.table_ref)}</div>
-            <div class="metric-sub">live row count: ${(entry.row_count || 0).toLocaleString()}</div>
+            <div class="metric-sub">frozen row count: ${(entry.row_count || 0).toLocaleString()}</div>
           </div>
           <div class="action-row compact-actions">
-            <button type="button" class="action-button" data-${sampleAttr}="${entry.key}">Fetch 10 live rows</button>
-            <a class="action-button secondary-link" href="${entry.download_url}">Download full CSV</a>
+            <button type="button" class="action-button" data-${sampleAttr}="${entry.key}">Show frozen 10 rows</button>
+            ${downloadLink}
           </div>
         </div>
         <p class="card-summary">${escapeHtml(entry.simple_summary)}</p>
@@ -340,7 +346,8 @@ function renderDatasetCollection({ targetId, payload, sampleAttr, samplePath }) 
         </details>
         <div id="${sampleAttr}-sample-${entry.key}" class="query-result"></div>
       </article>
-    `
+    `;
+      }
     )
     .join("");
 
@@ -348,8 +355,8 @@ function renderDatasetCollection({ targetId, payload, sampleAttr, samplePath }) 
     button.addEventListener("click", async () => {
       const key = button.getAttribute(`data-${sampleAttr}`);
       const target = `${sampleAttr}-sample-${key}`;
-      setLoading(target, "Running live BigQuery sample query...");
-      await runButtonAction(button, "Running query...", async () => {
+      setLoading(target, "Loading frozen sample...");
+      await runButtonAction(button, "Loading sample...", async () => {
         try {
           const samplePayload = await fetchJson(`${samplePath}/${key}/sample`);
           renderQueryResult(target, samplePayload);
@@ -373,8 +380,7 @@ function renderStepCards(targetId, steps) {
             <div class="metric-sub">${escapeHtml(step.simple)}</div>
           </div>
           <div class="action-row compact-actions">
-            <button type="button" class="action-button secondary" data-step-sample="${step.id}">Run 10-row sample</button>
-            <a class="action-button secondary-link" href="/api/registry/steps/${step.id}/download.csv">Download full CSV</a>
+            <button type="button" class="action-button secondary" data-step-sample="${step.id}">Show frozen 10 rows</button>
           </div>
         </div>
         <details class="details-card">
@@ -391,8 +397,8 @@ function renderStepCards(targetId, steps) {
     button.addEventListener("click", async () => {
       const stepId = button.dataset.stepSample;
       const target = `step-sample-${stepId}`;
-      setLoading(target, "Running live step query...");
-      await runButtonAction(button, "Running query...", async () => {
+      setLoading(target, "Loading frozen step sample...");
+      await runButtonAction(button, "Loading sample...", async () => {
         try {
           const payload = await fetchJson(`/api/registry/steps/${stepId}/sample`);
           renderQueryResult(target, payload);
@@ -426,7 +432,7 @@ function renderPreGmeMeta(payload) {
     <article class="metric-item">
       <div class="metric-title">${escapeHtml(payload.title)}</div>
       <div class="metric-sub">${escapeHtml(payload.table_ref)}</div>
-      <div class="metric-sub">live row count: ${payload.row_count === null ? "not built yet" : Number(payload.row_count).toLocaleString()}</div>
+      <div class="metric-sub">frozen row count: ${payload.row_count === null ? "not built yet" : Number(payload.row_count).toLocaleString()}</div>
       <div class="metric-sub">${escapeHtml(payload.scope_note)}</div>
       ${renderNoteStack(payload.accuracy_notes)}
       <details class="details-card">
@@ -444,8 +450,6 @@ function renderPreGmeMeta(payload) {
   document.getElementById("pre-gme-header-preview").innerHTML = payload.export_header_columns
     .map((column) => `<div class="header-chip ${kindByName[column] || "required"}">${escapeHtml(column)}</div>`)
     .join("");
-  document.getElementById("pre-gme-download-link").setAttribute("href", payload.download_url);
-  document.getElementById("pre-gme-download-csv-link").setAttribute("href", payload.csv_download_url);
 }
 
 function renderFinalRegistryMeta(payload) {
@@ -454,7 +458,7 @@ function renderFinalRegistryMeta(payload) {
     <article class="metric-item">
       <div class="metric-title">${escapeHtml(payload.title)}</div>
       <div class="metric-sub">${escapeHtml(payload.table_ref)}</div>
-      <div class="metric-sub">live row count: ${payload.row_count === null ? "not built yet" : Number(payload.row_count).toLocaleString()}</div>
+      <div class="metric-sub">frozen row count: ${payload.row_count === null ? "not built yet" : Number(payload.row_count).toLocaleString()}</div>
       <div class="metric-sub">${escapeHtml(payload.scope_note)}</div>
       ${renderNoteStack(payload.accuracy_notes)}
       <details class="details-card">
@@ -471,7 +475,7 @@ function renderFinalRegistryMeta(payload) {
 }
 
 function renderOverviewHeader(payload) {
-  document.getElementById("generated-at").textContent = `Live supervisor state refreshed: ${payload.generated_at}`;
+  document.getElementById("generated-at").textContent = `Supervisor state refreshed: ${payload.generated_at}`;
   document.getElementById("last-successful-step").textContent = payload.last_successful_step
     ? `Latest confirmed checkpoint: ${payload.last_successful_step}`
     : "Latest confirmed checkpoint: not recorded yet.";
@@ -506,8 +510,8 @@ function wireGlobalButtons() {
 
   preGmeButton.addEventListener("click", async () => {
     const target = "pre-gme-sample";
-    setLoading(target, "Running live pre-GME sample query...");
-    await runButtonAction(preGmeButton, "Running query...", async () => {
+    setLoading(target, "Loading frozen pre-GME sample...");
+    await runButtonAction(preGmeButton, "Loading sample...", async () => {
       try {
         const payload = await fetchJson("/api/pre-gme/sample");
         renderQueryResult(target, payload);
@@ -519,8 +523,8 @@ function wireGlobalButtons() {
 
   registryButton.addEventListener("click", async () => {
     const target = "registry-sample";
-    setLoading(target, "Running live final-registry sample query...");
-    await runButtonAction(registryButton, "Running query...", async () => {
+    setLoading(target, "Loading frozen final-registry sample...");
+    await runButtonAction(registryButton, "Loading sample...", async () => {
       try {
         const payload = await fetchJson("/api/registry/sample");
         renderQueryResult(target, payload);
@@ -543,7 +547,7 @@ async function loadRawPage() {
     return;
   }
 
-  setLoading("raw-dataset-explorer", "Loading live raw dataset catalog...");
+  setLoading("raw-dataset-explorer", "Loading frozen raw dataset catalog...");
   const rawPayload = await fetchResource("raw-datasets", "/api/raw-datasets");
   renderDatasetCollection({
     targetId: "raw-dataset-explorer",
@@ -559,9 +563,9 @@ async function loadHarmonizationPage() {
     return;
   }
 
-  setLoading("harmonization-science", "Loading scientific checkpoint evidence...");
-  setLoading("harmonized-dataset-explorer", "Loading checkpoint tables...");
-  setLoading("harmonization-steps", "Loading evidence steps...");
+  setLoading("harmonization-science", "Loading frozen scientific checkpoint evidence...");
+  setLoading("harmonized-dataset-explorer", "Loading frozen checkpoint tables...");
+  setLoading("harmonization-steps", "Loading frozen evidence steps...");
 
   const [harmonizedPayload, registryPayload] = await Promise.all([
     fetchResource("checkpoint-datasets", "/api/datasets"),
@@ -584,7 +588,7 @@ async function loadPreGmePage() {
     return;
   }
 
-  setLoading("pre-gme-meta", "Loading pre-GME checkpoint metadata...");
+  setLoading("pre-gme-meta", "Loading frozen pre-GME checkpoint metadata...");
   const payload = await fetchResource("pre-gme-meta", "/api/pre-gme");
   renderPreGmeMeta(payload);
   renderedPages.add("pre-gme");
@@ -595,8 +599,8 @@ async function loadFinalPage() {
     return;
   }
 
-  setLoading("registry-meta", "Loading final checkpoint metadata...");
-  setLoading("final-steps", "Loading final-stage evidence...");
+  setLoading("registry-meta", "Loading frozen final checkpoint metadata...");
+  setLoading("final-steps", "Loading frozen final-stage evidence...");
   const payload = await fetchResource("registry-meta", "/api/registry");
   renderFinalRegistryMeta(payload);
   renderStepCards("final-steps", workflowPayload.final_steps);

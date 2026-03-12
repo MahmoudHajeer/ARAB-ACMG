@@ -18,6 +18,7 @@
 ## Data Processing & Analysis (Python 3.14+**)
 - **Pandas / Dask**: For tabular data manipulation (Dask for datasets exceeding memory).
 - **PyArrow / Parquet**: Columnar intermediate storage for large datasets and reproducible snapshots (stored in GCS, queried/loaded into BigQuery).
+- **DuckDB**: Preferred low-cost query engine for frozen Parquet checkpoint artifacts stored in GCS after BigQuery-backed raw extraction is complete.
 - **NumPy**: For optimized numerical operations.
 - **SciPy / Statsmodels**: For rigorous statistical hypothesis testing on misclassification shifts.
 
@@ -40,5 +41,6 @@
 - **Docker**: For containerizing analysis environments to ensure cloud-to-local parity.
 
 ## Supervisor Runtime Interface
-- **FastAPI**: Lightweight backend for the supervisor UI so sample requests hit live BigQuery tables instead of relying only on static snapshots.
+- **FastAPI**: Lightweight backend for the supervisor UI, now serving frozen JSON/GCS artifacts instead of live BigQuery queries.
 - **Uvicorn**: ASGI runtime for local testing and Cloud Run deployment of the supervisor service.
+- **Cloud Storage static artifacts**: Frozen review bundle JSON, Parquet checkpoints, and the final CSV download are published to GCS so the UI does not consume BigQuery query quota at runtime.
