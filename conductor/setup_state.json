@@ -1,3 +1,3 @@
 {
-  "last_successful_step": "T002 step 5.8 finalized on 2026-03-12: T002 is now closed as a raw-freeze/static-review milestone, and T003 is the next active stage starting at task 1.3 with GCS/DuckDB-first harmonized artifacts."
+  "last_successful_step": "T003 step 1.3 finalized on 2026-03-12: transformation metadata is now defined for GCS/Parquet harmonized artifacts, future tracks no longer depend on BigQuery, and Saudi PMC10474689 plus UAE PMC12011969 source packages are frozen in GCS with de-identified extracts. T003 task 2.1 is next."
 }

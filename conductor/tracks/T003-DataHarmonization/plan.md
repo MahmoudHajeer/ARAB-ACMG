@@ -3,7 +3,7 @@
 ## Phase 1: Canonical Keys and Transform Contracts
 - [x] 1.1 Confirm harmonized schema and `variant_key` definition per [conductor/data-contracts.md](../../data-contracts.md). (`e7c50e8`)
 - [x] 1.2 Redefine the harmonized checkpoint schema around the mandated publication-facing header and a single-table-per-checkpoint model; extras may exist only as clearly marked additions. (`600bd3e`)
-- [~] 1.3 Define required transformation metadata fields (`parse_status`, `source_artifact_*`, `liftover_status`, `norm_status`, tool versions) and remove any remaining downstream BigQuery dependency from active plans/specs.
+- [x] 1.3 Define required transformation metadata fields (`parse_status`, `source_artifact_*`, `liftover_status`, `norm_status`, tool versions) and remove any remaining downstream BigQuery dependency from active plans/specs. (`7693bb7`)
 
 ## Phase 2: Genome Build Standardization (LiftOver)
 - [ ] 2.1 Identify any sources not already GRCh38 and document their `source_build`.
@@ -26,4 +26,4 @@
 
 ---
 **Track Status**: `[~]`
-**Checkpoint SHA**: `[checkpoint: f1c2974]`
+**Checkpoint SHA**: `[checkpoint: 7693bb7]`

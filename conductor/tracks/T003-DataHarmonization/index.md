@@ -74,3 +74,13 @@ Do not rewrite previous entries.
 - Files changed: `conductor/tracks/T003-DataHarmonization/plan.md`, `conductor/tracks/T003-DataHarmonization/index.md`
 - Verification run + result: `state update only before implementation`
 - Next exact action: Update shared contracts/specs/plans for GCS/Parquet/DuckDB-only downstream work, then freeze any newly discovered public Arab dataset with provenance metadata.
+
+### Entry 8
+- Timestamp: `2026-03-12T22:35:00+03:00`
+- Agent: `Codex`
+- Task ID: `1.3`
+- Status: `Completed`
+- Summary: Defined the shared transformation metadata contract (`parse_status`, source artifact/row lineage, liftover/norm tool provenance), removed future BigQuery dependence from active T003-T005 plans, and froze two additional Arab study source packages to GCS with de-identified downstream extracts. The newly frozen sources are Saudi `PMC10474689` and UAE `PMC12011969`.
+- Files changed: `conductor/data-contracts.md`, `conductor/product-guidelines.md`, `conductor/source-freeze.md`, `conductor/tech-stack.md`, `conductor/tracks.md`, `conductor/tracks/T003-DataHarmonization/spec.md`, `conductor/tracks/T003-DataHarmonization/plan.md`, `conductor/tracks/T004-AnalysisEngine/*`, `conductor/tracks/T005-StatsResults/*`, `conductor/checkpoints/2026-03-12-t003-arab-study-intake.md`, `environment.yml`, `scripts/freeze_arab_study_sources.py`, `scripts/verify_arab_study_sources.py`, `tests/test_freeze_arab_study_sources.py`
+- Verification run + result: `python3 -m pytest -q tests (57 passed)`, `python3 scripts/freeze_arab_study_sources.py (pass: Saudi extract rows=38; UAE family-screening rows=18; UAE cancer-cohort rows=65)`, `python3 scripts/verify_arab_study_sources.py (pass)`, `python3 scripts/update_ui_overview_state.py (pass)`
+- Next exact action: Start task `2.1` in `conductor/tracks/T003-DataHarmonization/plan.md`, document `source_build` and coordinate readiness for ClinVar, gnomAD, GME, Saudi `PMC10474689`, and UAE `PMC12011969`, then decide which sources require liftover versus direct GRCh38 normalization.

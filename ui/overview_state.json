@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-12T15:29:06.167559+00:00",
+  "generated_at": "2026-03-12T19:26:40.761899+00:00",
   "tracks": [
     {
       "track_id": "T001",
@@ -20,7 +20,7 @@
     {
       "track_id": "T003",
       "name": "Data Harmonization & Normalization",
-      "description": "Implementing pipelines (bcftools, vt) for variant normalization and lifting over all data to GRCh38.",
+      "description": "Building GCS-hosted Parquet harmonization pipelines (liftover, normalization, provenance) and canonical variant snapshots.",
       "status_symbol": "~",
       "status_label": "in_progress",
       "folder": "conductor/tracks/T003-DataHarmonization/"
@@ -28,7 +28,7 @@
     {
       "track_id": "T004",
       "name": "Master Dataset & Analysis Engine",
-      "description": "Building the harmonized Master Dataset in BigQuery and implementing the ACMG rule-based engine (PM2, BS1, etc.).",
+      "description": "Building the harmonized master dataset from frozen Parquet artifacts and implementing the ACMG rule-based engine (PM2, BS1, etc.) without managed-query dependencies.",
       "status_symbol": " ",
       "status_label": "not_started",
       "folder": "conductor/tracks/T004-AnalysisEngine/"
@@ -36,7 +36,7 @@
     {
       "track_id": "T005",
       "name": "Statistical Evaluation & Results",
-      "description": "Performing statistical analysis of classification shifts and generating high-quality research visualizations in Vertex AI.",
+      "description": "Performing statistical analysis of classification shifts from frozen artifacts and generating publication-grade figures/tables with low-cost local or GCS-backed tooling.",
       "status_symbol": " ",
       "status_label": "not_started",
       "folder": "conductor/tracks/T005-StatsResults/"
@@ -61,11 +61,11 @@
     },
     "T003": {
       "total_tasks": 14,
-      "done_tasks": 4,
+      "done_tasks": 5,
       "in_progress_tasks": 0,
-      "todo_tasks": 10,
-      "done_pct": 28.6,
-      "progress_pct": 28.6
+      "todo_tasks": 9,
+      "done_pct": 35.7,
+      "progress_pct": 35.7
     },
     "T004": {
       "total_tasks": 11,
@@ -99,5 +99,5 @@
       "status": "pass"
     }
   ],
-  "last_successful_step": "T002 step 5.8 finalized on 2026-03-12: T002 is now closed as a raw-freeze/static-review milestone, and T003 is the next active stage starting at task 1.3 with GCS/DuckDB-first harmonized artifacts."
+  "last_successful_step": "T003 step 1.3 finalized on 2026-03-12: transformation metadata is now defined for GCS/Parquet harmonized artifacts, future tracks no longer depend on BigQuery, and Saudi PMC10474689 plus UAE PMC12011969 source packages are frozen in GCS with de-identified extracts. T003 task 2.1 is next."
 }
