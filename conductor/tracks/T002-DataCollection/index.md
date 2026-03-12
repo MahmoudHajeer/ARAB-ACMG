@@ -274,3 +274,13 @@ Do not rewrite previous entries.
 - Files changed: `conductor/tracks/T002-DataCollection/plan.md`, `conductor/tracks/T002-DataCollection/index.md`
 - Verification run + result: `state update only before implementation`
 - Next exact action: Rescope T002 around the finished raw-freeze milestone, sync T003 to the GCS/DuckDB-first architecture, then refresh `tracks.md`, `setup_state.json`, and the bundled UI overview state.
+
+### Entry 28
+- Timestamp: `2026-03-12T18:55:00+03:00`
+- Agent: `Codex`
+- Task ID: `5.8`
+- Status: `Completed`
+- Summary: Closed T002 as a completed raw-freeze/static-review milestone and moved non-gating expansion work into explicit deferred backlog. T003 is now the next active stage, with its spec/plan aligned to the current GCS/DuckDB-first architecture.
+- Files changed: `conductor/tracks/T002-DataCollection/spec.md`, `conductor/tracks/T002-DataCollection/plan.md`, `conductor/tracks/T002-DataCollection/index.md`, `conductor/tracks/T003-DataHarmonization/spec.md`, `conductor/tracks/T003-DataHarmonization/plan.md`, `conductor/tracks/T003-DataHarmonization/index.md`, `conductor/tracks.md`, `conductor/setup_state.json`, `ui/overview_state.json`
+- Verification run + result: `python3 scripts/update_ui_overview_state.py (pass)`, `python3 -m pytest -q tests/test_ui_overview.py tests/test_ui_service.py (18 passed)`
+- Next exact action: Start `T003/1.3` and define the transformation metadata contract (`liftover_status`, `norm_status`, tool/version provenance) for the frozen harmonized artifacts before any new normalization or liftover work.

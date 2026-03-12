@@ -36,7 +36,7 @@
 - [x] 5.5 Converge review/export behavior to the current low-cost policy: only the final frozen registry CSV remains downloadable at runtime. `f1c2974`
 - [x] 5.6 Harden the supervisor UI and then complete the cost-control pivot to a static GCS-backed runtime. `f1c2974`
 - [x] 5.7 Replace live BigQuery-backed supervisor interactions with frozen static review artifacts, keep BigQuery only for raw source-of-truth tables, and move the final harmonized deliverable to GCS-first distribution. `f1c2974` *(Explicit user reprioritization on 2026-03-12 to minimize BigQuery spend; allowed in parallel with `4.2-5.3` because it only restructures access to already frozen outputs.)*
-- [~] 5.8 Finalize the T002 milestone boundary, move non-gating backlog items out of the active task queue, and prepare T003 as the next active stage after the cost-control pivot.
+- [x] 5.8 Finalize the T002 milestone boundary, move non-gating backlog items out of the active task queue, and prepare T003 as the next active stage after the cost-control pivot. `88d11ff`
 
 ## Deferred Expansion Backlog (Not Gating T002 Closure)
 - Future Arab/Middle Eastern raw sources beyond GME:
@@ -49,5 +49,5 @@
   - expose refreshed review snapshots only after a new approved freeze
 
 ---
-**Track Status**: `[~]`
-**Checkpoint SHA**: `[checkpoint: f1c2974]`
+**Track Status**: `[x]`
+**Checkpoint SHA**: `[checkpoint: 88d11ff]`
