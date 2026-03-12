@@ -33,7 +33,8 @@
 - [ ] 5.2 Produce a data dictionary and provenance table for all `arab_acmg_raw` tables.
 - [ ] 5.3 Create a raw-layer inventory report (row counts, null rates, duplicates).
 - [x] 5.4 Build a supervisor-facing query explorer with live 50-row sample fetches per dataset and a first registry table preview that can absorb new sources incrementally. `34ed035` *(Enhanced on 2026-03-11 with workflow pages and a pre-GME XLSX review export modeled on `example.xlsx`; live deployment stabilized with `f72ad8a` to fix reserved-column sampling in `ui/status_snapshot.json`.)*
+- [x] 5.5 Add full CSV downloads for every supervisor-visible preview surface (raw tables, checkpoint tables, and query-only evidence steps). `8f8518f` *(Parallel refinement allowed while `4.2-5.3` remain blocked/deferred because it operates only on already frozen tables and queries.)*
 
 ---
 **Track Status**: `[~]`
-**Checkpoint SHA**: `[checkpoint: 2026-03-08-t002-raw-load-ui-samples]`
+**Checkpoint SHA**: `[checkpoint: 8f8518f]`

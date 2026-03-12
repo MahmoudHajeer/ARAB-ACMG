@@ -1,3 +1,3 @@
 {
-  "last_successful_step": "T003 steps 1.2, 4.1, and 4.2 finalized on 2026-03-11: the BRCA harmonized layer was reduced to two checkpoint tables only, the required publication-facing header was enforced as the schema floor, extras were marked distinctly in the UI/XLSX export, obsolete per-source harmonized outputs were removed from arab_acmg_harmonized, and Cloud Run revision supervisor-ui-00010-qql served the live metadata and sample endpoints successfully."
+  "last_successful_step": "T002 step 5.5 finalized on 2026-03-12: the supervisor UI now exposes full CSV downloads for every previewable raw table, checkpoint table, and query-only evidence step; status_snapshot was refreshed; and Cloud Run revision supervisor-ui-00011-24n served the new CSV routes successfully."
 }

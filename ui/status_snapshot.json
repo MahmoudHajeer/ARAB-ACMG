@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-11T19:20:36.076243+00:00",
+  "generated_at": "2026-03-12T09:27:24.258612+00:00",
   "project_id": "genome-services-platform",
   "tracks": [
     {
@@ -58,12 +58,12 @@
       "progress_pct": 100.0
     },
     "T002": {
-      "total_tasks": 24,
-      "done_tasks": 18,
+      "total_tasks": 25,
+      "done_tasks": 19,
       "in_progress_tasks": 0,
       "todo_tasks": 6,
-      "done_pct": 75.0,
-      "progress_pct": 75.0
+      "done_pct": 76.0,
+      "progress_pct": 76.0
     },
     "T003": {
       "total_tasks": 14,
@@ -160,16 +160,8 @@
   ],
   "latest_t002_verification": [
     {
-      "command": "gcloud run deploy supervisor-ui --source ui --region europe-west1 --project genome-services-platform --allow-unauthenticated --quiet (pass: revision supervisor-ui-00008-dnp)",
-      "status": "pass"
-    },
-    {
-      "command": "curl -sS https://supervisor-ui-142306018756.europe-west1.run.app/status_snapshot.json (pass: generated_at=2026-03-11T14:41:43.198154+00:00)",
-      "status": "pass"
-    },
-    {
-      "command": "Playwright page evaluate fetch('./status_snapshot.json', { cache: 'no-store' }) (pass: generated_at=2026-03-11T14:41:43.198154+00:00)",
-      "status": "pass"
+      "command": "state update only before implementation",
+      "status": "info"
     }
   ],
   "bigquery_metrics": {
