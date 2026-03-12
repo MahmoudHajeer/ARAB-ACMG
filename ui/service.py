@@ -23,6 +23,7 @@ try:  # pragma: no cover - import path differs between local package and Cloud R
         raw_dataset_catalog_payload,
         registry_catalog_payload,
     )
+    from ui.overview_data import load_overview_payload as load_bundled_or_live_overview_payload
     from ui.export_workbook import PRE_GME_EXPORT_FILENAME, build_pre_gme_workbook_bytes
     from ui.registry_queries import (
         PRE_GME_REGISTRY_TABLE_REF,
@@ -52,6 +53,7 @@ except ModuleNotFoundError:  # pragma: no cover - runtime fallback inside the ui
         raw_dataset_catalog_payload,
         registry_catalog_payload,
     )
+    from overview_data import load_overview_payload as load_bundled_or_live_overview_payload
     from export_workbook import PRE_GME_EXPORT_FILENAME, build_pre_gme_workbook_bytes
     from registry_queries import (  # type: ignore[no-redef]
         PRE_GME_REGISTRY_TABLE_REF,
@@ -79,7 +81,9 @@ PUBLIC_DATASETS: Final[tuple[str, ...]] = (
 )
 DEFAULT_LIMIT: Final[int] = 10
 
-app = FastAPI(title="ARAB-ACMG Supervisor UI", version="1.1.0")
+NO_STORE_HEADERS: Final[dict[str, str]] = {"Cache-Control": "no-store"}
+
+app = FastAPI(title="ARAB-ACMG Supervisor UI", version="1.2.0")
 
 
 @lru_cache(maxsize=1)
@@ -205,22 +209,22 @@ def pre_gme_metrics() -> dict[str, object]:
 
 @app.get("/")
 def index() -> FileResponse:
-    return FileResponse(UI_ROOT / "index.html")
+    return FileResponse(UI_ROOT / "index.html", headers=NO_STORE_HEADERS)
 
 
 @app.get("/app.js")
 def app_js() -> FileResponse:
-    return FileResponse(UI_ROOT / "app.js")
+    return FileResponse(UI_ROOT / "app.js", headers=NO_STORE_HEADERS)
 
 
 @app.get("/styles.css")
 def styles() -> FileResponse:
-    return FileResponse(UI_ROOT / "styles.css")
+    return FileResponse(UI_ROOT / "styles.css", headers=NO_STORE_HEADERS)
 
 
 @app.get("/status_snapshot.json")
 def snapshot() -> FileResponse:
-    return FileResponse(UI_ROOT / "status_snapshot.json")
+    return FileResponse(UI_ROOT / "status_snapshot.json", headers=NO_STORE_HEADERS)
 
 
 @app.get("/favicon.ico")
@@ -231,6 +235,15 @@ def favicon() -> Response:
 @app.get("/api/health")
 def health() -> dict[str, str]:
     return {"status": "ok"}
+
+
+def load_overview_payload() -> dict[str, object]:
+    return load_bundled_or_live_overview_payload()
+
+
+@app.get("/api/overview")
+def overview() -> dict[str, object]:
+    return load_overview_payload()
 
 
 @app.get("/api/workflow")

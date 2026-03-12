@@ -6,6 +6,13 @@ from ui.service import app
 client = TestClient(app)
 
 
+def test_index_route_disables_cache():
+    response = client.get("/")
+
+    assert response.status_code == 200
+    assert response.headers["cache-control"] == "no-store"
+
+
 def test_health_route_returns_ok():
     response = client.get("/api/health")
 
@@ -19,6 +26,31 @@ def test_workflow_route_returns_page_navigation():
     assert response.status_code == 200
     payload = response.json()
     assert any(page["id"] == "pre-gme" for page in payload["pages"])
+
+
+def test_overview_route_returns_live_payload(monkeypatch):
+    from ui import service
+
+    monkeypatch.setattr(
+        service,
+        "load_overview_payload",
+        lambda: {
+            "generated_at": "2026-03-12T10:00:00+00:00",
+            "tracks": [{"track_id": "T002", "name": "Data", "status_label": "in_progress"}],
+            "plan_progress": {"T002": {"progress_pct": 50.0}},
+            "track_status_counts": {"done": 1, "in_progress": 1, "not_started": 0},
+            "latest_t002_verification": [{"command": "pytest", "status": "pass"}],
+            "last_successful_step": "T002 step 5.5 finalized",
+        },
+    )
+
+    response = client.get("/api/overview")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["track_status_counts"]["in_progress"] == 1
+    assert payload["last_successful_step"] == "T002 step 5.5 finalized"
+    assert payload["latest_t002_verification"][0]["status"] == "pass"
 
 
 def test_raw_datasets_route_returns_catalog():

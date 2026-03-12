@@ -6,19 +6,20 @@
   <title>ARAB-ACMG Supervisor Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
   <div class="bg-noise"></div>
   <main class="layout">
     <header class="hero">
-      <p class="kicker">ARAB-ACMG / Supervisor View</p>
-      <h1>BRCA workflow dashboard for raw data, harmonization, pre-GME review, and final registry</h1>
+      <p class="kicker">ARAB-ACMG / Supervisor Workflow</p>
+      <h1>BRCA evidence dashboard from frozen raw inputs to the final registry</h1>
       <p class="sub">
-        This dashboard is organized as workflow pages so the supervisor can move from the untouched upstream data, through harmonization, to the pre-GME review checkpoint, and finally to the completed BRCA registry after GME is added.
+        Each page represents one scientific workflow stage. Counts, samples, exports, and registry evidence are loaded live from the project APIs and BigQuery-backed datasets when you open the relevant stage.
       </p>
-      <p id="generated-at" class="generated-at">Loading snapshot...</p>
+      <p id="generated-at" class="generated-at" aria-live="polite">Loading live supervisor data...</p>
+      <p id="last-successful-step" class="last-successful-step" aria-live="polite"></p>
     </header>
 
     <nav id="workflow-nav" class="workflow-nav"></nav>
@@ -58,7 +59,7 @@
       </p>
       <div id="pre-gme-meta" class="registry-meta"></div>
       <div class="action-row">
-        <button id="pre-gme-sample-button" class="action-button">Fetch 10 random pre-GME rows</button>
+        <button id="pre-gme-sample-button" type="button" class="action-button">Fetch 10 live pre-GME rows</button>
         <a id="pre-gme-download-csv-link" class="action-button secondary-link" href="/api/pre-gme/download.csv">Download full pre-GME CSV</a>
         <a id="pre-gme-download-link" class="action-button secondary-link" href="/api/exports/pre-gme.xlsx">Download full pre-GME Excel file</a>
       </div>
@@ -90,7 +91,7 @@
       <h3 class="subheading">Final-stage evidence</h3>
       <div id="final-steps" class="explorer-stack"></div>
       <div class="action-row">
-        <button id="registry-sample-button" class="action-button">Fetch 10 random final-registry rows</button>
+        <button id="registry-sample-button" type="button" class="action-button">Fetch 10 live final-registry rows</button>
         <a id="registry-download-csv-link" class="action-button secondary-link" href="/api/registry/download.csv">Download full final-registry CSV</a>
       </div>
       <div id="registry-sample" class="query-result"></div>

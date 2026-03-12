@@ -1,5 +1,11 @@
-const snapshotPath = "./status_snapshot.json";
 const DEFAULT_PAGE = "overview";
+const KNOWN_PAGE_IDS = new Set(["overview", "raw", "harmonization", "pre-gme", "final"]);
+const resourceCache = new Map();
+const inflightRequests = new Map();
+const renderedPages = new Set();
+let workflowPayload = null;
+let overviewPayload = null;
+let globalButtonsWired = false;
 
 function toTitle(text) {
   return text.replaceAll("_", " ");
@@ -28,9 +34,34 @@ async function fetchJson(path) {
   return response.json();
 }
 
+async function fetchResource(key, path) {
+  if (resourceCache.has(key)) {
+    return resourceCache.get(key);
+  }
+
+  if (inflightRequests.has(key)) {
+    return inflightRequests.get(key);
+  }
+
+  const request = fetchJson(path)
+    .then((payload) => {
+      resourceCache.set(key, payload);
+      return payload;
+    })
+    .finally(() => {
+      inflightRequests.delete(key);
+    });
+
+  inflightRequests.set(key, request);
+  return request;
+}
+
 function currentPageId() {
   const pageId = window.location.hash.replace("#", "").trim();
-  return pageId || DEFAULT_PAGE;
+  if (!pageId || !KNOWN_PAGE_IDS.has(pageId)) {
+    return DEFAULT_PAGE;
+  }
+  return pageId;
 }
 
 function activatePage(pageId) {
@@ -42,14 +73,23 @@ function activatePage(pageId) {
   });
 }
 
+function renderNoteStack(items) {
+  return `
+    <div class="note-stack">
+      ${items.map((item) => `<div class="note-item">${escapeHtml(item)}</div>`).join("")}
+    </div>
+  `;
+}
+
 function renderWorkflowNav(pages) {
   const root = document.getElementById("workflow-nav");
   root.innerHTML = pages
     .map(
       (page) => `
       <a class="workflow-link" data-page-link="${page.id}" href="#${page.id}">
-        <span class="workflow-link-title">${page.title}</span>
-        <span class="workflow-link-summary">${page.summary}</span>
+        <span class="workflow-link-step">${escapeHtml(page.id)}</span>
+        <span class="workflow-link-title">${escapeHtml(page.title)}</span>
+        <span class="workflow-link-summary">${escapeHtml(page.summary)}</span>
       </a>
     `
     )
@@ -64,8 +104,8 @@ function renderWorkflowMap(pages) {
       (page, index) => `
       <article class="workflow-card">
         <div class="workflow-step">Step ${index + 1}</div>
-        <div class="workflow-title">${page.title}</div>
-        <p class="workflow-summary">${page.summary}</p>
+        <div class="workflow-title">${escapeHtml(page.title)}</div>
+        <p class="workflow-summary">${escapeHtml(page.summary)}</p>
         <a class="workflow-jump" href="#${page.id}">Open page</a>
       </article>
     `
@@ -105,11 +145,13 @@ function renderTrackGrid(snapshot) {
     return `
       <article class="track-row">
         <div class="track-head">
-          <div class="track-title">${track.track_id} • ${track.name}</div>
+          <div>
+            <div class="track-title">${escapeHtml(track.track_id)} • ${escapeHtml(track.name)}</div>
+            <p class="track-desc">${escapeHtml(track.description)}</p>
+          </div>
           <span class="track-status ${track.status_label}">${statusSymbol(track.status_label)}</span>
         </div>
-        <p class="track-desc">${track.description}</p>
-        <div class="progress-wrap"><div class="progress-bar" style="width: ${pct}%"></div></div>
+        <div class="progress-wrap" aria-hidden="true"><div class="progress-bar" style="width: ${pct}%"></div></div>
         <div class="progress-meta">
           <span>${pct.toFixed(1)}% weighted progress</span>
           <span>done ${done} / active ${inProgress} / todo ${todo}</span>
@@ -123,7 +165,7 @@ function renderTrackGrid(snapshot) {
 function renderRuntimeResults(results) {
   const root = document.getElementById("runtime-results");
   if (!results.length) {
-    root.innerHTML = `<div class="runtime-item"><span>No runtime entries found yet.</span></div>`;
+    root.innerHTML = `<div class="runtime-item"><span>No verification entries were found in the latest T002 handoff log.</span></div>`;
     return;
   }
   root.innerHTML = results
@@ -146,10 +188,10 @@ function renderGlossary(columns) {
           (column) => `
           <article class="glossary-item ${column.kind || "required"}">
             <div class="glossary-name">
-              ${column.name}
-              <span class="column-kind ${column.kind || "required"}">${(column.kind || "required").toUpperCase()}</span>
+              ${escapeHtml(column.name)}
+              <span class="column-kind ${column.kind || "required"}">${escapeHtml((column.kind || "required").toUpperCase())}</span>
             </div>
-            <div class="glossary-desc">${column.description}</div>
+            <div class="glossary-desc">${escapeHtml(column.description)}</div>
           </article>
         `
         )
@@ -164,22 +206,24 @@ function renderScientificMetrics(metrics) {
   const sourceCounts = metrics.source_row_counts || [];
 
   return `
-    <details class="details-card" open>
+    <details class="details-card">
       <summary>Live scientific evidence</summary>
       <div class="note-stack">
         ${windows
           .map(
-            (row) => `<div class="note-item">${row.gene_symbol}: ${row.chrom38}:${row.start_pos38}-${row.end_pos38} | source ${row.coordinate_source} | url ${row.coordinate_source_url} | accessed ${row.accessed_at}</div>`
+            (row) =>
+              `<div class="note-item">${escapeHtml(row.gene_symbol)}: ${escapeHtml(row.chrom38)}:${escapeHtml(row.start_pos38)}-${escapeHtml(row.end_pos38)} | source ${escapeHtml(row.coordinate_source)} | url ${escapeHtml(row.coordinate_source_url)} | accessed ${escapeHtml(row.accessed_at)}</div>`
           )
           .join("")}
         ${clinvarAudit
           .map(
-            (row) => `<div class="note-item">ClinVar ${row.gene_symbol}: ${Number(row.gene_info_mismatch_rows || 0).toLocaleString()} gene-label mismatches inside ${Number(row.clinvar_window_rows || 0).toLocaleString()} harmonized window rows, and ${Number(row.gene_label_outside_window_rows || 0).toLocaleString()} BRCA-labeled rows outside the strict Ensembl window in staging.</div>`
+            (row) =>
+              `<div class="note-item">ClinVar ${escapeHtml(row.gene_symbol)}: ${Number(row.gene_info_mismatch_rows || 0).toLocaleString()} gene-label mismatches inside ${Number(row.clinvar_window_rows || 0).toLocaleString()} harmonized window rows, and ${Number(row.gene_label_outside_window_rows || 0).toLocaleString()} BRCA-labeled rows outside the strict Ensembl window in staging.</div>`
           )
           .join("")}
         ${sourceCounts
           .map(
-            (row) => `<div class="note-item">${row.source_name}: ${Number(row.row_count || 0).toLocaleString()} harmonized BRCA rows.</div>`
+            (row) => `<div class="note-item">${escapeHtml(row.source_name)}: ${Number(row.row_count || 0).toLocaleString()} harmonized BRCA rows.</div>`
           )
           .join("")}
       </div>
@@ -190,12 +234,12 @@ function renderScientificMetrics(metrics) {
 function renderSourceCounts(metrics) {
   const sourceCounts = metrics.source_row_counts || [];
   return `
-    <details class="details-card" open>
+    <details class="details-card">
       <summary>Live source counts</summary>
       <div class="note-stack">
         ${sourceCounts
           .map(
-            (row) => `<div class="note-item">${row.source_name}: ${Number(row.row_count || 0).toLocaleString()} rows in this checkpoint.</div>`
+            (row) => `<div class="note-item">${escapeHtml(row.source_name)}: ${Number(row.row_count || 0).toLocaleString()} rows in this checkpoint.</div>`
           )
           .join("")}
       </div>
@@ -226,7 +270,7 @@ function renderQueryResult(targetId, payload) {
 
   root.innerHTML = `
     <details class="details-card">
-      <summary>Query used</summary>
+      <summary>Live query used</summary>
       <div class="query-meta">
         <pre class="sql-box">${escapeHtml(payload.query_sql)}</pre>
       </div>
@@ -241,11 +285,31 @@ function renderQueryResult(targetId, payload) {
 }
 
 function setLoading(targetId, label) {
-  document.getElementById(targetId).innerHTML = `<div class="loading-state">${label}</div>`;
+  document.getElementById(targetId).innerHTML = `<div class="loading-state">${escapeHtml(label)}</div>`;
 }
 
 function setError(targetId, error) {
   document.getElementById(targetId).innerHTML = `<div class="error-state">${escapeHtml(error.message || error)}</div>`;
+}
+
+async function runButtonAction(button, busyLabel, callback) {
+  if (button.disabled) {
+    return;
+  }
+
+  const originalLabel = button.dataset.originalLabel || button.textContent.trim();
+  button.dataset.originalLabel = originalLabel;
+  button.disabled = true;
+  button.setAttribute("aria-busy", "true");
+  button.textContent = busyLabel;
+
+  try {
+    await callback();
+  } finally {
+    button.disabled = false;
+    button.setAttribute("aria-busy", "false");
+    button.textContent = originalLabel;
+  }
 }
 
 function renderDatasetCollection({ targetId, payload, sampleAttr, samplePath }) {
@@ -256,21 +320,19 @@ function renderDatasetCollection({ targetId, payload, sampleAttr, samplePath }) 
       <article class="explorer-card">
         <div class="card-head">
           <div>
-            <div class="sample-title">${entry.title}</div>
-            <div class="metric-sub">${entry.table_ref}</div>
-            <div class="metric-sub">row count: ${(entry.row_count || 0).toLocaleString()}</div>
+            <div class="sample-title">${escapeHtml(entry.title)}</div>
+            <div class="metric-sub">${escapeHtml(entry.table_ref)}</div>
+            <div class="metric-sub">live row count: ${(entry.row_count || 0).toLocaleString()}</div>
           </div>
           <div class="action-row compact-actions">
-            <button class="action-button" data-${sampleAttr}="${entry.key}">Fetch 10 random rows</button>
+            <button type="button" class="action-button" data-${sampleAttr}="${entry.key}">Fetch 10 live rows</button>
             <a class="action-button secondary-link" href="${entry.download_url}">Download full CSV</a>
           </div>
         </div>
-        <p class="card-summary">${entry.simple_summary}</p>
+        <p class="card-summary">${escapeHtml(entry.simple_summary)}</p>
         <details class="details-card">
           <summary>How this table is used</summary>
-          <div class="note-stack">
-            ${entry.notes.map((note) => `<div class="note-item">${note}</div>`).join("")}
-          </div>
+          ${renderNoteStack(entry.notes)}
         </details>
         <details class="details-card">
           <summary>Column glossary</summary>
@@ -287,12 +349,14 @@ function renderDatasetCollection({ targetId, payload, sampleAttr, samplePath }) 
       const key = button.getAttribute(`data-${sampleAttr}`);
       const target = `${sampleAttr}-sample-${key}`;
       setLoading(target, "Running live BigQuery sample query...");
-      try {
-        const samplePayload = await fetchJson(`${samplePath}/${key}/sample`);
-        renderQueryResult(target, samplePayload);
-      } catch (error) {
-        setError(target, error);
-      }
+      await runButtonAction(button, "Running query...", async () => {
+        try {
+          const samplePayload = await fetchJson(`${samplePath}/${key}/sample`);
+          renderQueryResult(target, samplePayload);
+        } catch (error) {
+          setError(target, error);
+        }
+      });
     });
   });
 }
@@ -304,16 +368,18 @@ function renderStepCards(targetId, steps) {
       (step) => `
       <article class="explorer-card">
         <div class="card-head">
-          <div class="sample-title">${step.title}</div>
+          <div>
+            <div class="sample-title">${escapeHtml(step.title)}</div>
+            <div class="metric-sub">${escapeHtml(step.simple)}</div>
+          </div>
           <div class="action-row compact-actions">
-            <button class="action-button secondary" data-step-sample="${step.id}">Run 10-row sample</button>
+            <button type="button" class="action-button secondary" data-step-sample="${step.id}">Run 10-row sample</button>
             <a class="action-button secondary-link" href="/api/registry/steps/${step.id}/download.csv">Download full CSV</a>
           </div>
         </div>
-        <p class="card-summary">${step.simple}</p>
         <details class="details-card">
           <summary>Technical note</summary>
-          <div class="metric-sub">${step.technical}</div>
+          <div class="metric-sub">${escapeHtml(step.technical)}</div>
         </details>
         <div id="step-sample-${step.id}" class="query-result"></div>
       </article>
@@ -325,13 +391,15 @@ function renderStepCards(targetId, steps) {
     button.addEventListener("click", async () => {
       const stepId = button.dataset.stepSample;
       const target = `step-sample-${stepId}`;
-      setLoading(target, "Running step sample query...");
-      try {
-        const payload = await fetchJson(`/api/registry/steps/${stepId}/sample`);
-        renderQueryResult(target, payload);
-      } catch (error) {
-        setError(target, error);
-      }
+      setLoading(target, "Running live step query...");
+      await runButtonAction(button, "Running query...", async () => {
+        try {
+          const payload = await fetchJson(`/api/registry/steps/${stepId}/sample`);
+          renderQueryResult(target, payload);
+        } catch (error) {
+          setError(target, error);
+        }
+      });
     });
   });
 }
@@ -340,16 +408,12 @@ function renderHarmonizationScience(payload) {
   const root = document.getElementById("harmonization-science");
   root.innerHTML = `
     <article class="metric-item">
-      <div class="metric-title">Scientific method for BRCA harmonization</div>
-      <div class="metric-sub">${payload.scope_note}</div>
-      <div class="note-stack">
-        ${payload.accuracy_notes.map((note) => `<div class="note-item">${note}</div>`).join("")}
-      </div>
-      <details class="details-card" open>
+      <div class="metric-title">Scientific method for BRCA checkpoint extraction</div>
+      <div class="metric-sub">${escapeHtml(payload.scope_note)}</div>
+      ${renderNoteStack(payload.accuracy_notes)}
+      <details class="details-card">
         <summary>Scientific explanation</summary>
-        <div class="note-stack">
-          ${payload.scientific_notes.map((note) => `<div class="note-item">${note}</div>`).join("")}
-        </div>
+        ${renderNoteStack(payload.scientific_notes)}
       </details>
       ${payload.scientific_metrics ? renderScientificMetrics(payload.scientific_metrics) : ""}
     </article>
@@ -360,37 +424,20 @@ function renderPreGmeMeta(payload) {
   const root = document.getElementById("pre-gme-meta");
   root.innerHTML = `
     <article class="metric-item">
-      <div class="metric-title">${payload.title}</div>
-      <div class="metric-sub">${payload.table_ref}</div>
-      <div class="metric-sub">row count: ${payload.row_count === null ? "not built yet" : Number(payload.row_count).toLocaleString()}</div>
-      <div class="metric-sub">${payload.scope_note}</div>
-      <div class="note-stack">
-        ${payload.accuracy_notes.map((note) => `<div class="note-item">${note}</div>`).join("")}
-      </div>
-      <details class="details-card" open>
+      <div class="metric-title">${escapeHtml(payload.title)}</div>
+      <div class="metric-sub">${escapeHtml(payload.table_ref)}</div>
+      <div class="metric-sub">live row count: ${payload.row_count === null ? "not built yet" : Number(payload.row_count).toLocaleString()}</div>
+      <div class="metric-sub">${escapeHtml(payload.scope_note)}</div>
+      ${renderNoteStack(payload.accuracy_notes)}
+      <details class="details-card">
         <summary>Why this checkpoint exists</summary>
-        <div class="note-stack">
-          ${payload.scientific_notes.map((note) => `<div class="note-item">${note}</div>`).join("")}
-        </div>
+        ${renderNoteStack(payload.scientific_notes)}
       </details>
       ${payload.scientific_metrics ? renderSourceCounts(payload.scientific_metrics) : ""}
     </article>
   `;
 
-  document.getElementById("pre-gme-columns").innerHTML = payload.columns
-    .map(
-      (column) => `
-      <article class="glossary-item ${column.kind || "required"}">
-        <div class="glossary-name">
-          ${column.name}
-          <span class="column-kind ${column.kind || "required"}">${(column.kind || "required").toUpperCase()}</span>
-        </div>
-        <div class="glossary-desc">${column.description}</div>
-      </article>
-    `
-    )
-    .join("");
-
+  document.getElementById("pre-gme-columns").innerHTML = renderGlossary(payload.columns);
   document.getElementById("pre-gme-build-sql").textContent = payload.build_sql;
   document.getElementById("pre-gme-metadata-preview").textContent = payload.export_metadata_preview.join("\n");
   const kindByName = Object.fromEntries(payload.columns.map((column) => [column.name, column.kind || "required"]));
@@ -402,112 +449,219 @@ function renderPreGmeMeta(payload) {
 }
 
 function renderFinalRegistryMeta(payload) {
-  const metaRoot = document.getElementById("registry-meta");
-  metaRoot.innerHTML = `
+  const root = document.getElementById("registry-meta");
+  root.innerHTML = `
     <article class="metric-item">
-      <div class="metric-title">${payload.title}</div>
-      <div class="metric-sub">${payload.table_ref}</div>
-      <div class="metric-sub">row count: ${payload.row_count === null ? "not built yet" : Number(payload.row_count).toLocaleString()}</div>
-      <div class="metric-sub">${payload.scope_note}</div>
-      <div class="note-stack">
-        ${payload.accuracy_notes.map((note) => `<div class="note-item">${note}</div>`).join("")}
-      </div>
-      <details class="details-card" open>
+      <div class="metric-title">${escapeHtml(payload.title)}</div>
+      <div class="metric-sub">${escapeHtml(payload.table_ref)}</div>
+      <div class="metric-sub">live row count: ${payload.row_count === null ? "not built yet" : Number(payload.row_count).toLocaleString()}</div>
+      <div class="metric-sub">${escapeHtml(payload.scope_note)}</div>
+      ${renderNoteStack(payload.accuracy_notes)}
+      <details class="details-card">
         <summary>Scientific explanation</summary>
-        <div class="note-stack">
-          ${payload.scientific_notes.map((note) => `<div class="note-item">${note}</div>`).join("")}
-        </div>
+        ${renderNoteStack(payload.scientific_notes)}
       </details>
       ${payload.scientific_metrics ? renderScientificMetrics(payload.scientific_metrics) : ""}
     </article>
   `;
 
-  document.getElementById("registry-columns").innerHTML = payload.columns
-    .map(
-      (column) => `
-      <article class="glossary-item ${column.kind || "required"}">
-        <div class="glossary-name">
-          ${column.name}
-          <span class="column-kind ${column.kind || "required"}">${(column.kind || "required").toUpperCase()}</span>
-        </div>
-        <div class="glossary-desc">${column.description}</div>
-      </article>
-    `
-    )
-    .join("");
-
+  document.getElementById("registry-columns").innerHTML = renderGlossary(payload.columns);
   document.getElementById("registry-build-sql").textContent = payload.build_sql;
   document.getElementById("registry-download-csv-link").setAttribute("href", payload.csv_download_url);
 }
 
+function renderOverviewHeader(payload) {
+  document.getElementById("generated-at").textContent = `Live supervisor state refreshed: ${payload.generated_at}`;
+  document.getElementById("last-successful-step").textContent = payload.last_successful_step
+    ? `Latest confirmed checkpoint: ${payload.last_successful_step}`
+    : "Latest confirmed checkpoint: not recorded yet.";
+}
+
+function renderOverviewPage() {
+  renderStatusCards(overviewPayload.track_status_counts);
+  renderTrackGrid(overviewPayload);
+  renderRuntimeResults(overviewPayload.latest_t002_verification);
+  renderWorkflowMap(workflowPayload.pages);
+}
+
+async function loadShellData() {
+  const [overview, workflow] = await Promise.all([
+    fetchResource("overview", "/api/overview"),
+    fetchResource("workflow", "/api/workflow"),
+  ]);
+
+  overviewPayload = overview;
+  workflowPayload = workflow;
+  renderWorkflowNav(workflow.pages);
+  renderOverviewHeader(overview);
+}
+
 function wireGlobalButtons() {
-  document.getElementById("pre-gme-sample-button").addEventListener("click", async () => {
+  if (globalButtonsWired) {
+    return;
+  }
+
+  const preGmeButton = document.getElementById("pre-gme-sample-button");
+  const registryButton = document.getElementById("registry-sample-button");
+
+  preGmeButton.addEventListener("click", async () => {
     const target = "pre-gme-sample";
     setLoading(target, "Running live pre-GME sample query...");
-    try {
-      const payload = await fetchJson("/api/pre-gme/sample");
-      renderQueryResult(target, payload);
-    } catch (error) {
-      setError(target, error);
-    }
+    await runButtonAction(preGmeButton, "Running query...", async () => {
+      try {
+        const payload = await fetchJson("/api/pre-gme/sample");
+        renderQueryResult(target, payload);
+      } catch (error) {
+        setError(target, error);
+      }
+    });
   });
 
-  document.getElementById("registry-sample-button").addEventListener("click", async () => {
+  registryButton.addEventListener("click", async () => {
     const target = "registry-sample";
     setLoading(target, "Running live final-registry sample query...");
-    try {
-      const payload = await fetchJson("/api/registry/sample");
-      renderQueryResult(target, payload);
-    } catch (error) {
-      setError(target, error);
-    }
+    await runButtonAction(registryButton, "Running query...", async () => {
+      try {
+        const payload = await fetchJson("/api/registry/sample");
+        renderQueryResult(target, payload);
+      } catch (error) {
+        setError(target, error);
+      }
+    });
   });
+
+  globalButtonsWired = true;
+}
+
+async function loadOverviewPage() {
+  renderOverviewPage();
+  renderedPages.add("overview");
+}
+
+async function loadRawPage() {
+  if (renderedPages.has("raw")) {
+    return;
+  }
+
+  setLoading("raw-dataset-explorer", "Loading live raw dataset catalog...");
+  const rawPayload = await fetchResource("raw-datasets", "/api/raw-datasets");
+  renderDatasetCollection({
+    targetId: "raw-dataset-explorer",
+    payload: rawPayload,
+    sampleAttr: "raw-sample",
+    samplePath: "/api/raw-datasets",
+  });
+  renderedPages.add("raw");
+}
+
+async function loadHarmonizationPage() {
+  if (renderedPages.has("harmonization")) {
+    return;
+  }
+
+  setLoading("harmonization-science", "Loading scientific checkpoint evidence...");
+  setLoading("harmonized-dataset-explorer", "Loading checkpoint tables...");
+  setLoading("harmonization-steps", "Loading evidence steps...");
+
+  const [harmonizedPayload, registryPayload] = await Promise.all([
+    fetchResource("checkpoint-datasets", "/api/datasets"),
+    fetchResource("registry-meta", "/api/registry"),
+  ]);
+
+  renderHarmonizationScience(registryPayload);
+  renderDatasetCollection({
+    targetId: "harmonized-dataset-explorer",
+    payload: harmonizedPayload,
+    sampleAttr: "harmonized-sample",
+    samplePath: "/api/datasets",
+  });
+  renderStepCards("harmonization-steps", workflowPayload.harmonization_steps);
+  renderedPages.add("harmonization");
+}
+
+async function loadPreGmePage() {
+  if (renderedPages.has("pre-gme")) {
+    return;
+  }
+
+  setLoading("pre-gme-meta", "Loading pre-GME checkpoint metadata...");
+  const payload = await fetchResource("pre-gme-meta", "/api/pre-gme");
+  renderPreGmeMeta(payload);
+  renderedPages.add("pre-gme");
+}
+
+async function loadFinalPage() {
+  if (renderedPages.has("final")) {
+    return;
+  }
+
+  setLoading("registry-meta", "Loading final checkpoint metadata...");
+  setLoading("final-steps", "Loading final-stage evidence...");
+  const payload = await fetchResource("registry-meta", "/api/registry");
+  renderFinalRegistryMeta(payload);
+  renderStepCards("final-steps", workflowPayload.final_steps);
+  renderedPages.add("final");
+}
+
+async function loadActivePage(pageId) {
+  try {
+    if (pageId === "overview") {
+      await loadOverviewPage();
+      return;
+    }
+    if (pageId === "raw") {
+      await loadRawPage();
+      return;
+    }
+    if (pageId === "harmonization") {
+      await loadHarmonizationPage();
+      return;
+    }
+    if (pageId === "pre-gme") {
+      await loadPreGmePage();
+      return;
+    }
+    if (pageId === "final") {
+      await loadFinalPage();
+    }
+  } catch (error) {
+    if (pageId === "raw") setError("raw-dataset-explorer", error);
+    if (pageId === "harmonization") {
+      setError("harmonization-science", error);
+      setError("harmonized-dataset-explorer", error);
+      setError("harmonization-steps", error);
+    }
+    if (pageId === "pre-gme") setError("pre-gme-meta", error);
+    if (pageId === "final") {
+      setError("registry-meta", error);
+      setError("final-steps", error);
+    }
+  }
+}
+
+async function navigate() {
+  if (!workflowPayload || !overviewPayload) {
+    return;
+  }
+  const pageId = currentPageId();
+  activatePage(pageId);
+  await loadActivePage(pageId);
 }
 
 async function main() {
   const generatedAtNode = document.getElementById("generated-at");
-
   try {
-    const [snapshot, workflow, rawPayload, harmonizedPayload, preGmePayload, registryPayload] = await Promise.all([
-      fetchJson(snapshotPath),
-      fetchJson("/api/workflow"),
-      fetchJson("/api/raw-datasets"),
-      fetchJson("/api/datasets"),
-      fetchJson("/api/pre-gme"),
-      fetchJson("/api/registry"),
-    ]);
-
-    generatedAtNode.textContent = `Snapshot generated: ${snapshot.generated_at}`;
-    renderWorkflowNav(workflow.pages);
-    renderWorkflowMap(workflow.pages);
-    renderStatusCards(snapshot.track_status_counts);
-    renderTrackGrid(snapshot);
-    renderRuntimeResults(snapshot.latest_t002_verification);
-    renderDatasetCollection({
-      targetId: "raw-dataset-explorer",
-      payload: rawPayload,
-      sampleAttr: "raw-sample",
-      samplePath: "/api/raw-datasets",
-    });
-    renderHarmonizationScience(registryPayload);
-    renderDatasetCollection({
-      targetId: "harmonized-dataset-explorer",
-      payload: harmonizedPayload,
-      sampleAttr: "harmonized-sample",
-      samplePath: "/api/datasets",
-    });
-    renderStepCards("harmonization-steps", workflow.harmonization_steps);
-    renderPreGmeMeta(preGmePayload);
-    renderFinalRegistryMeta(registryPayload);
-    renderStepCards("final-steps", workflow.final_steps);
+    await loadShellData();
+    wireGlobalButtons();
+    await navigate();
   } catch (error) {
-    generatedAtNode.textContent = `Failed to load dashboard: ${error.message}`;
+    generatedAtNode.textContent = `Failed to load live supervisor state: ${error.message}`;
+    document.getElementById("last-successful-step").textContent = "";
   }
-
-  wireGlobalButtons();
-  activatePage(currentPageId());
 }
 
-window.addEventListener("hashchange", () => activatePage(currentPageId()));
+window.addEventListener("hashchange", () => {
+  void navigate();
+});
 
-main();
+void main();

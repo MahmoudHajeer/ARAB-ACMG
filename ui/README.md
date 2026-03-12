@@ -1,8 +1,9 @@
 # Supervisor UI
 
 ## What it shows
-- Conductor track statuses and progress from `ui/status_snapshot.json`
+- Live Conductor track statuses and progress from `/api/overview` (not from a baked snapshot)
 - Separate workflow pages for `Overview`, `Raw Sources`, `Harmonization`, `Pre-GME Review`, and `Final Registry`
+- Page-level lazy loading so raw/checkpoint BigQuery calls only run when the corresponding workflow page is opened
 - Live 10-row random samples for raw BigQuery tables and the two BRCA checkpoint tables only
 - Full CSV downloads for every live preview surface: raw tables, checkpoint tables, and query-only step evidence
 - A dedicated pre-GME review checkpoint with full Excel export modeled on `example.xlsx` style: metadata block first, then review header, then full dataset rows
@@ -25,7 +26,7 @@ Then open:
 http://localhost:8080/
 ```
 
-## Refresh the static snapshot inputs
+## Legacy static snapshot artifact
 Run:
 
 ```bash
@@ -37,6 +38,23 @@ This updates:
 ```text
 ui/status_snapshot.json
 ```
+
+The dashboard no longer depends on this file for the overview page. It is kept only as a legacy artifact for offline inspection and older handoff compatibility.
+
+## Refresh the bundled overview state for Cloud Run
+Run:
+
+```bash
+python3 scripts/update_ui_overview_state.py
+```
+
+This updates:
+
+```text
+ui/overview_state.json
+```
+
+The deployed Cloud Run service uses this bundled overview file because `gcloud run deploy --source ui` packages the `ui/` directory only. Local runs still prefer the live Conductor files first.
 
 ## Materialize the registry table
 Run:
