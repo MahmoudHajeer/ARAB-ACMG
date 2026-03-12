@@ -260,7 +260,10 @@ function renderDatasetCollection({ targetId, payload, sampleAttr, samplePath }) 
             <div class="metric-sub">${entry.table_ref}</div>
             <div class="metric-sub">row count: ${(entry.row_count || 0).toLocaleString()}</div>
           </div>
-          <button class="action-button" data-${sampleAttr}="${entry.key}">Fetch 10 random rows</button>
+          <div class="action-row compact-actions">
+            <button class="action-button" data-${sampleAttr}="${entry.key}">Fetch 10 random rows</button>
+            <a class="action-button secondary-link" href="${entry.download_url}">Download full CSV</a>
+          </div>
         </div>
         <p class="card-summary">${entry.simple_summary}</p>
         <details class="details-card">
@@ -302,7 +305,10 @@ function renderStepCards(targetId, steps) {
       <article class="explorer-card">
         <div class="card-head">
           <div class="sample-title">${step.title}</div>
-          <button class="action-button secondary" data-step-sample="${step.id}">Run 10-row sample</button>
+          <div class="action-row compact-actions">
+            <button class="action-button secondary" data-step-sample="${step.id}">Run 10-row sample</button>
+            <a class="action-button secondary-link" href="/api/registry/steps/${step.id}/download.csv">Download full CSV</a>
+          </div>
         </div>
         <p class="card-summary">${step.simple}</p>
         <details class="details-card">
@@ -392,6 +398,7 @@ function renderPreGmeMeta(payload) {
     .map((column) => `<div class="header-chip ${kindByName[column] || "required"}">${escapeHtml(column)}</div>`)
     .join("");
   document.getElementById("pre-gme-download-link").setAttribute("href", payload.download_url);
+  document.getElementById("pre-gme-download-csv-link").setAttribute("href", payload.csv_download_url);
 }
 
 function renderFinalRegistryMeta(payload) {
@@ -430,6 +437,7 @@ function renderFinalRegistryMeta(payload) {
     .join("");
 
   document.getElementById("registry-build-sql").textContent = payload.build_sql;
+  document.getElementById("registry-download-csv-link").setAttribute("href", payload.csv_download_url);
 }
 
 function wireGlobalButtons() {

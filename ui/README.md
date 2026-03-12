@@ -4,6 +4,7 @@
 - Conductor track statuses and progress from `ui/status_snapshot.json`
 - Separate workflow pages for `Overview`, `Raw Sources`, `Harmonization`, `Pre-GME Review`, and `Final Registry`
 - Live 10-row random samples for raw BigQuery tables and the two BRCA checkpoint tables only
+- Full CSV downloads for every live preview surface: raw tables, checkpoint tables, and query-only step evidence
 - A dedicated pre-GME review checkpoint with full Excel export modeled on `example.xlsx` style: metadata block first, then review header, then full dataset rows
 - Step-by-step evidence queries for the BRCA1/BRCA2 supervisor registry build
 - The exact SQL used to build both `supervisor_variant_registry_brca_pre_gme_v1` and `supervisor_variant_registry_brca_v1`

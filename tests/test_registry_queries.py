@@ -5,13 +5,16 @@ import ui.registry_queries as registry_queries
 from ui.registry_queries import (
     PRE_GME_REGISTRY_TABLE_REF,
     REGISTRY_TABLE_REF,
+    build_export_sql,
     build_final_source_count_sql,
     build_pre_gme_export_sql,
     build_pre_gme_registry_sql,
     build_pre_gme_sample_sql,
     build_pre_gme_source_count_sql,
     build_raw_sample_sql,
+    build_registry_export_sql,
     build_registry_sample_sql,
+    build_registry_step_export_sql,
     build_registry_sql,
     build_registry_step_sql,
     resolve_gene_window_seed,
@@ -78,6 +81,28 @@ def test_build_pre_gme_export_sql_orders_rows_for_excel_export():
 def test_source_count_queries_read_raw_based_ctes():
     assert "gnomad_genomes_agg" in build_pre_gme_source_count_sql()
     assert "gme_agg" in build_final_source_count_sql()
+
+
+def test_build_export_sql_reads_full_table_without_sample_wrapper():
+    sql = build_export_sql("genome-services-platform.arab_acmg_raw.clinvar_raw_vcf")
+
+    assert "TABLESAMPLE SYSTEM" not in sql
+    assert "sample_row_number" not in sql
+    assert "FROM `genome-services-platform.arab_acmg_raw.clinvar_raw_vcf`" in sql
+
+
+def test_build_registry_export_sql_reads_full_final_table():
+    sql = build_registry_export_sql()
+
+    assert f"FROM `{REGISTRY_TABLE_REF}`" in sql
+    assert "ORDER BY `GENE`, `CHROM`, `POS`, `REF`, `ALT`" in sql
+
+
+def test_build_registry_step_export_sql_reads_full_step_output():
+    sql = build_registry_step_export_sql("clinvar_raw_brca")
+
+    assert "FROM clinvar_agg" in sql
+    assert "sample_row_number" not in sql
 
 
 def test_resolve_gene_window_seed_falls_back_to_ui_bundle(monkeypatch, tmp_path):

@@ -469,6 +469,15 @@ def build_raw_sample_sql(table_ref: str, sample_percent: float, limit: int = 10)
     ).strip()
 
 
+def build_export_sql(table_ref: str) -> str:
+    return dedent(
+        f"""
+        SELECT *
+        FROM `{table_ref}`
+        """
+    ).strip()
+
+
 def build_sample_sql(table_ref: str, sample_percent: float, limit: int = 10) -> str:
     return dedent(
         f"""
@@ -498,6 +507,17 @@ def build_pre_gme_export_sql(limit: int | None = None) -> str:
         f"""
         SELECT *
         FROM `{PRE_GME_REGISTRY_TABLE_REF}`
+        ORDER BY `GENE`, `CHROM`, `POS`, `REF`, `ALT`{suffix}
+        """
+    ).strip()
+
+
+def build_registry_export_sql(limit: int | None = None) -> str:
+    suffix = f"\nLIMIT {limit}" if limit is not None else ""
+    return dedent(
+        f"""
+        SELECT *
+        FROM `{REGISTRY_TABLE_REF}`
         ORDER BY `GENE`, `CHROM`, `POS`, `REF`, `ALT`{suffix}
         """
     ).strip()
@@ -573,6 +593,48 @@ def build_registry_step_sql(step_id: str, limit: int = 10) -> str:
             """
         ).strip(),
         'final_checkpoint': build_registry_sample_sql(limit=limit),
+    }
+    if step_id not in step_queries:
+        raise KeyError(f'Unknown registry step: {step_id}')
+    return step_queries[step_id]
+
+
+def build_registry_step_export_sql(step_id: str) -> str:
+    step_queries = {
+        'clinvar_raw_brca': dedent(
+            f"""
+            {_common_ctes(include_gme=False)}
+            SELECT *
+            FROM clinvar_agg
+            ORDER BY gene_symbol, chrom, pos, ref, alt
+            """
+        ).strip(),
+        'gnomad_genomes_raw_brca': dedent(
+            f"""
+            {_common_ctes(include_gme=False)}
+            SELECT *
+            FROM gnomad_genomes_agg
+            ORDER BY gene_symbol, chrom, pos, ref, alt
+            """
+        ).strip(),
+        'gnomad_exomes_raw_brca': dedent(
+            f"""
+            {_common_ctes(include_gme=False)}
+            SELECT *
+            FROM gnomad_exomes_agg
+            ORDER BY gene_symbol, chrom, pos, ref, alt
+            """
+        ).strip(),
+        'pre_gme_checkpoint': build_pre_gme_export_sql(),
+        'gme_raw_brca': dedent(
+            f"""
+            {_common_ctes(include_gme=True)}
+            SELECT *
+            FROM gme_agg
+            ORDER BY gene_symbol, chrom, pos, ref, alt
+            """
+        ).strip(),
+        'final_checkpoint': build_registry_export_sql(),
     }
     if step_id not in step_queries:
         raise KeyError(f'Unknown registry step: {step_id}')

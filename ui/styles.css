@@ -419,6 +419,11 @@ h1 {
   margin: 14px 0;
 }
 
+.compact-actions {
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
 .action-button {
   border: 1px solid rgba(53, 167, 255, 0.45);
   background: linear-gradient(135deg, rgba(53, 167, 255, 0.24), rgba(22, 58, 90, 0.8));

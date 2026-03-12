@@ -86,6 +86,7 @@ def test_pre_gme_metadata_uses_mocked_row_count(monkeypatch):
     assert payload["row_count"] == 77
     assert payload["title"] == "supervisor_variant_registry_brca_pre_gme_v1"
     assert payload["download_url"] == "/api/exports/pre-gme.xlsx"
+    assert payload["csv_download_url"] == "/api/pre-gme/download.csv"
     assert payload["columns"][0]["name"] == "CHROM"
 
 
@@ -133,4 +134,47 @@ def test_registry_metadata_uses_mocked_public_state(monkeypatch):
     payload = response.json()
     assert payload["row_count"] == 123
     assert payload["title"] == "supervisor_variant_registry_brca_v1"
+    assert payload["csv_download_url"] == "/api/registry/download.csv"
     assert any(column["name"] == "GME_AF" for column in payload["columns"])
+
+
+def test_raw_dataset_download_route_returns_csv(monkeypatch):
+    from ui import service
+
+    monkeypatch.setattr(service, "iter_query_rows", lambda sql: (["chrom", "pos"], [{"chrom": "17", "pos": 43000000}]))
+
+    response = client.get("/api/raw-datasets/clinvar_raw_vcf/download.csv")
+
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("text/csv")
+    assert "attachment; filename=\"clinvar_raw_vcf.csv\"" == response.headers["content-disposition"]
+    assert "chrom,pos" in response.text
+    assert "17,43000000" in response.text
+
+
+def test_registry_download_route_returns_csv(monkeypatch):
+    from ui import service
+
+    monkeypatch.setattr(service, "iter_query_rows", lambda sql: (["CHROM", "GENE"], [{"CHROM": "chr13", "GENE": "BRCA2"}]))
+
+    response = client.get("/api/registry/download.csv")
+
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("text/csv")
+    assert response.headers["content-disposition"] == 'attachment; filename="supervisor_variant_registry_brca_v1.csv"'
+    assert "CHROM,GENE" in response.text
+    assert "chr13,BRCA2" in response.text
+
+
+def test_registry_step_download_route_returns_csv(monkeypatch):
+    from ui import service
+
+    monkeypatch.setattr(service, "iter_query_rows", lambda sql: (["variant_key"], [{"variant_key": "chr17:1:A:T"}]))
+
+    response = client.get("/api/registry/steps/clinvar_raw_brca/download.csv")
+
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("text/csv")
+    assert response.headers["content-disposition"] == 'attachment; filename="clinvar_raw_brca.csv"'
+    assert "variant_key" in response.text
+    assert "chr17:1:A:T" in response.text

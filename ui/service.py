@@ -1,12 +1,14 @@
 from __future__ import annotations
 
+import csv
 import datetime as dt
+import io
 from functools import lru_cache
 from pathlib import Path
 from typing import Final, Iterable
 
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse, Response
+from fastapi.responses import FileResponse, Response, StreamingResponse
 from google.cloud import bigquery
 
 try:  # pragma: no cover - import path differs between local package and Cloud Run container
@@ -25,12 +27,15 @@ try:  # pragma: no cover - import path differs between local package and Cloud R
     from ui.registry_queries import (
         PRE_GME_REGISTRY_TABLE_REF,
         REGISTRY_TABLE_REF,
+        build_export_sql,
         build_pre_gme_export_sql,
         build_pre_gme_source_count_sql,
         build_pre_gme_sample_sql,
         build_final_source_count_sql,
         build_raw_sample_sql,
+        build_registry_export_sql,
         build_registry_sample_sql,
+        build_registry_step_export_sql,
         build_registry_step_sql,
         build_sample_sql,
         gene_windows_payload,
@@ -51,12 +56,15 @@ except ModuleNotFoundError:  # pragma: no cover - runtime fallback inside the ui
     from registry_queries import (  # type: ignore[no-redef]
         PRE_GME_REGISTRY_TABLE_REF,
         REGISTRY_TABLE_REF,
+        build_export_sql,
         build_pre_gme_export_sql,
         build_pre_gme_source_count_sql,
         build_pre_gme_sample_sql,
         build_final_source_count_sql,
         build_raw_sample_sql,
+        build_registry_export_sql,
         build_registry_sample_sql,
+        build_registry_step_export_sql,
         build_registry_step_sql,
         build_sample_sql,
         gene_windows_payload,
@@ -114,6 +122,30 @@ def table_row_count(table_ref: str) -> int | None:
         return int(bigquery_client().get_table(table_ref).num_rows)
     except Exception:
         return None
+
+
+def csv_response(sql: str, filename: str) -> StreamingResponse:
+    columns, rows = iter_query_rows(sql)
+
+    def iter_csv() -> Iterable[str]:
+        buffer = io.StringIO()
+        writer = csv.DictWriter(buffer, fieldnames=columns, lineterminator="\n")
+        writer.writeheader()
+        yield buffer.getvalue()
+        buffer.seek(0)
+        buffer.truncate(0)
+
+        for row in rows:
+            writer.writerow({column: "" if row.get(column) is None else row.get(column) for column in columns})
+            yield buffer.getvalue()
+            buffer.seek(0)
+            buffer.truncate(0)
+
+    return StreamingResponse(
+        iter_csv(),
+        media_type="text/csv; charset=utf-8",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
 
 
 @lru_cache(maxsize=1)
@@ -220,6 +252,7 @@ def raw_datasets() -> dict[str, object]:
     payload = raw_dataset_catalog_payload()
     for entry in payload:
         entry["row_count"] = table_row_count(str(entry["table_ref"]))
+        entry["download_url"] = f"/api/raw-datasets/{entry['key']}/download.csv"
     return {"datasets": payload}
 
 
@@ -241,11 +274,20 @@ def raw_dataset_sample(dataset_key: str, limit: int = DEFAULT_LIMIT) -> dict[str
     }
 
 
+@app.get("/api/raw-datasets/{dataset_key}/download.csv")
+def raw_dataset_download(dataset_key: str) -> StreamingResponse:
+    entry = RAW_DATASETS.get(dataset_key)
+    if entry is None:
+        raise HTTPException(status_code=404, detail=f"Unknown raw dataset: {dataset_key}")
+    return csv_response(build_export_sql(entry.table_ref), filename=f"{dataset_key}.csv")
+
+
 @app.get("/api/datasets")
 def datasets() -> dict[str, object]:
     payload = dataset_catalog_payload()
     for entry in payload:
         entry["row_count"] = table_row_count(str(entry["table_ref"]))
+        entry["download_url"] = f"/api/datasets/{entry['key']}/download.csv"
     return {"datasets": payload}
 
 
@@ -267,12 +309,21 @@ def dataset_sample(dataset_key: str, limit: int = DEFAULT_LIMIT) -> dict[str, ob
     }
 
 
+@app.get("/api/datasets/{dataset_key}/download.csv")
+def dataset_download(dataset_key: str) -> StreamingResponse:
+    entry = HARMONIZED_DATASETS.get(dataset_key)
+    if entry is None:
+        raise HTTPException(status_code=404, detail=f"Unknown dataset: {dataset_key}")
+    return csv_response(build_export_sql(entry.table_ref), filename=f"{dataset_key}.csv")
+
+
 @app.get("/api/pre-gme")
 def pre_gme_metadata() -> dict[str, object]:
     payload = pre_gme_catalog_payload()
     payload["row_count"] = pre_gme_row_count()
     payload["scientific_metrics"] = pre_gme_metrics()
     payload["download_url"] = "/api/exports/pre-gme.xlsx"
+    payload["csv_download_url"] = "/api/pre-gme/download.csv"
     return payload
 
 
@@ -286,6 +337,11 @@ def pre_gme_sample(limit: int = DEFAULT_LIMIT) -> dict[str, object]:
         "columns": result["columns"],
         "rows": result["rows"],
     }
+
+
+@app.get("/api/pre-gme/download.csv")
+def pre_gme_download_csv() -> StreamingResponse:
+    return csv_response(build_pre_gme_export_sql(), filename="supervisor_variant_registry_brca_pre_gme_v1.csv")
 
 
 @app.get("/api/exports/pre-gme.xlsx")
@@ -308,6 +364,7 @@ def pre_gme_export() -> Response:
 def registry_metadata() -> dict[str, object]:
     payload = registry_catalog_payload()
     payload["row_count"] = registry_row_count()
+    payload["csv_download_url"] = "/api/registry/download.csv"
     try:
         payload["scientific_metrics"] = registry_scientific_metrics()
     except HTTPException as exc:
@@ -328,6 +385,11 @@ def registry_sample(limit: int = DEFAULT_LIMIT) -> dict[str, object]:
     }
 
 
+@app.get("/api/registry/download.csv")
+def registry_download_csv() -> StreamingResponse:
+    return csv_response(build_registry_export_sql(), filename="supervisor_variant_registry_brca_v1.csv")
+
+
 @app.get("/api/registry/steps/{step_id}/sample")
 def registry_step_sample(step_id: str, limit: int = DEFAULT_LIMIT) -> dict[str, object]:
     try:
@@ -341,3 +403,12 @@ def registry_step_sample(step_id: str, limit: int = DEFAULT_LIMIT) -> dict[str, 
         "columns": result["columns"],
         "rows": result["rows"],
     }
+
+
+@app.get("/api/registry/steps/{step_id}/download.csv")
+def registry_step_download(step_id: str) -> StreamingResponse:
+    try:
+        sql = build_registry_step_export_sql(step_id=step_id)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=f"Unknown registry step: {step_id}") from exc
+    return csv_response(sql, filename=f"{step_id}.csv")
