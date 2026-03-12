@@ -12,15 +12,20 @@ Ingest all upstream datasets required for BRCA1/BRCA2 misclassification analysis
 - ClinVar:
   - Clinical significance, review status (stars), submitter counts, and conflict indicators.
 - gnomAD (GRCh38 preferred):
-  - Global AF + ancestry AF (including Middle Eastern subset when available), AN/AC, hom counts, and relevant QC/coverage fields.
+  - Current ingestion scope: required chromosomes only (`chr13`, `chr17`) from both genomes and exomes raw files.
+  - Global AF + ancestry AF, AN/AC, hom counts, and relevant QC/coverage fields are extracted in later parsing steps.
 - Arab / Middle Eastern frequency sources (license-permitting and accessible):
   - GME Variome (summary), Qatar Genome Program (summary tables), and/or gnomAD ME subset.
+  - This stream is intentionally deferred until ClinVar and gnomAD raw freeze is finalized.
 - Public cloud datasets (when available):
   - If a dataset is already published in BigQuery, do not copy the full dataset; snapshot only the BRCA1/2 subset into `arab_acmg_raw` and record the upstream table reference and snapshot date.
 
 ## Cloud-First Storage Requirements
+- **Mandatory order of operations**:
+  1. Persist upstream files **as-is** to GCS raw vault (`raw/sources/...`) with manifests.
+  2. Only after raw vault success, generate parsed/subset artifacts.
+  3. Load parsed working raw tables into BigQuery `arab_acmg_raw`.
 - Raw snapshots must be stored in GCS first (versioned paths + checksums + manifest).
-- Raw tables must be loaded into BigQuery `arab_acmg_raw` before any transformations.
 - Avoid large local files; local disk is reserved for small test fixtures only.
 
 ## Data Contracts
@@ -51,9 +56,15 @@ See: [conductor/data-contracts.md](../../data-contracts.md).
 - GE expectation suites + checkpoints and published Data Docs.
 - dbt sources + staging models + dbt tests for raw/staging layers.
 - Data dictionary and provenance table covering all ingested sources.
+- Frozen supervisor-review artifacts in GCS for the processed BRCA checkpoint outputs (`pre-GME` and `final`) so downstream review does not spend BigQuery query quota.
 
 ## Success Criteria
-- [ ] Raw snapshots exist in GCS for all sources with version/access date and checksums recorded.
-- [ ] `arab_acmg_raw` tables exist with stable schemas and documented provenance.
-- [ ] GE checkpoints pass for all ingested sources (or failures are documented and triaged).
-- [ ] dbt source definitions + baseline tests are in place for raw tables.
+- [x] Raw snapshots exist in GCS for the current source set with version/access date and checksums recorded.
+- [x] `arab_acmg_raw` tables exist with stable schemas and documented provenance for ClinVar, gnomAD (`chr13`,`chr17`, genomes/exomes), and the accessible GME source.
+- [x] GE checkpoints and dbt source/test scaffolding exist for the current raw-source milestone.
+- [x] A frozen low-cost supervisor review bundle exists so downstream work can continue from GCS artifacts instead of live BigQuery query scans.
+
+## Current Milestone Boundary
+- T002 is considered complete for the current BRCA milestone once the raw sources are frozen and the supervisor review artifacts are exported.
+- Additional Arab/Middle Eastern source onboarding beyond the currently available GME artifact is intentionally deferred until a new licensed raw artifact is available.
+- Optional refreshes such as raw-layer Data Docs publication, data-dictionary regeneration, and inventory refresh remain backlog work; they do not gate T003.

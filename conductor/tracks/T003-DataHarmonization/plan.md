@@ -15,15 +15,15 @@
 - [ ] 3.2 Produce a normalization report (before/after counts, duplicates/collisions).
 - [ ] 3.3 Persist harmonized Parquet snapshots to GCS with manifests.
 
-## Phase 4: BigQuery Harmonized Layer + Modeling
-- [x] 4.1 Load only the checkpoint tables into BigQuery `arab_acmg_harmonized` (`pre-GME`, `final-with-GME`). (`600bd3e`)
-- [x] 4.2 Remove obsolete per-source harmonized tables/views and keep only the checkpoint tables as durable outputs. (`600bd3e`)
-- [ ] 4.3 Add dbt tests for canonical key uniqueness and enum accepted values.
+## Phase 4: Frozen Artifact Layer + Modeling
+- [x] 4.1 Adopt frozen GCS checkpoint artifacts as the default harmonized handoff surface for downstream work. (`f1c2974`, implemented via T002 step 5.7 closeout)
+- [x] 4.2 Remove durable harmonized BigQuery outputs and keep active BigQuery usage raw-only. (`f1c2974`, implemented via T002 step 5.7 closeout)
+- [ ] 4.3 Add canonical-key validation tests against the frozen harmonized artifacts (dbt/DuckDB/pytest, whichever is lowest cost and reproducible).
 
 ## Phase 5: GE Quality Gates
-- [ ] 5.1 Create GE suites/checkpoints for harmonized tables (canonical key, duplicates, status enums).
+- [ ] 5.1 Create GE suites/checkpoints for harmonized artifacts (canonical key, duplicates, status enums).
 - [ ] 5.2 Publish GE Data Docs for harmonized validation runs to GCS.
 
 ---
 **Track Status**: `[~]`
-**Checkpoint SHA**: `[checkpoint: ac88dbb]`
+**Checkpoint SHA**: `[checkpoint: f1c2974]`

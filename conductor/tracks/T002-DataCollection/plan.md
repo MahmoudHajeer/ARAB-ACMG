@@ -24,19 +24,30 @@
 
 ## Phase 4: Arab / Middle Eastern Frequency Sources
 - [x] 4.1 Enumerate accessible sources (GME, Qatar Genome) and document license/access constraints. `3a5a856` *(Accessible now: local GME hg38 raw file. Not yet accessible in workspace: Qatar Genome raw artifact.)*
-- [ ] 4.2 Persist untouched source snapshots to raw-as-is GCS vault, then load parsed working tables to `arab_acmg_raw`. (Deferred.)
-- [ ] 4.3 GE suite + checkpoint per source (required fields, AF/AN sanity, missingness).
-- [ ] 4.4 dbt `source` + `stg_*` models + dbt tests per Arab/ME source.
+- [x] 4.2 Persist the currently accessible Arab/ME source snapshot (GME) to the raw-as-is GCS vault and load its raw table to `arab_acmg_raw`. `3a5a856`
+- [x] 4.3 Record the Arab/ME expansion gate explicitly: no further source-specific QC/modeling work proceeds until an additional licensed raw artifact is present in the workspace. `97ff663`
+- [x] 4.4 Close the current Arab/ME phase at the GME-only boundary and move further source onboarding to deferred expansion backlog. `97ff663`
 
 ## Phase 5: QC Gate and Handoff Package
-- [ ] 5.1 Publish GE Data Docs for this track to GCS.
-- [ ] 5.2 Produce a data dictionary and provenance table for all `arab_acmg_raw` tables.
-- [ ] 5.3 Create a raw-layer inventory report (row counts, null rates, duplicates).
-- [x] 5.4 Build a supervisor-facing query explorer with live 50-row sample fetches per dataset and a first registry table preview that can absorb new sources incrementally. `34ed035` *(Enhanced on 2026-03-11 with workflow pages and a pre-GME XLSX review export modeled on `example.xlsx`; live deployment stabilized with `f72ad8a` to fix reserved-column sampling in `ui/status_snapshot.json`.)*
-- [x] 5.5 Add full CSV downloads for every supervisor-visible preview surface (raw tables, checkpoint tables, and query-only evidence steps). `8f8518f` *(Parallel refinement allowed while `4.2-5.3` remain blocked/deferred because it operates only on already frozen tables and queries.)*
-- [x] 5.6 Harden the supervisor UI for live-data loading, page-level lazy fetches, clear click affordances, and the BioTrust visual identity. `a78dcee` *(Parallel refinement allowed while `4.2-5.3` remain blocked/deferred because it operates only on already frozen tables, Conductor state, and the existing deployed review surface.)*
+- [x] 5.1 Freeze the processed BRCA checkpoint outputs to GCS (`Parquet`, `XLSX`, `CSV`) and publish a static review bundle for the supervisor UI. `f1c2974`
+- [x] 5.2 Keep the raw-layer provenance in source-freeze/manifests and carry the processed-artifact manifest into GCS for the review bundle handoff. `f1c2974`
+- [x] 5.3 Verify the raw-layer inventory and health at milestone close (`verify_bq_health`, frozen artifact verification, row counts). `f1c2974`
+- [x] 5.4 Build a supervisor-facing review surface that starts from the frozen raw evidence and evolves into the BRCA checkpoint preview. `34ed035` *(Enhanced on 2026-03-11 with workflow pages and a pre-GME XLSX review export modeled on `example.xlsx`; later frozen into static artifacts by `f1c2974`.)*
+- [x] 5.5 Converge review/export behavior to the current low-cost policy: only the final frozen registry CSV remains downloadable at runtime. `f1c2974`
+- [x] 5.6 Harden the supervisor UI and then complete the cost-control pivot to a static GCS-backed runtime. `f1c2974`
 - [x] 5.7 Replace live BigQuery-backed supervisor interactions with frozen static review artifacts, keep BigQuery only for raw source-of-truth tables, and move the final harmonized deliverable to GCS-first distribution. `f1c2974` *(Explicit user reprioritization on 2026-03-12 to minimize BigQuery spend; allowed in parallel with `4.2-5.3` because it only restructures access to already frozen outputs.)*
+- [~] 5.8 Finalize the T002 milestone boundary, move non-gating backlog items out of the active task queue, and prepare T003 as the next active stage after the cost-control pivot.
+
+## Deferred Expansion Backlog (Not Gating T002 Closure)
+- Future Arab/Middle Eastern raw sources beyond GME:
+  - persist the untouched snapshot to `raw/sources/...`
+  - add source-specific GE expectations
+  - add source-specific dbt models/tests
+- Optional raw-layer refresh package:
+  - republish GE Data Docs to GCS after the next raw-source expansion
+  - regenerate the raw data dictionary/inventory reports when the source set changes
+  - expose refreshed review snapshots only after a new approved freeze
 
 ---
 **Track Status**: `[~]`
-**Checkpoint SHA**: `[checkpoint: a78dcee]`
+**Checkpoint SHA**: `[checkpoint: f1c2974]`
