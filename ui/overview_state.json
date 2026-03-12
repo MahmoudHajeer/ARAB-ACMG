@@ -1,0 +1,143 @@
+{
+  "generated_at": "2026-03-12T12:55:32.047561+00:00",
+  "tracks": [
+    {
+      "track_id": "T001",
+      "name": "Infrastructure & GCP Setup",
+      "description": "Local environment configuration, GCP resource provisioning (GCS, BigQuery), and Docker/Conda scaffolding.",
+      "status_symbol": "x",
+      "status_label": "done",
+      "folder": "conductor/tracks/T001-Infrastructure/"
+    },
+    {
+      "track_id": "T002",
+      "name": "Data Ingestion & QC",
+      "description": "Automated collection of ClinVar, gnomAD, and Arab-specific datasets to GCS. Perform initial QC and data-type validation.",
+      "status_symbol": "~",
+      "status_label": "in_progress",
+      "folder": "conductor/tracks/T002-DataCollection/"
+    },
+    {
+      "track_id": "T003",
+      "name": "Data Harmonization & Normalization",
+      "description": "Implementing pipelines (bcftools, vt) for variant normalization and lifting over all data to GRCh38.",
+      "status_symbol": "~",
+      "status_label": "in_progress",
+      "folder": "conductor/tracks/T003-DataHarmonization/"
+    },
+    {
+      "track_id": "T004",
+      "name": "Master Dataset & Analysis Engine",
+      "description": "Building the harmonized Master Dataset in BigQuery and implementing the ACMG rule-based engine (PM2, BS1, etc.).",
+      "status_symbol": " ",
+      "status_label": "not_started",
+      "folder": "conductor/tracks/T004-AnalysisEngine/"
+    },
+    {
+      "track_id": "T005",
+      "name": "Statistical Evaluation & Results",
+      "description": "Performing statistical analysis of classification shifts and generating high-quality research visualizations in Vertex AI.",
+      "status_symbol": " ",
+      "status_label": "not_started",
+      "folder": "conductor/tracks/T005-StatsResults/"
+    }
+  ],
+  "plan_progress": {
+    "T001": {
+      "total_tasks": 11,
+      "done_tasks": 11,
+      "in_progress_tasks": 0,
+      "todo_tasks": 0,
+      "done_pct": 100.0,
+      "progress_pct": 100.0
+    },
+    "T002": {
+      "total_tasks": 26,
+      "done_tasks": 20,
+      "in_progress_tasks": 0,
+      "todo_tasks": 6,
+      "done_pct": 76.9,
+      "progress_pct": 76.9
+    },
+    "T003": {
+      "total_tasks": 14,
+      "done_tasks": 4,
+      "in_progress_tasks": 0,
+      "todo_tasks": 10,
+      "done_pct": 28.6,
+      "progress_pct": 28.6
+    },
+    "T004": {
+      "total_tasks": 11,
+      "done_tasks": 0,
+      "in_progress_tasks": 0,
+      "todo_tasks": 11,
+      "done_pct": 0.0,
+      "progress_pct": 0.0
+    },
+    "T005": {
+      "total_tasks": 7,
+      "done_tasks": 0,
+      "in_progress_tasks": 0,
+      "todo_tasks": 7,
+      "done_pct": 0.0,
+      "progress_pct": 0.0
+    }
+  },
+  "track_status_counts": {
+    "done": 1,
+    "in_progress": 2,
+    "not_started": 2
+  },
+  "latest_t002_verification": [
+    {
+      "command": "python3 -m pytest -q tests (55 passed)",
+      "status": "pass"
+    },
+    {
+      "command": "node --check ui/app.js (pass)",
+      "status": "pass"
+    },
+    {
+      "command": "python3 -m py_compile ui/service.py ui/overview_data.py scripts/update_ui_overview_state.py (pass)",
+      "status": "pass"
+    },
+    {
+      "command": "python3 scripts/update_ui_overview_state.py (pass)",
+      "status": "pass"
+    },
+    {
+      "command": "curl -si http://127.0.0.1:8082/ (pass: cache-control=no-store)",
+      "status": "pass"
+    },
+    {
+      "command": "curl -sS http://127.0.0.1:8082/api/overview (pass)",
+      "status": "pass"
+    },
+    {
+      "command": "Playwright local check on http://127.0.0.1:8082/ (pass: startup requests only /api/overview + /api/workflow; /api/raw-datasets fetched only after opening Raw Sources)",
+      "status": "pass"
+    },
+    {
+      "command": "gcloud run deploy supervisor-ui --source ui --region europe-west1 --project genome-services-platform --allow-unauthenticated --quiet (pass)",
+      "status": "pass"
+    },
+    {
+      "command": "curl -si https://supervisor-ui-142306018756.europe-west1.run.app/ (pass: cache-control=no-store)",
+      "status": "pass"
+    },
+    {
+      "command": "curl -sS https://supervisor-ui-142306018756.europe-west1.run.app/api/overview (pass)",
+      "status": "pass"
+    },
+    {
+      "command": "curl -sS https://supervisor-ui-142306018756.europe-west1.run.app/api/raw-datasets (pass)",
+      "status": "pass"
+    },
+    {
+      "command": "Playwright live check on https://supervisor-ui-142306018756.europe-west1.run.app/ (pass: startup requests only /api/overview + /api/workflow; /api/raw-datasets fetched only after opening Raw Sources; latest checkpoint text updated)",
+      "status": "pass"
+    }
+  ],
+  "last_successful_step": "T002 step 5.6 finalized on 2026-03-12: the supervisor UI now lazy-loads workflow pages, uses /api/overview instead of a baked snapshot, applies the BioTrust visual identity, and Cloud Run serves no-store static assets plus live BigQuery-backed workflow pages."
+}
