@@ -35,6 +35,7 @@
 - [x] 5.4 Build a supervisor-facing query explorer with live 50-row sample fetches per dataset and a first registry table preview that can absorb new sources incrementally. `34ed035` *(Enhanced on 2026-03-11 with workflow pages and a pre-GME XLSX review export modeled on `example.xlsx`; live deployment stabilized with `f72ad8a` to fix reserved-column sampling in `ui/status_snapshot.json`.)*
 - [x] 5.5 Add full CSV downloads for every supervisor-visible preview surface (raw tables, checkpoint tables, and query-only evidence steps). `8f8518f` *(Parallel refinement allowed while `4.2-5.3` remain blocked/deferred because it operates only on already frozen tables and queries.)*
 - [x] 5.6 Harden the supervisor UI for live-data loading, page-level lazy fetches, clear click affordances, and the BioTrust visual identity. `a78dcee` *(Parallel refinement allowed while `4.2-5.3` remain blocked/deferred because it operates only on already frozen tables, Conductor state, and the existing deployed review surface.)*
+- [x] 5.7 Replace live BigQuery-backed supervisor interactions with frozen static review artifacts, keep BigQuery only for raw source-of-truth tables, and move the final harmonized deliverable to GCS-first distribution. `f1c2974` *(Explicit user reprioritization on 2026-03-12 to minimize BigQuery spend; allowed in parallel with `4.2-5.3` because it only restructures access to already frozen outputs.)*
 
 ---
 **Track Status**: `[~]`

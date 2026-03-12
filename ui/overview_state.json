@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-12T12:55:32.047561+00:00",
+  "generated_at": "2026-03-12T15:20:34.990727+00:00",
   "tracks": [
     {
       "track_id": "T001",
@@ -52,12 +52,12 @@
       "progress_pct": 100.0
     },
     "T002": {
-      "total_tasks": 26,
-      "done_tasks": 20,
+      "total_tasks": 27,
+      "done_tasks": 21,
       "in_progress_tasks": 0,
       "todo_tasks": 6,
-      "done_pct": 76.9,
-      "progress_pct": 76.9
+      "done_pct": 77.8,
+      "progress_pct": 77.8
     },
     "T003": {
       "total_tasks": 14,
@@ -91,7 +91,27 @@
   },
   "latest_t002_verification": [
     {
-      "command": "python3 -m pytest -q tests (55 passed)",
+      "command": "python3 scripts/freeze_supervisor_review_bundle.py (pass)",
+      "status": "pass"
+    },
+    {
+      "command": "python3 scripts/decommission_supervisor_bigquery_outputs.py (pass)",
+      "status": "pass"
+    },
+    {
+      "command": "python3 scripts/verify_supervisor_registry.py (pass)",
+      "status": "pass"
+    },
+    {
+      "command": "python3 scripts/verify_gcp.py (pass)",
+      "status": "pass"
+    },
+    {
+      "command": "python3 scripts/verify_bq_health.py (pass)",
+      "status": "pass"
+    },
+    {
+      "command": "python3 -m pytest -q tests (54 passed)",
       "status": "pass"
     },
     {
@@ -99,45 +119,37 @@
       "status": "pass"
     },
     {
-      "command": "python3 -m py_compile ui/service.py ui/overview_data.py scripts/update_ui_overview_state.py (pass)",
+      "command": "python3 -m py_compile ui/service.py ui/review_bundle.py scripts/freeze_supervisor_review_bundle.py scripts/decommission_supervisor_bigquery_outputs.py scripts/verify_supervisor_registry.py (pass)",
       "status": "pass"
     },
     {
-      "command": "python3 scripts/update_ui_overview_state.py (pass)",
+      "command": "Playwright local UI check on http://127.0.0.1:8082/ (pass: frozen samples shown; only final CSV download remains)",
       "status": "pass"
     },
     {
-      "command": "curl -si http://127.0.0.1:8082/ (pass: cache-control=no-store)",
+      "command": "gcloud run deploy supervisor-ui --source ui --region europe-west1 --project genome-services-platform --allow-unauthenticated --quiet (pass: revisions supervisor-ui-00016-d2x and supervisor-ui-00017-c5n; second deploy synced updated overview_state)",
       "status": "pass"
     },
     {
-      "command": "curl -sS http://127.0.0.1:8082/api/overview (pass)",
+      "command": "curl -sS https://supervisor-ui-142306018756.europe-west1.run.app/api/health (pass)",
       "status": "pass"
     },
     {
-      "command": "Playwright local check on http://127.0.0.1:8082/ (pass: startup requests only /api/overview + /api/workflow; /api/raw-datasets fetched only after opening Raw Sources)",
+      "command": "curl -sS https://supervisor-ui-142306018756.europe-west1.run.app/api/raw-datasets/clinvar_raw_vcf/sample (pass: frozen sample JSON)",
       "status": "pass"
     },
     {
-      "command": "gcloud run deploy supervisor-ui --source ui --region europe-west1 --project genome-services-platform --allow-unauthenticated --quiet (pass)",
+      "command": "curl -si https://supervisor-ui-142306018756.europe-west1.run.app/api/raw-datasets/clinvar_raw_vcf/download.csv (pass: 404 removed)",
       "status": "pass"
     },
     {
-      "command": "curl -si https://supervisor-ui-142306018756.europe-west1.run.app/ (pass: cache-control=no-store)",
+      "command": "curl -si https://supervisor-ui-142306018756.europe-west1.run.app/api/registry/download.csv (pass: 307 redirect to static GCS CSV)",
       "status": "pass"
     },
     {
-      "command": "curl -sS https://supervisor-ui-142306018756.europe-west1.run.app/api/overview (pass)",
-      "status": "pass"
-    },
-    {
-      "command": "curl -sS https://supervisor-ui-142306018756.europe-west1.run.app/api/raw-datasets (pass)",
-      "status": "pass"
-    },
-    {
-      "command": "Playwright live check on https://supervisor-ui-142306018756.europe-west1.run.app/ (pass: startup requests only /api/overview + /api/workflow; /api/raw-datasets fetched only after opening Raw Sources; latest checkpoint text updated)",
+      "command": "Playwright live UI check on https://supervisor-ui-142306018756.europe-west1.run.app/ (pass: frozen review copy and updated last-successful-step rendered)",
       "status": "pass"
     }
   ],
-  "last_successful_step": "T002 step 5.6 finalized on 2026-03-12: the supervisor UI now lazy-loads workflow pages, uses /api/overview instead of a baked snapshot, applies the BioTrust visual identity, and Cloud Run serves no-store static assets plus live BigQuery-backed workflow pages."
+  "last_successful_step": "T002 step 5.7 finalized on 2026-03-12: the supervisor UI now serves a frozen review bundle and a GCS-hosted final CSV, while BigQuery remains reserved for the raw source-of-truth tables only."
 }
