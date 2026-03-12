@@ -13,7 +13,8 @@
 - All transformations and cleaning steps must be scripted.
 - **Cloud-First Data Policy**:
     - Store raw snapshots in **GCS** first (versioned paths + checksums).
-    - Load an unmodified just the large datasets "raw copy" into **BigQuery** datasets before any transformations.
+    - Do not create new BigQuery datasets/tables as part of the active workflow. Existing raw BigQuery mirrors are legacy archive only.
+    - Prefer GCS-hosted Parquet/CSV artifacts plus DuckDB for all downstream inspection, harmonization, and analysis work.
     - Avoid downloading large datasets to local disk; local data should be limited to small test fixtures.
 - **Variant Inclusion Criteria**: 
     - Must have PASS filter in VCF.
@@ -38,6 +39,7 @@
 - **AI-Signed Documentation**: Every major logic step or function must be preceded by a descriptive comment block. Use the format: `[AI-Agent: <AgentName>]: <Explanation>`.
 - **"What & Why" Comments**: Comments must explain both the action (what) and the intended effect on the data (why/result).
 - **Modern Python 3.14+**: Always utilize the latest Python features (e.g., improved type hinting, deferred evaluations). When using 3.14+ specific features, explicitly document their performance or architectural benefits.
+- **Cost Discipline**: Default to the lowest-cost reproducible path. If a step would consume a paid managed-query service, document why GCS + DuckDB + Python is insufficient before proceeding.
 
 ### Example Signature
 ```python

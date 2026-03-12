@@ -1,21 +1,21 @@
 # Specification: T004-Master Dataset & ACMG Analysis Engine
 
 ## Goal
-Build the harmonized master dataset in BigQuery and implement the frequency-driven ACMG evaluation logic to quantify classification shifts between a global model and an Arab-enriched model.
+Build the harmonized master dataset from frozen Parquet artifacts and implement the frequency-driven ACMG evaluation logic to quantify classification shifts between a global model and an Arab-enriched model.
 
 ## References
 - Shared contracts: [conductor/data-contracts.md](../../data-contracts.md)
 - Roadmap narrative: [Data collection.MD](<../../../Data collection.MD>)
 
 ## Inputs
-- BigQuery `arab_acmg_harmonized` tables (T003 outputs).
+- GCS-hosted harmonized Parquet artifacts from T003.
 
 ## Outputs
-- BigQuery `arab_acmg_results` tables:
+- GCS-hosted results artifacts:
   - `master_variants`: one row per canonical variant key with joined ClinVar and frequency fields
   - `acmg_frequency_eval`: PM2/BS1/BA1 flags under Scenario A and Scenario B
   - `classification_shifts`: summary of scenario differences (direction, magnitude, stratifications)
-- Parameter registry for thresholds and policies (dbt seed or BigQuery parameters table).
+- Parameter registry for thresholds and policies (versioned YAML/JSON/CSV seed in-repo + frozen copy in GCS).
 
 ## Scenarios (Pre-Declared)
 - Scenario A (Global):
@@ -30,7 +30,7 @@ Build the harmonized master dataset in BigQuery and implement the frequency-driv
 - Missing-data handling rules (when one frequency source is absent).
 
 ## Quality Gates
-- dbt models for master joins and evaluation outputs, with dbt tests for:
+- DuckDB SQL and/or Python pipelines for master joins and evaluation outputs, with validation checks for:
   - canonical key uniqueness
   - not-null requirements for required fields
   - accepted values for scenario labels and flags

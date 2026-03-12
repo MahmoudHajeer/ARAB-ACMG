@@ -1,7 +1,7 @@
 # Implementation Plan: T005-Statistical Evaluation & Results
 
-## Phase 1: Descriptive Statistics (dbt + Python)
-- [ ] 1.1 Build dbt marts for shift rates and directionality across scenarios.
+## Phase 1: Descriptive Statistics (DuckDB + Python)
+- [ ] 1.1 Build frozen marts for shift rates and directionality across scenarios.
 - [ ] 1.2 Stratify results by gene, ClinVar confidence, and variant type.
 
 ## Phase 2: Uncertainty + Sensitivity

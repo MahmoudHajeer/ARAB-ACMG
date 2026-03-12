@@ -6,6 +6,8 @@ channels:
 dependencies:
   - python=3.14
   - pandas
+  - pyarrow
+  - duckdb
   - numpy
   - scipy
   - statsmodels
@@ -19,6 +21,8 @@ dependencies:
   - liftover
   - pytest
   - pytest-cov
+  - openpyxl
+  - xlrd
   - flake8
   - black
   - mypy

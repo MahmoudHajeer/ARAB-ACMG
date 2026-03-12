@@ -1,10 +1,9 @@
 # Tech Stack: ARAB-ACMG Research
 
 ## Google Cloud Platform (GCP)
-- **Cloud Storage (GCS)**: For secure, scalable storage of large VCF files and raw genomic datasets.
-- **BigQuery**: For large-scale variant querying and statistical analysis of population frequencies.
-- **Vertex AI**: For developing and executing classification models and misclassification analysis scripts.
-- **Google Cloud Batch**: For executing containerized bioinformatics pipelines (normalization, annotation).
+- **Cloud Storage (GCS)**: Primary system of record for raw snapshots, manifests, frozen extracts, harmonized Parquet, and final results bundles.
+- **BigQuery (legacy raw archive only)**: Existing raw mirrors may remain for audit/reference, but no new downstream workflows should depend on BigQuery.
+- **Google Cloud Batch**: Optional execution layer for heavy one-off bioinformatics jobs that cannot be run cheaply elsewhere.
 - **Artifact Registry**: To manage Docker images for reproducible analysis environments.
 
 ## Bioinformatics Tools (High-Performance)
@@ -16,9 +15,10 @@
 - **CrossMap / LiftOver**: For converting genomic coordinates between builds (GRCh37 to GRCh38).
 
 ## Data Processing & Analysis (Python 3.14+**)
-- **Pandas / Dask**: For tabular data manipulation (Dask for datasets exceeding memory).
-- **PyArrow / Parquet**: Columnar intermediate storage for large datasets and reproducible snapshots (stored in GCS, queried/loaded into BigQuery).
-- **DuckDB**: Preferred low-cost query engine for frozen Parquet checkpoint artifacts stored in GCS after BigQuery-backed raw extraction is complete.
+- **Pandas**: For tabular extraction, sheet-level cleanup, and result packaging.
+- **PyArrow / Parquet**: Columnar storage for immutable extracts, harmonized snapshots, and results bundles stored in GCS.
+- **DuckDB**: Primary low-cost query engine for harmonization, master-dataset assembly, and statistical marts over Parquet artifacts.
+- **openpyxl / xlrd**: Spreadsheet readers for supplementary `.xlsx`/`.xls` source packages that commonly appear in Arab cohort publications.
 - **NumPy**: For optimized numerical operations.
 - **SciPy / Statsmodels**: For rigorous statistical hypothesis testing on misclassification shifts.
 
@@ -29,11 +29,8 @@
 - **pytest**: For unit and integration testing.
 - **pytest-cov**: For monitoring code coverage (Goal: >100%).
 - **flake8 / black / mypy**: For linting, formatting, and static type checking.
-- **Great Expectations**: Data quality gates (expectation suites + checkpoints) for BigQuery tables and Parquet snapshots.
-- **dbt Tests**: Schema and data tests (unique/not_null/accepted_values/relationships) integrated with BigQuery models.
-
-## Data Modeling & Transforms (BigQuery)
-- **dbt (dbt-core + dbt-bigquery)**: Version-controlled SQL transforms, documentation, and tests for raw -> harmonized -> results layers.
+- **Great Expectations**: Data quality gates (expectation suites + checkpoints) for Parquet/CSV snapshots.
+- **DuckDB SQL + pytest assertions**: Default schema, uniqueness, and accepted-values checks without managed-query cost.
 
 ## Version Control & Environment
 - **Git / GitHub**: For code and metadata versioning.
@@ -43,4 +40,4 @@
 ## Supervisor Runtime Interface
 - **FastAPI**: Lightweight backend for the supervisor UI, now serving frozen JSON/GCS artifacts instead of live BigQuery queries.
 - **Uvicorn**: ASGI runtime for local testing and Cloud Run deployment of the supervisor service.
-- **Cloud Storage static artifacts**: Frozen review bundle JSON, Parquet checkpoints, and the final CSV download are published to GCS so the UI does not consume BigQuery query quota at runtime.
+- **Cloud Storage static artifacts**: Frozen review bundle JSON, Parquet checkpoints, and the final CSV download are published to GCS so the UI does not consume managed-query quota at runtime.

@@ -64,3 +64,13 @@ Do not rewrite previous entries.
 - Files changed: `conductor/tracks/T003-DataHarmonization/spec.md`, `conductor/tracks/T003-DataHarmonization/plan.md`
 - Verification run + result: `documentation/state sync only; validated against the completed T002 step 5.7 freeze and current raw-only BigQuery posture`
 - Next exact action: Start task `1.3` and define the transformation metadata contract (`liftover_status`, `norm_status`, tool/version provenance) against the frozen harmonized GCS artifacts.
+
+### Entry 7
+- Timestamp: `2026-03-12T19:10:00+03:00`
+- Agent: `Codex`
+- Task ID: `1.3`
+- Status: `Started`
+- Summary: Starting the harmonized transformation metadata contract and full plan rescope to eliminate future BigQuery dependence beyond the already-frozen raw layer. In parallel, Arab-source intake is being reviewed for low-cost GCS-first freezing and future harmonization readiness.
+- Files changed: `conductor/tracks/T003-DataHarmonization/plan.md`, `conductor/tracks/T003-DataHarmonization/index.md`
+- Verification run + result: `state update only before implementation`
+- Next exact action: Update shared contracts/specs/plans for GCS/Parquet/DuckDB-only downstream work, then freeze any newly discovered public Arab dataset with provenance metadata.

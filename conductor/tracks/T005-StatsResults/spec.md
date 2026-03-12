@@ -7,10 +7,10 @@ Quantify and communicate classification shifts between Scenario A (global) and S
 - Roadmap narrative: [Data collection.MD](<../../../Data collection.MD>)
 
 ## Inputs
-- BigQuery `arab_acmg_results` tables from T004 (master dataset + evaluation + shift tables).
+- GCS-hosted results artifacts from T004 (master dataset + evaluation + shift tables).
 
 ## Outputs
-- Statistics-ready marts in `arab_acmg_results` (via dbt):
+- Statistics-ready Parquet/CSV marts in `frozen/results/...`:
   - summary tables of shift rates and directionality
   - stratifications by gene, ClinVar review confidence, variant type
 - Reproducible figures and tables for manuscript/proposal.
