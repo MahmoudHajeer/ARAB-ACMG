@@ -184,3 +184,23 @@ Do not rewrite previous entries.
 - Files changed: `ui/traceability.py`, `ui/review_bundle.py`, `ui/source_review.py`, `ui/service.py`, `ui/app.js`, `ui/styles.css`, `tests/test_traceability.py`, `conductor/tracks/T003-DataHarmonization/index.md`
 - Verification run + result: `python3 -m py_compile ui/traceability.py ui/review_bundle.py ui/source_review.py ui/service.py (pass)`, `python3 -m pytest -q tests (69 passed)`, `node --check ui/app.js (pass)`, `gcloud run deploy supervisor-ui --source ui --region europe-west1 --project genome-services-platform --allow-unauthenticated --quiet (pass: revision supervisor-ui-00028-pnw)`, `live checks (pass: /review_bundle.json trace fields present; /api/source-review trace present; Playwright check on #harmonization shows compact Raw/BRCA/Final strip + collapsed Trace sections)`
 - Next exact action: Continue `3.1` by materializing the first Arab-extended normalized checkpoint from the ready GRCh38-capable sources, while preserving the same explicit trace fields for every derived artifact.
+
+### Entry 19
+- Timestamp: `2026-03-14T00:01:01+03:00`
+- Agent: `Codex`
+- Task ID: `3.1`
+- Status: `Started`
+- Summary: Starting the first real normalization pass after the scientific traceability review. The goal is to produce a low-cost, GCS-first Arab-extended BRCA checkpoint from the ready GRCh38-capable sources (`ClinVar`, `gnomAD`, `SHGP`, `GME`) with explicit per-row provenance and no hidden transformation steps.
+- Files changed: `conductor/tracks/T003-DataHarmonization/index.md`
+- Verification run + result: `state update only before implementation`
+- Next exact action: Build a deterministic normalization script and tests for the ready sources, emit GCS-hosted Parquet/report artifacts, then expose the normalized checkpoint lineage and evidence in the supervisor UI.
+
+### Entry 20
+- Timestamp: `2026-03-14T00:45:33+03:00`
+- Agent: `Codex`
+- Task ID: `3.1, 3.2, 3.3`
+- Status: `Completed`
+- Summary: Built the first real BRCA normalization pass for the ready sources (`ClinVar`, `gnomAD`, `SHGP`, `GME`) with explicit per-row provenance, persisted the normalized Parquet artifacts and reports to GCS, and rebuilt the Arab pre-GME/final checkpoints from those normalized sources. The supervisor UI now shows raw -> normalized -> checkpoint evidence from frozen artifacts only, with SHGP included as a primary Arab source and GME added only in the final checkpoint.
+- Files changed: `conductor/tech-stack.md`, `scripts/build_brca_normalized_artifacts.py`, `scripts/verify_brca_normalized_artifacts.py`, `tests/test_build_brca_normalized_artifacts.py`, `tests/test_verify_brca_normalized_artifacts.py`, `tests/test_traceability.py`, `ui/README.md`, `ui/index.html`, `ui/overview_state.json`, `ui/review_bundle.json`, `ui/source_review.json`, `ui/traceability.py`, `conductor/checkpoints/2026-03-14-t003-brca-normalization-pass.md`, `conductor/tracks/T003-DataHarmonization/plan.md`, `conductor/setup_state.json`, `conductor/tracks/T003-DataHarmonization/index.md`
+- Verification run + result: `python3 scripts/build_brca_normalized_artifacts.py (pass: pre-GME=116,398 rows; final=116,413 rows)`, `python3 scripts/verify_brca_normalized_artifacts.py (pass)`, `python3 -m pytest -q tests (75 passed)`, `python3 -m py_compile scripts/build_brca_normalized_artifacts.py scripts/verify_brca_normalized_artifacts.py ui/traceability.py ui/service.py (pass)`, `node --check ui/app.js (pass)`, `local Playwright browser checks on Raw/Normalization pages (pass: frozen raw previews, normalized artifact samples, and traceability cards rendered)`
+- Next exact action: Start task `4.3` and add canonical-key validation tests against the frozen normalized artifacts/checkpoints before introducing GE suites in `5.1`.

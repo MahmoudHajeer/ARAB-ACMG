@@ -11,9 +11,9 @@
 - [x] 2.3 Produce a liftover report (success count, failure count, failure examples). (`21e4bbb`)
 
 ## Phase 3: Variant Normalization
-- [~] 3.1 Normalize each source (split multiallelics, left-align indels, trim bases).
-- [ ] 3.2 Produce a normalization report (before/after counts, duplicates/collisions).
-- [ ] 3.3 Persist harmonized Parquet snapshots to GCS with manifests.
+- [x] 3.1 Normalize each source (split multiallelics, left-align indels, trim bases). (`3d88305`)
+- [x] 3.2 Produce a normalization report (before/after counts, duplicates/collisions). (`3d88305`)
+- [x] 3.3 Persist harmonized Parquet snapshots to GCS with manifests. (`3d88305`)
 
 ## Phase 4: Frozen Artifact Layer + Modeling
 - [x] 4.1 Adopt frozen GCS checkpoint artifacts as the default harmonized handoff surface for downstream work. (`f1c2974`, implemented via T002 step 5.7 closeout)
@@ -26,4 +26,4 @@
 
 ---
 **Track Status**: `[~]`
-**Checkpoint SHA**: `[checkpoint: 7693bb7]`
+**Checkpoint SHA**: `[checkpoint: 3d88305]`
