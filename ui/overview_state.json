@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-13T14:03:38.125329+00:00",
+  "generated_at": "2026-03-13T14:46:35.593119+00:00",
   "tracks": [
     {
       "track_id": "T001",
@@ -62,10 +62,10 @@
     "T003": {
       "total_tasks": 14,
       "done_tasks": 8,
-      "in_progress_tasks": 0,
-      "todo_tasks": 6,
+      "in_progress_tasks": 1,
+      "todo_tasks": 5,
       "done_pct": 57.1,
-      "progress_pct": 57.1
+      "progress_pct": 60.7
     },
     "T004": {
       "total_tasks": 11,

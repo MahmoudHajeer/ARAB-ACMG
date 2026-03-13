@@ -123,6 +123,12 @@ def sample_source_review():
                 "row_count": 123,
                 "notes": ["Evidence note"],
                 "artifact_links": [{"label": "Raw manifest", "url": "gs://bucket/raw/sources/clinvar/manifest.json"}],
+                "workflow_position": {
+                    "raw_stage": "Raw page sample",
+                    "brca_stage": "Direct BRCA extraction",
+                    "final_stage": "Included in final checkpoint",
+                    "included_in_current_final": True,
+                },
                 "next_action": "Normalize alleles",
                 "sample": {
                     "columns": ["chrom", "pos"],

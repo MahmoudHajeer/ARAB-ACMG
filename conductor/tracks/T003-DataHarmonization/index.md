@@ -154,3 +154,23 @@ Do not rewrite previous entries.
 - Files changed: `conductor/checkpoints/2026-03-13-t003-shgp-avdb-liftover.md`, `conductor/index.md`, `conductor/tracks/T003-DataHarmonization/plan.md`, `conductor/tracks/T003-DataHarmonization/index.md`, `conductor/setup_state.json`, `ui/overview_state.json`
 - Verification run + result: `python3 scripts/update_ui_overview_state.py (pass)`, `python3 -m pytest -q tests/test_ui_overview.py tests/test_ui_service.py tests/test_source_review_state.py (24 passed)`, `gcloud run deploy supervisor-ui --source ui --region europe-west1 --project genome-services-platform --allow-unauthenticated --quiet (pass: revision supervisor-ui-00026-6wx)`, `live API checks (pass: /api/source-review decision summary + AVDB liftover counts, /api/overview last_successful_step)`, `live Playwright browser check on https://supervisor-ui-142306018756.europe-west1.run.app/#harmonization (pass: source decisions rendered, AVDB GRCh37->GRCh38 method visible, last_successful_step updated)`
 - Next exact action: Start `3.1` and normalize the ready GRCh38-capable sources (`ClinVar`, `gnomAD`, `SHGP`, `GME`), while deciding whether the UAE BRCA subset is strong enough for the same pass.
+
+### Entry 16
+- Timestamp: `2026-03-13T18:15:00+03:00`
+- Agent: `Codex`
+- Task ID: `3.1`
+- Status: `Started`
+- Summary: Starting the source-to-final lineage cleanup before the actual normalization pass. The immediate goal is to make the supervisor UI show each source from frozen raw evidence through BRCA-specific handling to its current final-table status, so the reader can see what is already in the final checkpoint and what still waits for the next Arab-extended checkpoint.
+- Files changed: `conductor/tracks/T003-DataHarmonization/plan.md`, `conductor/tracks/T003-DataHarmonization/index.md`
+- Verification run + result: `state update only before implementation`
+- Next exact action: Extend the frozen source-review payload with raw -> BRCA -> final lineage fields, raise samples to 10 rows, and render that path clearly in the harmonization UI without introducing live queries.
+
+### Entry 17
+- Timestamp: `2026-03-13T17:54:23+03:00`
+- Agent: `Codex`
+- Task ID: `3.1`
+- Status: `Started`
+- Summary: Extended the frozen supervisor UI so each source now shows its path from raw evidence to BRCA handling to current final-table inclusion status. The Raw page also now exposes the frozen non-BigQuery Arab source packages with 10-row evidence samples, so the reader can follow every source before normalization begins.
+- Files changed: `scripts/update_source_review_state.py`, `tests/test_source_review_state.py`, `tests/test_ui_service.py`, `ui/app.js`, `ui/index.html`, `ui/source_review.json`, `ui/overview_state.json`, `conductor/tracks/T003-DataHarmonization/index.md`
+- Verification run + result: `python3 scripts/update_source_review_state.py (pass)`, `python3 -m pytest -q tests/test_source_review_state.py tests/test_ui_service.py tests/test_ui_overview.py (25 passed)`, `node --check ui/app.js (pass)`, `gcloud run deploy supervisor-ui --source ui --region europe-west1 --project genome-services-platform --allow-unauthenticated --quiet (pass: revision supervisor-ui-00027-mcl)`, `live Playwright browser checks (pass: #raw shows Additional frozen source packages with 10-row samples; #harmonization shows Raw -> BRCA -> final lineage and final inclusion status for each source)`
+- Next exact action: Continue `3.1` by building the actual normalization outputs for the ready GRCh38-capable Arab-aware sources, then replace the current historical checkpoint references with the next Arab-extended checkpoint artifacts.

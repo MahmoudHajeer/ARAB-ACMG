@@ -391,6 +391,32 @@ function renderSourceLiftoverMethod(source) {
   `;
 }
 
+function renderSourceWorkflowPosition(source) {
+  const workflow = source.workflow_position || {};
+  const inclusionLabel = workflow.included_in_current_final ? "Already in current final checkpoint" : "Not in current final checkpoint";
+
+  return `
+    <details class="details-card" open>
+      <summary>Raw -> BRCA -> final lineage</summary>
+      <div class="metric-stack">
+        <div class="metric-item">
+          <div class="metric-title">Stage 1: Frozen raw source</div>
+          <div class="metric-sub">${escapeHtml(workflow.raw_stage || "Not recorded")}</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-title">Stage 2: BRCA1/BRCA2 handling</div>
+          <div class="metric-sub">${escapeHtml(workflow.brca_stage || "Not recorded")}</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-title">Stage 3: Final-table status</div>
+          <div class="metric-sub">${escapeHtml(workflow.final_stage || "Not recorded")}</div>
+          <div class="metric-sub"><strong>${escapeHtml(inclusionLabel)}</strong></div>
+        </div>
+      </div>
+    </details>
+  `;
+}
+
 function renderSourceDecisionSummary(payload) {
   const root = document.getElementById("source-decision-summary");
   if (!root) {
@@ -520,6 +546,7 @@ function renderSourceReviewGrid(payload) {
           <summary>Why this source is kept or limited</summary>
           <div class="metric-sub">${escapeHtml(source.project_fit_note)}</div>
         </details>
+        ${renderSourceWorkflowPosition(source)}
         ${renderSourceLiftoverMethod(source)}
         <details class="details-card">
           <summary>Scientific rationale and evidence</summary>
@@ -536,7 +563,7 @@ function renderSourceReviewGrid(payload) {
         ${
           source.sample
             ? `<details class="details-card">
-                <summary>Frozen evidence sample</summary>
+                <summary>Frozen evidence sample (${Number((source.sample.rows || []).length).toLocaleString()} rows)</summary>
                 ${renderInlineEvidenceTable(source.sample)}
               </details>`
             : ""
@@ -690,6 +717,45 @@ function renderDatasetCollection({ targetId, payload, sampleAttr, samplePath }) 
       });
     });
   });
+}
+
+function renderSupplementalRawSources(payload) {
+  const root = document.getElementById("raw-source-package-explorer");
+  const entries = (payload.sources || []).filter((source) => !(source.workflow_position?.raw_stage || "").includes("Raw page"));
+
+  root.innerHTML = entries
+    .map(
+      (source) => `
+      <article class="explorer-card">
+        <div class="card-head">
+          <div>
+            <div class="sample-title">${escapeHtml(source.display_name)}</div>
+            <div class="metric-sub">${escapeHtml(source.raw_vault_prefix || source.upstream_url || "raw source path not recorded")}</div>
+            <div class="metric-sub">frozen row count: ${Number(source.row_count || 0).toLocaleString()}</div>
+            <div class="metric-sub">Current use: ${escapeHtml(source.use_tier_label || "not recorded")}</div>
+          </div>
+        </div>
+        <p class="card-summary">${escapeHtml(source.workflow_position?.raw_stage || "Frozen source package")}</p>
+        <details class="details-card">
+          <summary>Why this raw package matters</summary>
+          <div class="metric-sub">${escapeHtml(source.project_fit_note || "Not recorded")}</div>
+        </details>
+        <details class="details-card">
+          <summary>Frozen provenance artifacts</summary>
+          ${renderSourceArtifactLinks(source)}
+        </details>
+        ${
+          source.sample
+            ? `<details class="details-card">
+                <summary>Frozen evidence sample (${Number((source.sample.rows || []).length).toLocaleString()} rows)</summary>
+                ${renderInlineEvidenceTable(source.sample)}
+              </details>`
+            : ""
+        }
+      </article>
+    `
+    )
+    .join("");
 }
 
 function renderStepCards(targetId, steps) {
@@ -874,13 +940,18 @@ async function loadRawPage() {
   }
 
   setLoading("raw-dataset-explorer", "Loading frozen raw dataset catalog...");
-  const rawPayload = await fetchResource("raw-datasets", "/api/raw-datasets");
+  setLoading("raw-source-package-explorer", "Loading additional frozen source packages...");
+  const [rawPayload, sourceReviewPayload] = await Promise.all([
+    fetchResource("raw-datasets", "/api/raw-datasets"),
+    fetchResource("source-review", "/api/source-review"),
+  ]);
   renderDatasetCollection({
     targetId: "raw-dataset-explorer",
     payload: rawPayload,
     sampleAttr: "raw-sample",
     samplePath: "/api/raw-datasets",
   });
+  renderSupplementalRawSources(sourceReviewPayload);
   renderedPages.add("raw");
 }
 

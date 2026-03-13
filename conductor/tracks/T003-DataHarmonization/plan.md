@@ -11,7 +11,7 @@
 - [x] 2.3 Produce a liftover report (success count, failure count, failure examples). (`21e4bbb`)
 
 ## Phase 3: Variant Normalization
-- [ ] 3.1 Normalize each source (split multiallelics, left-align indels, trim bases).
+- [~] 3.1 Normalize each source (split multiallelics, left-align indels, trim bases).
 - [ ] 3.2 Produce a normalization report (before/after counts, duplicates/collisions).
 - [ ] 3.3 Persist harmonized Parquet snapshots to GCS with manifests.
 

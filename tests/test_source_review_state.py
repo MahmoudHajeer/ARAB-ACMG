@@ -1,6 +1,7 @@
 import pandas as pd
 
 from scripts.update_source_review_state import (
+    WORKFLOW_POSITION_RULES,
     build_source_decision_summary,
     clean_value,
     compact_rows,
@@ -58,3 +59,8 @@ def test_build_source_decision_summary_groups_sources_by_use_tier():
     assert summary[0]["members"] == ["ClinVar", "gnomAD"]
     assert summary[1]["label"] == "Supporting source"
     assert summary[2]["label"] == "Reference only"
+
+
+def test_workflow_position_rules_identify_current_final_inclusion():
+    assert WORKFLOW_POSITION_RULES["clinvar"]["included_in_current_final"] is True
+    assert WORKFLOW_POSITION_RULES["shgp_saudi_af"]["included_in_current_final"] is False

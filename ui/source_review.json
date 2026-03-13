@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-13T14:00:33.044287+00:00",
+  "generated_at": "2026-03-13T14:46:35.262591+00:00",
   "workflow_categories": [
     {
       "id": "raw_freeze",
@@ -152,6 +152,12 @@
           "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/clinvar/lastmod-20260302/snapshot_date=2026-03-03/manifest.json"
         }
       ],
+      "workflow_position": {
+        "raw_stage": "Frozen raw BigQuery sample already visible on the Raw page.",
+        "brca_stage": "Direct BRCA1/BRCA2 extraction from GRCh38 VCF rows.",
+        "final_stage": "Included in the current final BRCA checkpoint.",
+        "included_in_current_final": true
+      },
       "next_action": "Carry ClinVar rows directly into BRCA filtering and allele normalization.",
       "sample": {
         "columns": [
@@ -323,6 +329,12 @@
           "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr13/snapshot_date=2026-03-03/manifest.json"
         }
       ],
+      "workflow_position": {
+        "raw_stage": "Frozen raw BigQuery samples already visible on the Raw page for chr13 and chr17 genomes.",
+        "brca_stage": "Direct BRCA1/BRCA2 extraction with INFO parsing from GRCh38 genome VCF rows.",
+        "final_stage": "Included in the current final BRCA checkpoint.",
+        "included_in_current_final": true
+      },
       "next_action": "Normalize chr13 and chr17 genome rows after BRCA window filtering."
     },
     {
@@ -366,6 +378,12 @@
           "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr13/snapshot_date=2026-03-03/manifest.json"
         }
       ],
+      "workflow_position": {
+        "raw_stage": "Frozen raw BigQuery samples already visible on the Raw page for chr13 and chr17 exomes.",
+        "brca_stage": "Direct BRCA1/BRCA2 extraction with INFO parsing from GRCh38 exome VCF rows.",
+        "final_stage": "Included in the current final BRCA checkpoint.",
+        "included_in_current_final": true
+      },
       "next_action": "Normalize chr13 and chr17 exome rows after BRCA window filtering."
     },
     {
@@ -409,6 +427,12 @@
           "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/gme/release=20161025-hg38/build=hg38/snapshot_date=2026-03-08/manifest.json"
         }
       ],
+      "workflow_position": {
+        "raw_stage": "Frozen raw summary-table sample visible on the Harmonization page.",
+        "brca_stage": "BRCA1/BRCA2 rows are usable after canonical-key handling from chrom/start/end/ref/alt.",
+        "final_stage": "Included in the current final BRCA checkpoint as the GME add-on layer.",
+        "included_in_current_final": true
+      },
       "next_action": "Validate how `start`/`end` map onto the canonical key and then normalize as a summary-frequency input.",
       "sample": {
         "columns": [
@@ -636,26 +660,102 @@
           "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/shgp_saudi_af/version=figshare-28059686-v1/snapshot_date=2026-03-13/manifest.json"
         }
       ],
+      "workflow_position": {
+        "raw_stage": "Frozen raw Saudi frequency sample visible on the Harmonization page.",
+        "brca_stage": "Ready for the next BRCA normalization pass with direct CHROM/POS/REF/ALT parsing.",
+        "final_stage": "Not yet in the current final checkpoint; it needs the next Arab-extended checkpoint after Phase 3 normalization.",
+        "included_in_current_final": false
+      },
       "next_action": "Carry SHGP directly into Phase 3 normalization and canonical-key generation.",
       "sample": {
         "columns": [
-          "##Allele frequencies of Saudi Ariabian variants based on 302 whole genome sequenced individuals"
+          "CHROM",
+          "POS",
+          "REF",
+          "ALT",
+          "AN",
+          "AC"
         ],
         "rows": [
           {
-            "##Allele frequencies of Saudi Ariabian variants based on 302 whole genome sequenced individuals": "##INFO=<ID=CHROM, Chromosome number"
+            "CHROM": "chr10",
+            "POS": 10776,
+            "REF": "C",
+            "ALT": "T",
+            "AN": 604,
+            "AC": 5
           },
           {
-            "##Allele frequencies of Saudi Ariabian variants based on 302 whole genome sequenced individuals": "##INFO=<ID=POS, Position of variant "
+            "CHROM": "chr10",
+            "POS": 21138,
+            "REF": "C",
+            "ALT": "T",
+            "AN": 604,
+            "AC": 2
           },
           {
-            "##Allele frequencies of Saudi Ariabian variants based on 302 whole genome sequenced individuals": "##INFO=<ID=REF, Reference allele"
+            "CHROM": "chr10",
+            "POS": 48486,
+            "REF": "C",
+            "ALT": "T",
+            "AN": 604,
+            "AC": 280
           },
           {
-            "##Allele frequencies of Saudi Ariabian variants based on 302 whole genome sequenced individuals": "##INFO=<ID=ALT, Alternative allele"
+            "CHROM": "chr10",
+            "POS": 49057,
+            "REF": "G",
+            "ALT": "A",
+            "AN": 604,
+            "AC": 2
           },
           {
-            "##Allele frequencies of Saudi Ariabian variants based on 302 whole genome sequenced individuals": "##INFO=<ID=AN, Total alelle count"
+            "CHROM": "chr10",
+            "POS": 49134,
+            "REF": "G",
+            "ALT": "A",
+            "AN": 604,
+            "AC": 348
+          },
+          {
+            "CHROM": "chr10",
+            "POS": 49156,
+            "REF": "A",
+            "ALT": "G",
+            "AN": 604,
+            "AC": 265
+          },
+          {
+            "CHROM": "chr10",
+            "POS": 49276,
+            "REF": "A",
+            "ALT": "G",
+            "AN": 604,
+            "AC": 1
+          },
+          {
+            "CHROM": "chr10",
+            "POS": 49280,
+            "REF": "A",
+            "ALT": "G",
+            "AN": 604,
+            "AC": 1
+          },
+          {
+            "CHROM": "chr10",
+            "POS": 49282,
+            "REF": "G",
+            "ALT": "A",
+            "AN": 604,
+            "AC": 1
+          },
+          {
+            "CHROM": "chr10",
+            "POS": 49286,
+            "REF": "A",
+            "ALT": "T",
+            "AN": 604,
+            "AC": 580
           }
         ]
       }
@@ -712,6 +812,12 @@
           "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/frozen/harmonized/source=avdb_uae/version=workbook-created-2025-06-27/stage=liftover/build=GRCh37_to_GRCh38/snapshot_date=2026-03-13/avdb_uae_liftover.parquet"
         }
       ],
+      "workflow_position": {
+        "raw_stage": "Frozen raw workbook plus a frozen lifted GRCh38 sample are visible on the Harmonization page.",
+        "brca_stage": "Liftover completed, but the current release has zero BRCA rows and remains reference-only.",
+        "final_stage": "Excluded from the current final BRCA checkpoint.",
+        "included_in_current_final": false
+      },
       "next_action": "Retain the lifted checkpoint for audit/reference and reconsider only if future work needs non-BRCA Emirati context.",
       "liftover_method": {
         "why_needed": "AVDB stores genomic coordinates as HGVS on GRCh37. The project canonical build is GRCh38, so keeping AVDB on GRCh37 would make direct joins with ClinVar, gnomAD, SHGP, and GME unsafe.",
@@ -826,6 +932,61 @@
             "start38": 5227002.0,
             "end38": 5227002.0,
             "liftover_status": "success"
+          },
+          {
+            "gene_symbol": "SGCG",
+            "hgvs_genomic_grch37": "NC_000013.10:g.23894840del",
+            "chrom37": "13",
+            "start37": 23894840.0,
+            "end37": 23894840.0,
+            "chrom38": "13",
+            "start38": 23320701.0,
+            "end38": 23320701.0,
+            "liftover_status": "success"
+          },
+          {
+            "gene_symbol": "HBD",
+            "hgvs_genomic_grch37": "NC_000011.9:g.5255781G>A",
+            "chrom37": "11",
+            "start37": 5255781.0,
+            "end37": 5255781.0,
+            "chrom38": "11",
+            "start38": 5234551.0,
+            "end38": 5234551.0,
+            "liftover_status": "success"
+          },
+          {
+            "gene_symbol": "CD36",
+            "hgvs_genomic_grch37": "NC_000007.13:g.80302711_80302714dup",
+            "chrom37": "7",
+            "start37": 80302711.0,
+            "end37": 80302714.0,
+            "chrom38": "7",
+            "start38": 80673395.0,
+            "end38": 80673398.0,
+            "liftover_status": "success"
+          },
+          {
+            "gene_symbol": "CYP21A2",
+            "hgvs_genomic_grch37": "NC_000006.11:g.32007887G>T",
+            "chrom37": "6",
+            "start37": 32007887.0,
+            "end37": 32007887.0,
+            "chrom38": "6",
+            "start38": 32040110.0,
+            "end38": 32040110.0,
+            "liftover_status": "success"
+          },
+          {
+            "gene_symbol": "BCHE",
+            "hgvs_genomic_grch37": "NC_000003.11:g.165548529T>C",
+            "chrom37": "3",
+            "start37": 165548529.0,
+            "end37": 165548529.0,
+            "chrom38": "3",
+            "start38": 165830741.0,
+            "end38": 165830741.0,
+            "liftover_status": "success"
           }
         ]
       }
@@ -871,6 +1032,12 @@
           "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/manifest.json"
         }
       ],
+      "workflow_position": {
+        "raw_stage": "Frozen de-identified workbook extract sample visible on the Harmonization page.",
+        "brca_stage": "Blocked before BRCA normalization because genomic coordinates are still missing.",
+        "final_stage": "Excluded from the current final BRCA checkpoint.",
+        "included_in_current_final": false
+      },
       "next_action": "Review Table S5 for BRCA-specific rows and map transcript HGVS to genomic coordinates before inclusion in harmonization.",
       "sample": {
         "columns": [
@@ -939,6 +1106,61 @@
             "source_sheet_name": "Table S5",
             "source_row_number": 6,
             "source_record_locator": "sheet=Table S5;row=6"
+          },
+          {
+            "gene": "MPL",
+            "pathogenic_variant_type": "missense_variant",
+            "clinvar_significance": "Pathogenic/Likely_pathogenic",
+            "clinvar_submissions": "-",
+            "hgvs_codon_change": "ENST00000372470.9:c.317C>T",
+            "hgvs_protein_change": "ENSP00000361548.3:p.Pro106Leu",
+            "source_sheet_name": "Table S5",
+            "source_row_number": 7,
+            "source_record_locator": "sheet=Table S5;row=7"
+          },
+          {
+            "gene": "FANCD2",
+            "pathogenic_variant_type": "inframe_deletion",
+            "clinvar_significance": "Pathogenic",
+            "clinvar_submissions": "-",
+            "hgvs_codon_change": "ENST00000675286.1:c.813_815del",
+            "hgvs_protein_change": "ENSP00000502379.1:p.Ser272del",
+            "source_sheet_name": "Table S5",
+            "source_row_number": 8,
+            "source_record_locator": "sheet=Table S5;row=8"
+          },
+          {
+            "gene": "XPC",
+            "pathogenic_variant_type": "splice_acceptor_variant",
+            "clinvar_significance": "Pathogenic",
+            "clinvar_submissions": "-",
+            "hgvs_codon_change": "ENST00000285021.12:c.2251-1G>C",
+            "hgvs_protein_change": "-",
+            "source_sheet_name": "Table S5",
+            "source_row_number": 9,
+            "source_record_locator": "sheet=Table S5;row=9"
+          },
+          {
+            "gene": "XPC",
+            "pathogenic_variant_type": "splice_acceptor_variant",
+            "clinvar_significance": "Pathogenic",
+            "clinvar_submissions": "-",
+            "hgvs_codon_change": "ENST00000285021.12:c.2251-1G>C",
+            "hgvs_protein_change": "-",
+            "source_sheet_name": "Table S5",
+            "source_row_number": 10,
+            "source_record_locator": "sheet=Table S5;row=10"
+          },
+          {
+            "gene": "POLH",
+            "pathogenic_variant_type": "stop_gained",
+            "clinvar_significance": "-",
+            "clinvar_submissions": "-",
+            "hgvs_codon_change": "ENST00000372236.9:c.535C>T",
+            "hgvs_protein_change": "ENSP00000361310.4:p.Gln179Ter",
+            "source_sheet_name": "Table S5",
+            "source_row_number": 11,
+            "source_record_locator": "sheet=Table S5;row=11"
           }
         ]
       }
@@ -984,6 +1206,12 @@
           "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/manifest.json"
         }
       ],
+      "workflow_position": {
+        "raw_stage": "Frozen de-identified BRCA cohort sample visible on the Harmonization page.",
+        "brca_stage": "Awaiting row-level coordinate parsing before any BRCA normalization decision.",
+        "final_stage": "Excluded from the current final BRCA checkpoint; may enter a later Arab-specific checkpoint if parsing succeeds.",
+        "included_in_current_final": false
+      },
       "next_action": "Validate the `Chr location (hg38)` field row-by-row and resolve allele syntax before canonical-key construction.",
       "sample": {
         "columns": [
@@ -1124,6 +1352,121 @@
             "source_sheet_name": "Family Screening",
             "source_row_number": 45,
             "source_record_locator": "sheet=Family Screening;row=45"
+          },
+          {
+            "extract_slug": "family_screening_variant_rows",
+            "nationality": "UAE",
+            "age_at_pdx": "37Y",
+            "gender": "F",
+            "pdx": null,
+            "clinical_indication": "Abnormal cervical Papanicolaou smear , unspecified abnormal pap finding                                                                                                                                                                   encounter for Papanicolaou smear of cervix",
+            "subtype": "XXX",
+            "patient_status": "Alive",
+            "mutations": "BRCA2",
+            "hgvs": "(NM_000059.3); Exon: 11/27; c.2892A>T p.(Lys964Asn)",
+            "chr_location_hg38": "chr13:32337247",
+            "pathogenicity": "VUS",
+            "zygosity": "Heterozygous",
+            "reason_for_referal": "FAMILY H/O CANCER BREAST",
+            "dual_dx_breast_and_ovarian": null,
+            "family_history": null,
+            "er_pr_status": null,
+            "her2_status": null,
+            "source_sheet_name": "Family Screening",
+            "source_row_number": 49,
+            "source_record_locator": "sheet=Family Screening;row=49"
+          },
+          {
+            "extract_slug": "family_screening_variant_rows",
+            "nationality": "Jordan",
+            "age_at_pdx": "47Y",
+            "gender": "F",
+            "pdx": null,
+            "clinical_indication": "Ovarian mass / Mother with breast cancer at the age of 60 y needed chemoradiation / Sister breast cancer 30 y old , needed chemoradiation  /Brother , lung cancer 40 years",
+            "subtype": "XXX",
+            "patient_status": "Alive",
+            "mutations": "BRCA2",
+            "hgvs": "(NM_000059.3); Exon 10/27; c.1472C>G p.(Thr491Ser)",
+            "chr_location_hg38": "chr13:32332950",
+            "pathogenicity": "VUS",
+            "zygosity": "Heterozygous",
+            "reason_for_referal": "Strong Family history of breast cancer",
+            "dual_dx_breast_and_ovarian": null,
+            "family_history": null,
+            "er_pr_status": null,
+            "her2_status": null,
+            "source_sheet_name": "Family Screening",
+            "source_row_number": 52,
+            "source_record_locator": "sheet=Family Screening;row=52"
+          },
+          {
+            "extract_slug": "family_screening_variant_rows",
+            "nationality": "Sudan",
+            "age_at_pdx": "65Y",
+            "gender": "M",
+            "pdx": null,
+            "clinical_indication": "Benign localized prostatic hyperplasia with lower urinary tract symptoms (LUTS). brca familia run in family",
+            "subtype": null,
+            "patient_status": "Alive",
+            "mutations": "BRCA1",
+            "hgvs": "NM_007294.3); Exon: 17/23; c.5095C>T p.(Arg1699Trp)",
+            "chr_location_hg38": "chr17:41215948",
+            "pathogenicity": "Pathogenic/Likely Pathogenic",
+            "zygosity": "Heterozygous",
+            "reason_for_referal": null,
+            "dual_dx_breast_and_ovarian": null,
+            "family_history": null,
+            "er_pr_status": null,
+            "her2_status": null,
+            "source_sheet_name": "Family Screening",
+            "source_row_number": 60,
+            "source_record_locator": "sheet=Family Screening;row=60"
+          },
+          {
+            "extract_slug": "family_screening_variant_rows",
+            "nationality": "UAE",
+            "age_at_pdx": "44Y",
+            "gender": "F",
+            "pdx": null,
+            "clinical_indication": "Family history of malignant neoplasm of breast (mother)",
+            "subtype": null,
+            "patient_status": "Alive",
+            "mutations": "BRCA2",
+            "hgvs": "c.2892A>T, p.(Lys964Asn)",
+            "chr_location_hg38": null,
+            "pathogenicity": "VUS",
+            "zygosity": "Heterozygous",
+            "reason_for_referal": null,
+            "dual_dx_breast_and_ovarian": null,
+            "family_history": null,
+            "er_pr_status": null,
+            "her2_status": null,
+            "source_sheet_name": "Family Screening",
+            "source_row_number": 75,
+            "source_record_locator": "sheet=Family Screening;row=75"
+          },
+          {
+            "extract_slug": "family_screening_variant_rows",
+            "nationality": "UAE",
+            "age_at_pdx": "49Y",
+            "gender": "F",
+            "pdx": null,
+            "clinical_indication": "Encounter for gynecological examination (general) (routine) without abnormal findings",
+            "subtype": null,
+            "patient_status": "Alive",
+            "mutations": "BRCA1",
+            "hgvs": "(NM_007294.3); c.4065_4068delTCAA p.(Asn1355Lysfs*10)",
+            "chr_location_hg38": "chr17:41243480-41243483",
+            "pathogenicity": "Pathogenic",
+            "zygosity": "Heterozygous",
+            "reason_for_referal": null,
+            "dual_dx_breast_and_ovarian": null,
+            "family_history": "Yes",
+            "er_pr_status": null,
+            "her2_status": null,
+            "source_sheet_name": "Family Screening",
+            "source_row_number": 110,
+            "source_record_locator": "sheet=Family Screening;row=110"
           }
         ]
       }

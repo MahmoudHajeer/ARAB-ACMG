@@ -122,6 +122,57 @@ USE_TIER_META: Final[dict[str, dict[str, str]]] = {
     },
 }
 
+WORKFLOW_POSITION_RULES: Final[dict[str, dict[str, object]]] = {
+    "clinvar": {
+        "raw_stage": "Frozen raw BigQuery sample already visible on the Raw page.",
+        "brca_stage": "Direct BRCA1/BRCA2 extraction from GRCh38 VCF rows.",
+        "final_stage": "Included in the current final BRCA checkpoint.",
+        "included_in_current_final": True,
+    },
+    "gnomad_genomes": {
+        "raw_stage": "Frozen raw BigQuery samples already visible on the Raw page for chr13 and chr17 genomes.",
+        "brca_stage": "Direct BRCA1/BRCA2 extraction with INFO parsing from GRCh38 genome VCF rows.",
+        "final_stage": "Included in the current final BRCA checkpoint.",
+        "included_in_current_final": True,
+    },
+    "gnomad_exomes": {
+        "raw_stage": "Frozen raw BigQuery samples already visible on the Raw page for chr13 and chr17 exomes.",
+        "brca_stage": "Direct BRCA1/BRCA2 extraction with INFO parsing from GRCh38 exome VCF rows.",
+        "final_stage": "Included in the current final BRCA checkpoint.",
+        "included_in_current_final": True,
+    },
+    "gme_hg38": {
+        "raw_stage": "Frozen raw summary-table sample visible on the Harmonization page.",
+        "brca_stage": "BRCA1/BRCA2 rows are usable after canonical-key handling from chrom/start/end/ref/alt.",
+        "final_stage": "Included in the current final BRCA checkpoint as the GME add-on layer.",
+        "included_in_current_final": True,
+    },
+    "shgp_saudi_af": {
+        "raw_stage": "Frozen raw Saudi frequency sample visible on the Harmonization page.",
+        "brca_stage": "Ready for the next BRCA normalization pass with direct CHROM/POS/REF/ALT parsing.",
+        "final_stage": "Not yet in the current final checkpoint; it needs the next Arab-extended checkpoint after Phase 3 normalization.",
+        "included_in_current_final": False,
+    },
+    "avdb_uae": {
+        "raw_stage": "Frozen raw workbook plus a frozen lifted GRCh38 sample are visible on the Harmonization page.",
+        "brca_stage": "Liftover completed, but the current release has zero BRCA rows and remains reference-only.",
+        "final_stage": "Excluded from the current final BRCA checkpoint.",
+        "included_in_current_final": False,
+    },
+    "saudi_breast_cancer_pmc10474689": {
+        "raw_stage": "Frozen de-identified workbook extract sample visible on the Harmonization page.",
+        "brca_stage": "Blocked before BRCA normalization because genomic coordinates are still missing.",
+        "final_stage": "Excluded from the current final BRCA checkpoint.",
+        "included_in_current_final": False,
+    },
+    "uae_brca_pmc12011969": {
+        "raw_stage": "Frozen de-identified BRCA cohort sample visible on the Harmonization page.",
+        "brca_stage": "Awaiting row-level coordinate parsing before any BRCA normalization decision.",
+        "final_stage": "Excluded from the current final BRCA checkpoint; may enter a later Arab-specific checkpoint if parsing succeeds.",
+        "included_in_current_final": False,
+    },
+}
+
 SCIENTIFIC_RULES: Final[dict[str, dict[str, object]]] = {
     "clinvar": {
         "display_name": "ClinVar GRCh38 VCF",
@@ -322,7 +373,7 @@ def clean_value(value: Any) -> Any:
     return value
 
 
-def compact_rows(frame: pd.DataFrame, limit: int = 5) -> dict[str, object]:
+def compact_rows(frame: pd.DataFrame, limit: int = 10) -> dict[str, object]:
     """Serialize a small preview table for the supervisor UI."""
     preview = frame.head(limit).copy()
     preview = preview.where(pd.notna(preview), None)
@@ -346,7 +397,7 @@ def build_raw_lookup(review_bundle: dict[str, object]) -> dict[str, dict[str, ob
     }
 
 
-def build_arab_extract_samples(limit: int = 5) -> dict[str, dict[str, object]]:
+def build_arab_extract_samples(limit: int = 10) -> dict[str, dict[str, object]]:
     """Generate small evidence previews from the frozen Arab study extracts."""
     samples: dict[str, dict[str, object]] = {}
 
@@ -376,8 +427,13 @@ def build_arab_extract_samples(limit: int = 5) -> dict[str, dict[str, object]]:
     return samples
 
 
-def shgp_profile(limit: int = 5) -> dict[str, object]:
-    sample_frame = pd.read_csv(SHGP_LOCAL_FILE, sep="\t", nrows=5)
+def shgp_profile(limit: int = 10) -> dict[str, object]:
+    sample_frame = pd.read_csv(
+        SHGP_LOCAL_FILE,
+        sep="\t",
+        skiprows=lambda index: index < 7,
+        nrows=limit,
+    ).rename(columns={"#CHROM": "CHROM"})
     brca_counts = {"BRCA1_window_rows": 0, "BRCA2_window_rows": 0}
     with SHGP_LOCAL_FILE.open("r", encoding="utf-8") as handle:
         next(handle)
@@ -401,7 +457,7 @@ def shgp_profile(limit: int = 5) -> dict[str, object]:
     }
 
 
-def load_avdb_liftover_assets() -> dict[str, object]:
+def load_avdb_liftover_assets(limit: int = 10) -> dict[str, object]:
     storage_client = storage.Client()
     bucket = storage_client.bucket(BUCKET_NAME)
     report = json.loads(bucket.blob(AVDB_REPORT_OBJECT).download_as_text())
@@ -421,7 +477,7 @@ def load_avdb_liftover_assets() -> dict[str, object]:
                 "end38",
                 "liftover_status",
             ]],
-            limit=5,
+            limit=limit,
         ),
         "artifacts": {
             "parquet_uri": f"gs://{BUCKET_NAME}/{AVDB_LIFTOVER_OBJECT}",
@@ -512,7 +568,7 @@ def build_source_entry(
         )
     elif source_key == "avdb_uae":
         snapshot_entry = freeze_lookup[source_key]
-        avdb = load_avdb_liftover_assets()
+        avdb = load_avdb_liftover_assets(limit=10)
         row_count = int(avdb["report"]["counts"]["total_rows"])
         sample = avdb["sample"]
         extra_notes.extend(
@@ -565,6 +621,7 @@ def build_source_entry(
 
     use_tier = str(rule["project_fit"])
     tier_meta = USE_TIER_META[use_tier]
+    workflow_position = WORKFLOW_POSITION_RULES[source_key]
 
     entry = {
         "source_key": source_key,
@@ -590,6 +647,7 @@ def build_source_entry(
         "row_count": row_count,
         "notes": [*rule["evidence"], *extra_notes, snapshot_entry["notes"]] if snapshot_entry else [*rule["evidence"], *extra_notes],
         "artifact_links": extra_links,
+        "workflow_position": workflow_position,
         "next_action": rule["next_action"],
     }
     if lift_details is not None:
@@ -603,7 +661,7 @@ def build_source_review_payload() -> dict[str, object]:
     """Assemble the full frozen scientific-review payload."""
     freeze_lookup = parse_source_freeze_register(SOURCE_FREEZE_FILE.read_text(encoding="utf-8"))
     raw_lookup = build_raw_lookup(load_review_bundle())
-    arab_extract_samples = build_arab_extract_samples(limit=5)
+    arab_extract_samples = build_arab_extract_samples(limit=10)
 
     sources = [
         build_source_entry("clinvar", freeze_lookup, raw_lookup, arab_extract_samples),
