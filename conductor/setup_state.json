@@ -1,3 +1,3 @@
 {
-  "last_successful_step": "T003 step 2.2 checkpoint recorded on 2026-03-13: the supervisor UI now includes a frozen controlled-access roadmap grounded in official EGA and QPHI application pages, and non-Arab GME subgroup columns are explicitly labeled as context-only extras in the final checkpoint glossary. T003 task 2.2 remains in progress; SHGP freeze and the AVDB path decision are next."
+  "last_successful_step": "T003 steps 2.2 and 2.3 finalized on 2026-03-13: SHGP was frozen as a checksum-verified Arab GRCh38 frequency source, AVDB completed a real GRCh37-to-GRCh38 liftover checkpoint with an explicit success/failure report, and the supervisor UI now classifies every source as adopted, supporting, reference-only, demo-only, or blocked. T003 step 3.1 normalization is next."
 }

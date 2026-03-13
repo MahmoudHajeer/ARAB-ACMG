@@ -134,3 +134,23 @@ Do not rewrite previous entries.
 - Files changed: `ui/app.js`, `ui/index.html`, `ui/styles.css`, `ui/service.py`, `ui/controlled_access.py`, `ui/controlled_access.json`, `ui/review_bundle.json`, `ui/schema_columns.py`, `ui/catalog.py`, `scripts/update_controlled_access_state.py`, `tests/test_ui_service.py`, `tests/test_ui_catalog.py`, `tests/test_controlled_access_state.py`, `conductor/checkpoints/2026-03-13-t003-controlled-access-roadmap.md`, `conductor/index.md`
 - Verification run + result: `python3 scripts/update_controlled_access_state.py (pass)`, `python3 -m pytest -q tests (63 passed)`, `python3 -m py_compile ui/service.py ui/controlled_access.py scripts/update_controlled_access_state.py (pass)`, `node --check ui/app.js (pass)`, `local browser check on http://127.0.0.1:8090/#access (pass)`, `gcloud run deploy supervisor-ui --source ui --region europe-west1 --project genome-services-platform --allow-unauthenticated --quiet (pass: revision supervisor-ui-00023-qdr)`, `live API checks (pass: /api/controlled-access, /api/registry context_extra labels)`
 - Next exact action: Continue `2.2` by freezing the SHGP source with provenance metadata and deciding whether AVDB should enter a dedicated GRCh37-to-GRCh38 conversion path or remain a secondary manual-reference source.
+
+### Entry 14
+- Timestamp: `2026-03-13T17:35:00+03:00`
+- Agent: `Codex`
+- Task ID: `2.2`
+- Status: `Completed`
+- Summary: Froze the SHGP Saudi population-frequency source into the raw vault with checksum-backed provenance, then finalized the AVDB path decision by implementing a real `GRCh37 -> GRCh38` liftover checkpoint. The supervisor UI now shows source-by-source adoption status so it is explicit which datasets are core, supporting, reference-only, demo-only, or blocked.
+- Files changed: `scripts/freeze_arab_frequency_sources.py`, `scripts/verify_arab_frequency_sources.py`, `scripts/update_source_review_state.py`, `tests/test_freeze_arab_frequency_sources.py`, `tests/test_source_review_state.py`, `tests/test_ui_service.py`, `ui/app.js`, `ui/index.html`, `ui/source_review.json`, `conductor/source-freeze.md`, `conductor/source-readiness.md`
+- Verification run + result: `python3 scripts/update_source_review_state.py (pass)`, `python3 scripts/verify_arab_frequency_sources.py (pass: shgp_manifest=pass, avdb_raw_manifest=pass, avdb_liftover_report=pass)`, `python3 -m py_compile scripts/update_source_review_state.py scripts/freeze_arab_frequency_sources.py scripts/verify_arab_frequency_sources.py ui/service.py ui/source_review.py (pass)`, `python3 -m pytest -q tests (66 passed)`, `local Playwright browser check on http://127.0.0.1:8094/#harmonization (pass: current source decisions shown; AVDB card shows GRCh37->GRCh38 method and reference-only role)`
+- Next exact action: Close `2.3` formally by recording the liftover report/evidence checkpoint in Conductor, refresh the overview bundle, and redeploy the supervisor UI.
+
+### Entry 15
+- Timestamp: `2026-03-13T17:42:00+03:00`
+- Agent: `Codex`
+- Task ID: `2.3`
+- Status: `Completed`
+- Summary: Recorded the SHGP + AVDB liftover checkpoint in Conductor and clarified the scientific use decision for every active source. `AVDB` is now documented as a valid lifted checkpoint that stays `reference_only`, while `UAE PMC12011969` is `demo_only` and `Saudi PMC10474689` remains blocked.
+- Files changed: `conductor/checkpoints/2026-03-13-t003-shgp-avdb-liftover.md`, `conductor/index.md`, `conductor/tracks/T003-DataHarmonization/plan.md`, `conductor/tracks/T003-DataHarmonization/index.md`, `conductor/setup_state.json`, `ui/overview_state.json`
+- Verification run + result: `python3 scripts/update_ui_overview_state.py (pass)`, `python3 -m pytest -q tests/test_ui_overview.py tests/test_ui_service.py tests/test_source_review_state.py (24 passed)`, `gcloud run deploy supervisor-ui --source ui --region europe-west1 --project genome-services-platform --allow-unauthenticated --quiet (pass: revision supervisor-ui-00026-6wx)`, `live API checks (pass: /api/source-review decision summary + AVDB liftover counts, /api/overview last_successful_step)`, `live Playwright browser check on https://supervisor-ui-142306018756.europe-west1.run.app/#harmonization (pass: source decisions rendered, AVDB GRCh37->GRCh38 method visible, last_successful_step updated)`
+- Next exact action: Start `3.1` and normalize the ready GRCh38-capable sources (`ClinVar`, `gnomAD`, `SHGP`, `GME`), while deciding whether the UAE BRCA subset is strong enough for the same pass.
