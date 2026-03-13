@@ -80,6 +80,15 @@ def sample_bundle():
 def sample_source_review():
     return {
         "generated_at": "2026-03-13T08:00:00+00:00",
+        "decision_summary": [
+            {
+                "tier": "adopted_100",
+                "label": "Adopted 100%",
+                "summary": "Core input",
+                "count": 1,
+                "members": ["ClinVar GRCh38 VCF"],
+            }
+        ],
         "workflow_categories": [
             {
                 "id": "raw_freeze",
@@ -101,12 +110,19 @@ def sample_source_review():
                 "normalization_decision": "normalize VCF",
                 "brca_relevance": "Direct",
                 "review_status": "ready",
+                "project_fit": "adopted_100",
+                "project_fit_note": "Primary clinical truth source.",
+                "use_tier": "adopted_100",
+                "use_tier_label": "Adopted 100%",
+                "use_tier_summary": "Core input",
                 "snapshot_date": "2026-03-03",
                 "source_version": "lastmod-20260302",
                 "upstream_url": "https://example.org/clinvar.vcf.gz",
                 "raw_vault_prefix": "gs://bucket/raw/sources/clinvar/",
+                "raw_manifest_uri": "gs://bucket/raw/sources/clinvar/manifest.json",
                 "row_count": 123,
                 "notes": ["Evidence note"],
+                "artifact_links": [{"label": "Raw manifest", "url": "gs://bucket/raw/sources/clinvar/manifest.json"}],
                 "next_action": "Normalize alleles",
                 "sample": {
                     "columns": ["chrom", "pos"],

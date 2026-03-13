@@ -1,6 +1,11 @@
 import pandas as pd
 
-from scripts.update_source_review_state import clean_value, compact_rows, parse_source_freeze_register
+from scripts.update_source_review_state import (
+    build_source_decision_summary,
+    clean_value,
+    compact_rows,
+    parse_source_freeze_register,
+)
 
 
 def test_parse_source_freeze_register_reads_markdown_table():
@@ -35,3 +40,21 @@ def test_compact_rows_serializes_small_preview():
     assert preview["columns"] == ["gene", "coord", "score"]
     assert preview["rows"][1]["coord"] is None
     assert preview["rows"][1]["score"] is None
+
+
+def test_build_source_decision_summary_groups_sources_by_use_tier():
+    summary = build_source_decision_summary(
+        [
+            {"display_name": "ClinVar", "use_tier": "adopted_100"},
+            {"display_name": "gnomAD", "use_tier": "adopted_100"},
+            {"display_name": "GME", "use_tier": "adopted_secondary"},
+            {"display_name": "AVDB", "use_tier": "reference_only"},
+            {"display_name": "Saudi", "use_tier": "blocked"},
+        ]
+    )
+
+    assert summary[0]["tier"] == "adopted_100"
+    assert summary[0]["count"] == 2
+    assert summary[0]["members"] == ["ClinVar", "gnomAD"]
+    assert summary[1]["label"] == "Supporting source"
+    assert summary[2]["label"] == "Reference only"

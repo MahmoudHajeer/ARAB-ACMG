@@ -8,12 +8,14 @@ without triggering live data queries.
 from __future__ import annotations
 
 import datetime as dt
+import io
 import json
 import math
 from pathlib import Path
 from typing import Any, Final
 
 import pandas as pd
+from google.cloud import storage
 
 try:
     from scripts.freeze_arab_study_sources import STUDY_SOURCES, apply_extract_spec
@@ -24,6 +26,17 @@ ROOT: Final[Path] = Path(__file__).resolve().parents[1]
 UI_FILE: Final[Path] = ROOT / "ui" / "source_review.json"
 SOURCE_FREEZE_FILE: Final[Path] = ROOT / "conductor" / "source-freeze.md"
 REVIEW_BUNDLE_FILE: Final[Path] = ROOT / "ui" / "review_bundle.json"
+SHGP_LOCAL_FILE: Final[Path] = Path("/Users/macbookpro/Desktop/storage/raw/shgp/Saudi_Arabian_Allele_Frequencies.txt")
+AVDB_LOCAL_FILE: Final[Path] = Path("/Users/macbookpro/Desktop/storage/raw/uae/avdb_uae.xlsx")
+BUCKET_NAME: Final[str] = "mahmoud-arab-acmg-research-data"
+AVDB_LIFTOVER_OBJECT: Final[str] = (
+    "frozen/harmonized/source=avdb_uae/version=workbook-created-2025-06-27/"
+    "stage=liftover/build=GRCh37_to_GRCh38/snapshot_date=2026-03-13/avdb_uae_liftover.parquet"
+)
+AVDB_REPORT_OBJECT: Final[str] = (
+    "frozen/harmonized/source=avdb_uae/version=workbook-created-2025-06-27/"
+    "stage=liftover/build=GRCh37_to_GRCh38/snapshot_date=2026-03-13/avdb_uae_liftover_report.json"
+)
 
 WORKFLOW_CATEGORIES: Final[tuple[dict[str, object], ...]] = (
     {
@@ -86,6 +99,29 @@ WORKFLOW_CATEGORIES: Final[tuple[dict[str, object], ...]] = (
     },
 )
 
+USE_TIER_META: Final[dict[str, dict[str, str]]] = {
+    "adopted_100": {
+        "label": "Adopted 100%",
+        "summary": "Core input",
+    },
+    "adopted_secondary": {
+        "label": "Supporting source",
+        "summary": "Used as supporting evidence",
+    },
+    "reference_only": {
+        "label": "Reference only",
+        "summary": "Kept for context and audit",
+    },
+    "demo_only": {
+        "label": "Demo only",
+        "summary": "Useful for walkthroughs, not a core evidence stream",
+    },
+    "blocked": {
+        "label": "Blocked",
+        "summary": "Frozen only until scientific gaps are resolved",
+    },
+}
+
 SCIENTIFIC_RULES: Final[dict[str, dict[str, object]]] = {
     "clinvar": {
         "display_name": "ClinVar GRCh38 VCF",
@@ -101,6 +137,8 @@ SCIENTIFIC_RULES: Final[dict[str, dict[str, object]]] = {
             "Upstream path is the GRCh38 ClinVar VCF (`vcf_GRCh38`).",
             "Raw rows preserve CHROM, POS, REF, ALT, and INFO tags required for downstream parsing.",
         ],
+        "project_fit": "adopted_100",
+        "project_fit_note": "Primary clinical truth source. Keep as a mandatory anchor for downstream BRCA interpretation.",
         "next_action": "Carry ClinVar rows directly into BRCA filtering and allele normalization.",
         "sample_keys": ["clinvar_raw_vcf"],
     },
@@ -118,6 +156,8 @@ SCIENTIFIC_RULES: Final[dict[str, dict[str, object]]] = {
             "Frozen sources are gnomAD v4.1 GRCh38 VCFs for BRCA chromosomes chr13 and chr17.",
             "Genome and exome cohorts remain separate until harmonization logic combines them deliberately.",
         ],
+        "project_fit": "adopted_100",
+        "project_fit_note": "Primary global population baseline. Keep as a mandatory comparator for allele-frequency interpretation.",
         "next_action": "Normalize chr13 and chr17 genome rows after BRCA window filtering.",
         "sample_keys": ["gnomad_v4_1_genomes_chr13_raw", "gnomad_v4_1_genomes_chr17_raw"],
     },
@@ -135,6 +175,8 @@ SCIENTIFIC_RULES: Final[dict[str, dict[str, object]]] = {
             "Frozen sources are gnomAD v4.1 GRCh38 VCFs for BRCA chromosomes chr13 and chr17.",
             "Exome rows must remain distinguishable from genome rows until the final checkpoint logic merges them.",
         ],
+        "project_fit": "adopted_100",
+        "project_fit_note": "Primary global exome baseline. Keep alongside genomes so exome-specific frequency signals remain visible.",
         "next_action": "Normalize chr13 and chr17 exome rows after BRCA window filtering.",
         "sample_keys": ["gnomad_v4_1_exomes_chr13_raw", "gnomad_v4_1_exomes_chr17_raw"],
     },
@@ -152,8 +194,56 @@ SCIENTIFIC_RULES: Final[dict[str, dict[str, object]]] = {
             "The frozen source is explicitly labeled hg38.",
             "The raw table includes chrom/start/end/ref/alt plus GME subgroup frequencies rather than a native VCF INFO structure.",
         ],
+        "project_fit": "adopted_secondary",
+        "project_fit_note": (
+            "Keep as a secondary Arab/MENA frequency layer. It is usable and relevant, "
+            "but it is a summary table and not the strongest primary population baseline."
+        ),
         "next_action": "Validate how `start`/`end` map onto the canonical key and then normalize as a summary-frequency input.",
         "sample_keys": ["gme_hg38_raw"],
+    },
+    "shgp_saudi_af": {
+        "display_name": "SHGP Saudi allele-frequency table",
+        "category": "Arab population-frequency baseline",
+        "source_kind": "TSV frequency table",
+        "source_build": "GRCh38",
+        "coordinate_readiness": "Genomic coordinates ready",
+        "liftover_decision": "not_needed",
+        "normalization_decision": "Parse CHROM/POS/REF/ALT directly and normalize alleles in Phase 3",
+        "brca_relevance": "Direct",
+        "review_status": "ready",
+        "evidence": [
+            "Local SHGP file matched the official Figshare MD5 exactly during the 2026-03-13 freeze run.",
+            "The source exposes CHROM/POS/REF/ALT plus AC/AN and contains 1,607 rows inside the BRCA1/BRCA2 windows.",
+        ],
+        "project_fit": "adopted_100",
+        "project_fit_note": (
+            "Use as a primary Arab frequency source. It is large, genome-wide, GRCh38, and directly relevant to BRCA windows."
+        ),
+        "next_action": "Carry SHGP directly into Phase 3 normalization and canonical-key generation.",
+        "sample_mode": "shgp_raw",
+    },
+    "avdb_uae": {
+        "display_name": "AVDB Emirati workbook",
+        "category": "Arab curated clinical-frequency workbook",
+        "source_kind": "Workbook",
+        "source_build": "GRCh37 workbook with GRCh38 liftover checkpoint",
+        "coordinate_readiness": "Genomic HGVS on GRCh37 parsed and lifted to GRCh38",
+        "liftover_decision": "required_and_completed",
+        "normalization_decision": "Liftover stage is complete; allele normalization remains a later step",
+        "brca_relevance": "Indirect",
+        "review_status": "partial",
+        "evidence": [
+            "799 of 801 data rows were parsed and lifted to GRCh38 successfully; the 2 non-success rows are workbook footer noise rather than biological variants.",
+            "The workbook contains zero BRCA1/BRCA2 rows, so it does not materially affect the current BRCA-focused pipeline.",
+        ],
+        "project_fit": "reference_only",
+        "project_fit_note": (
+            "Keep as secondary/reference evidence only. The liftover is scientifically valid, "
+            "but the workbook is small, curated, and not BRCA-relevant in the current cohort."
+        ),
+        "next_action": "Retain the lifted checkpoint for audit/reference and reconsider only if future work needs non-BRCA Emirati context.",
+        "sample_mode": "avdb_liftover",
     },
     "saudi_breast_cancer_pmc10474689": {
         "display_name": "Saudi breast cancer supplement (PMC10474689)",
@@ -169,6 +259,8 @@ SCIENTIFIC_RULES: Final[dict[str, dict[str, object]]] = {
             "The retained Table S5 extract contains gene and transcript/protein HGVS fields but no genomic coordinate column.",
             "Current sample rows show cross-gene pathogenic carriers, so BRCA-specific relevance still needs confirmation inside the retained sheet.",
         ],
+        "project_fit": "blocked",
+        "project_fit_note": "Keep frozen as source evidence only. Do not use it downstream until transcript-to-genome mapping is justified.",
         "next_action": "Review Table S5 for BRCA-specific rows and map transcript HGVS to genomic coordinates before inclusion in harmonization.",
         "extract_key": "saudi_variant_carriers",
     },
@@ -186,6 +278,11 @@ SCIENTIFIC_RULES: Final[dict[str, dict[str, object]]] = {
             "Both extracted UAE sheets retain `Mutations`, `HGVS`, and `Chr location (hg38)`.",
             "Only mutation-positive rows are carried forward into the de-identified extracts, so the working set is narrower than the raw workbook.",
         ],
+        "project_fit": "demo_only",
+        "project_fit_note": (
+            "Keep as small targeted BRCA cohort evidence. It can help case-context review, "
+            "but it is not a population-frequency baseline."
+        ),
         "next_action": "Validate the `Chr location (hg38)` field row-by-row and resolve allele syntax before canonical-key construction.",
         "extract_key": "uae_mutation_positive_rows",
     },
@@ -279,6 +376,104 @@ def build_arab_extract_samples(limit: int = 5) -> dict[str, dict[str, object]]:
     return samples
 
 
+def shgp_profile(limit: int = 5) -> dict[str, object]:
+    sample_frame = pd.read_csv(SHGP_LOCAL_FILE, sep="\t", nrows=5)
+    brca_counts = {"BRCA1_window_rows": 0, "BRCA2_window_rows": 0}
+    with SHGP_LOCAL_FILE.open("r", encoding="utf-8") as handle:
+        next(handle)
+        for line in handle:
+            columns = line.rstrip("\n").split("\t")
+            if len(columns) < 2:
+                continue
+            chrom, pos_text = columns[0], columns[1]
+            if pos_text == "POS" or not pos_text.isdigit():
+                continue
+            pos = int(pos_text)
+            if chrom in {"13", "chr13"} and 32315086 <= pos <= 32400268:
+                brca_counts["BRCA2_window_rows"] += 1
+            if chrom in {"17", "chr17"} and 43044295 <= pos <= 43170245:
+                brca_counts["BRCA1_window_rows"] += 1
+    row_count = sum(1 for _ in SHGP_LOCAL_FILE.open("r", encoding="utf-8")) - 1
+    return {
+        "row_count": row_count,
+        "brca_counts": brca_counts,
+        "sample": compact_rows(sample_frame, limit=limit),
+    }
+
+
+def load_avdb_liftover_assets() -> dict[str, object]:
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(BUCKET_NAME)
+    report = json.loads(bucket.blob(AVDB_REPORT_OBJECT).download_as_text())
+    parquet_bytes = bucket.blob(AVDB_LIFTOVER_OBJECT).download_as_bytes()
+    frame = pd.read_parquet(io.BytesIO(parquet_bytes))
+    return {
+        "report": report,
+        "sample": compact_rows(
+            frame.loc[frame["liftover_status"].eq("success"), [
+                "gene_symbol",
+                "hgvs_genomic_grch37",
+                "chrom37",
+                "start37",
+                "end37",
+                "chrom38",
+                "start38",
+                "end38",
+                "liftover_status",
+            ]],
+            limit=5,
+        ),
+        "artifacts": {
+            "parquet_uri": f"gs://{BUCKET_NAME}/{AVDB_LIFTOVER_OBJECT}",
+            "report_uri": f"gs://{BUCKET_NAME}/{AVDB_REPORT_OBJECT}",
+        },
+    }
+
+
+def build_raw_manifest_uri(snapshot_entry: dict[str, str] | None) -> str | None:
+    if snapshot_entry is None:
+        return None
+    raw_prefix = snapshot_entry.get("raw_vault_prefix")
+    if not raw_prefix:
+        return None
+    return raw_prefix.rstrip("/") + "/manifest.json"
+
+
+def storage_console_url(uri: str) -> str:
+    if not uri.startswith("gs://"):
+        return uri
+    bucket_and_path = uri.removeprefix("gs://")
+    if "/" not in bucket_and_path:
+        return f"https://storage.cloud.google.com/{bucket_and_path}"
+    bucket_name, object_name = bucket_and_path.split("/", 1)
+    return f"https://storage.cloud.google.com/{bucket_name}/{object_name}"
+
+
+def build_source_decision_summary(entries: list[dict[str, object]]) -> list[dict[str, object]]:
+    summary: list[dict[str, object]] = []
+    ordered_tiers = [
+        "adopted_100",
+        "adopted_secondary",
+        "reference_only",
+        "demo_only",
+        "blocked",
+    ]
+    for tier in ordered_tiers:
+        members = [entry["display_name"] for entry in entries if entry["use_tier"] == tier]
+        if not members:
+            continue
+        summary.append(
+            {
+                "tier": tier,
+                "label": USE_TIER_META[tier]["label"],
+                "summary": USE_TIER_META[tier]["summary"],
+                "count": len(members),
+                "members": members,
+            }
+        )
+    return summary
+
+
 def build_source_entry(
     source_key: str,
     freeze_lookup: dict[str, dict[str, str]],
@@ -291,6 +486,9 @@ def build_source_entry(
     snapshot_entry: dict[str, str] | None = None
     row_count = None
     sample = None
+    extra_notes: list[str] = []
+    extra_links: list[dict[str, str]] = []
+    lift_details: dict[str, object] | None = None
 
     if source_key == "gnomad_genomes":
         row_count = sum(int(raw_lookup[key]["row_count"]) for key in rule["sample_keys"])
@@ -303,11 +501,70 @@ def build_source_entry(
         snapshot_entry = freeze_lookup[freeze_key]
         row_count = int(raw_lookup[rule["sample_keys"][0]]["row_count"])
         sample = raw_lookup[rule["sample_keys"][0]]["sample"]
+    elif source_key == "shgp_saudi_af":
+        snapshot_entry = freeze_lookup[source_key]
+        shgp = shgp_profile()
+        row_count = int(shgp["row_count"])
+        sample = shgp["sample"]
+        extra_notes.append(
+            f"BRCA window rows in SHGP: BRCA1={shgp['brca_counts']['BRCA1_window_rows']}, "
+            f"BRCA2={shgp['brca_counts']['BRCA2_window_rows']}."
+        )
+    elif source_key == "avdb_uae":
+        snapshot_entry = freeze_lookup[source_key]
+        avdb = load_avdb_liftover_assets()
+        row_count = int(avdb["report"]["counts"]["total_rows"])
+        sample = avdb["sample"]
+        extra_notes.extend(
+            [
+                f"AVDB liftover success={avdb['report']['counts']['liftover_success_rows']} / total={avdb['report']['counts']['total_rows']}.",
+                f"AVDB BRCA rows={avdb['report']['counts']['brca_rows']}.",
+                avdb["report"]["workflow_summary"],
+            ]
+        )
+        lift_details = {
+            "why_needed": (
+                "AVDB stores genomic coordinates as HGVS on GRCh37. The project canonical build is GRCh38, "
+                "so keeping AVDB on GRCh37 would make direct joins with ClinVar, gnomAD, SHGP, and GME unsafe."
+            ),
+            "how_it_worked": [
+                "Use `HGVS_Genomic_GRCh37` as the row-level source-of-truth coordinate field.",
+                "Parse each genomic HGVS string into RefSeq accession, interval, and event type.",
+                "Map the RefSeq accession to a chromosome with the official NCBI GRCh37 assembly report.",
+                "Lift the genomic interval to GRCh38 with the official Ensembl GRCh37-to-GRCh38 assembly map endpoint.",
+                "Keep both the original GRCh37 interval and the mapped GRCh38 interval, and mark failures explicitly instead of dropping them.",
+            ],
+            "counts": avdb["report"]["counts"],
+            "workflow_summary": avdb["report"]["workflow_summary"],
+            "official_sources": [
+                avdb["report"]["official_sources"]["avdb_downloads_page"],
+                avdb["report"]["official_sources"]["ncbi_grch37_assembly_report"],
+                avdb["report"]["official_sources"]["ncbi_grch38_assembly_report"],
+                avdb["report"]["official_sources"]["ensembl_map_api_template"],
+            ],
+            "report_uri": avdb["artifacts"]["report_uri"],
+            "parquet_uri": avdb["artifacts"]["parquet_uri"],
+            "failure_examples": avdb["report"]["failure_examples"],
+        }
     else:
         snapshot_entry = freeze_lookup[source_key]
         extract_payload = arab_extract_samples[rule["extract_key"]]
         row_count = int(extract_payload["row_count"])
         sample = extract_payload["sample"]
+
+    manifest_uri = build_raw_manifest_uri(snapshot_entry)
+    if snapshot_entry and snapshot_entry.get("upstream_url"):
+        extra_links.append({"label": "Upstream source", "url": storage_console_url(snapshot_entry["upstream_url"])})
+    if snapshot_entry and snapshot_entry.get("raw_vault_prefix"):
+        extra_links.append({"label": "Raw vault prefix", "url": storage_console_url(snapshot_entry["raw_vault_prefix"])})
+    if manifest_uri:
+        extra_links.append({"label": "Raw manifest", "url": storage_console_url(manifest_uri)})
+    if lift_details is not None:
+        extra_links.append({"label": "Liftover report", "url": storage_console_url(str(lift_details["report_uri"]))})
+        extra_links.append({"label": "Lifted Parquet", "url": storage_console_url(str(lift_details["parquet_uri"]))})
+
+    use_tier = str(rule["project_fit"])
+    tier_meta = USE_TIER_META[use_tier]
 
     entry = {
         "source_key": source_key,
@@ -320,14 +577,23 @@ def build_source_entry(
         "normalization_decision": rule["normalization_decision"],
         "brca_relevance": rule["brca_relevance"],
         "review_status": rule["review_status"],
+        "project_fit": rule["project_fit"],
+        "project_fit_note": rule["project_fit_note"],
+        "use_tier": use_tier,
+        "use_tier_label": tier_meta["label"],
+        "use_tier_summary": tier_meta["summary"],
         "snapshot_date": snapshot_entry["snapshot_date"] if snapshot_entry else None,
         "source_version": snapshot_entry["source_version"] if snapshot_entry else None,
         "upstream_url": snapshot_entry["upstream_url"] if snapshot_entry else None,
         "raw_vault_prefix": snapshot_entry["raw_vault_prefix"] if snapshot_entry else None,
+        "raw_manifest_uri": manifest_uri,
         "row_count": row_count,
-        "notes": [*rule["evidence"], snapshot_entry["notes"]] if snapshot_entry else list(rule["evidence"]),
+        "notes": [*rule["evidence"], *extra_notes, snapshot_entry["notes"]] if snapshot_entry else [*rule["evidence"], *extra_notes],
+        "artifact_links": extra_links,
         "next_action": rule["next_action"],
     }
+    if lift_details is not None:
+        entry["liftover_method"] = lift_details
     if sample:
         entry["sample"] = sample
     return entry
@@ -339,17 +605,22 @@ def build_source_review_payload() -> dict[str, object]:
     raw_lookup = build_raw_lookup(load_review_bundle())
     arab_extract_samples = build_arab_extract_samples(limit=5)
 
+    sources = [
+        build_source_entry("clinvar", freeze_lookup, raw_lookup, arab_extract_samples),
+        build_source_entry("gnomad_genomes", freeze_lookup, raw_lookup, arab_extract_samples),
+        build_source_entry("gnomad_exomes", freeze_lookup, raw_lookup, arab_extract_samples),
+        build_source_entry("gme_hg38", freeze_lookup, raw_lookup, arab_extract_samples),
+        build_source_entry("shgp_saudi_af", freeze_lookup, raw_lookup, arab_extract_samples),
+        build_source_entry("avdb_uae", freeze_lookup, raw_lookup, arab_extract_samples),
+        build_source_entry("saudi_breast_cancer_pmc10474689", freeze_lookup, raw_lookup, arab_extract_samples),
+        build_source_entry("uae_brca_pmc12011969", freeze_lookup, raw_lookup, arab_extract_samples),
+    ]
+
     return {
         "generated_at": dt.datetime.now(dt.UTC).isoformat(),
         "workflow_categories": list(WORKFLOW_CATEGORIES),
-        "sources": [
-            build_source_entry("clinvar", freeze_lookup, raw_lookup, arab_extract_samples),
-            build_source_entry("gnomad_genomes", freeze_lookup, raw_lookup, arab_extract_samples),
-            build_source_entry("gnomad_exomes", freeze_lookup, raw_lookup, arab_extract_samples),
-            build_source_entry("gme_hg38", freeze_lookup, raw_lookup, arab_extract_samples),
-            build_source_entry("saudi_breast_cancer_pmc10474689", freeze_lookup, raw_lookup, arab_extract_samples),
-            build_source_entry("uae_brca_pmc12011969", freeze_lookup, raw_lookup, arab_extract_samples),
-        ],
+        "decision_summary": build_source_decision_summary(sources),
+        "sources": sources,
     }
 
 

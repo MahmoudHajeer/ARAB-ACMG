@@ -324,6 +324,93 @@ function renderSourceEvidenceList(source) {
   return renderNoteStack(evidenceLines);
 }
 
+function renderSourceArtifactLinks(source) {
+  const links = source.artifact_links || [];
+  if (!links.length) {
+    return `<div class="metric-sub">No additional frozen artifact links were recorded for this source.</div>`;
+  }
+  return renderLinkList(links);
+}
+
+function renderSourceLiftoverMethod(source) {
+  if (!source.liftover_method) {
+    return "";
+  }
+
+  const method = source.liftover_method;
+  const counts = method.counts || {};
+  const officialLinks = (method.official_sources || []).map((url, index) => ({
+    label: `Method source ${index + 1}`,
+    url,
+  }));
+  const failureNotes = (method.failure_examples || []).map(
+    (example) =>
+      `row ${example.source_row_number}: ${example.hgvs_genomic_grch37 || "missing"} -> ${example.liftover_status} (${example.liftover_notes})`
+  );
+
+  return `
+    <details class="details-card" open>
+      <summary>GRCh37 -> GRCh38 method</summary>
+      <div class="metric-stack">
+        <div class="metric-item">
+          <div class="metric-title">Why liftover was required</div>
+          <div class="metric-sub">${escapeHtml(method.why_needed)}</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-title">How the mapping was executed</div>
+          ${renderNoteStack(method.how_it_worked || [])}
+        </div>
+        <div class="metric-item">
+          <div class="metric-title">Result counts</div>
+          ${renderNoteStack([
+            `parsed rows: ${Number(counts.parse_success_rows || 0).toLocaleString()} / ${Number(counts.total_rows || 0).toLocaleString()}`,
+            `liftover success rows: ${Number(counts.liftover_success_rows || 0).toLocaleString()}`,
+            `liftover failure rows: ${Number(counts.liftover_failure_rows || 0).toLocaleString()}`,
+            `BRCA rows in source: ${Number(counts.brca_rows || 0).toLocaleString()}`,
+            `BRCA rows lifted successfully: ${Number(counts.brca_liftover_success_rows || 0).toLocaleString()}`,
+          ])}
+        </div>
+        <div class="metric-item">
+          <div class="metric-title">Method summary</div>
+          <div class="metric-sub">${escapeHtml(method.workflow_summary)}</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-title">Official mapping references</div>
+          ${renderLinkList(officialLinks)}
+        </div>
+        ${
+          failureNotes.length
+            ? `<div class="metric-item">
+                <div class="metric-title">Failure examples</div>
+                ${renderNoteStack(failureNotes)}
+              </div>`
+            : ""
+        }
+      </div>
+    </details>
+  `;
+}
+
+function renderSourceDecisionSummary(payload) {
+  const root = document.getElementById("source-decision-summary");
+  if (!root) {
+    return;
+  }
+  const rows = payload.decision_summary || [];
+  root.innerHTML = rows
+    .map(
+      (entry) => `
+      <article class="workflow-card scientific-card">
+        <div class="workflow-step">${escapeHtml(entry.label.toUpperCase())}</div>
+        <div class="workflow-title">${escapeHtml(entry.summary)}</div>
+        <p class="workflow-summary">${Number(entry.count || 0).toLocaleString()} source(s)</p>
+        ${renderNoteStack((entry.members || []).map((member) => `Source: ${member}`))}
+      </article>
+    `
+    )
+    .join("");
+}
+
 // [AI-Agent: Codex]: Review Stage C - controlled-access cards separate approved public data from high-value datasets that still need DAC or portal approval.
 function renderControlledAccess(payload) {
   const guidesRoot = document.getElementById("controlled-access-guides");
@@ -425,11 +512,22 @@ function renderSourceReviewGrid(payload) {
           <div><strong>Liftover</strong><span>${escapeHtml(source.liftover_decision)}</span></div>
           <div><strong>Normalization</strong><span>${escapeHtml(source.normalization_decision)}</span></div>
           <div><strong>BRCA relevance</strong><span>${escapeHtml(source.brca_relevance)}</span></div>
+          <div><strong>Current use</strong><span>${escapeHtml(source.use_tier_label || toTitle(source.project_fit || "not_set"))}</span></div>
+          <div><strong>Use strength</strong><span>${escapeHtml(source.use_tier_summary || "")}</span></div>
           <div><strong>Upstream</strong><span class="truncate">${escapeHtml(source.upstream_url || "")}</span></div>
         </div>
+        <details class="details-card" open>
+          <summary>Why this source is kept or limited</summary>
+          <div class="metric-sub">${escapeHtml(source.project_fit_note)}</div>
+        </details>
+        ${renderSourceLiftoverMethod(source)}
         <details class="details-card">
           <summary>Scientific rationale and evidence</summary>
           ${renderSourceEvidenceList(source)}
+        </details>
+        <details class="details-card">
+          <summary>Frozen provenance artifacts</summary>
+          ${renderSourceArtifactLinks(source)}
         </details>
         <details class="details-card">
           <summary>Next exact action</summary>
@@ -792,6 +890,7 @@ async function loadHarmonizationPage() {
   }
 
   setLoading("workflow-categories", "Loading workflow categories...");
+  setLoading("source-decision-summary", "Loading source decisions...");
   setLoading("source-review-grid", "Loading scientific source review...");
   setLoading("harmonization-science", "Loading frozen scientific checkpoint evidence...");
   setLoading("harmonized-dataset-explorer", "Loading frozen checkpoint tables...");
@@ -804,6 +903,7 @@ async function loadHarmonizationPage() {
   ]);
 
   renderWorkflowCategories(sourceReviewPayload.workflow_categories);
+  renderSourceDecisionSummary(sourceReviewPayload);
   renderSourceReviewGrid(sourceReviewPayload);
   renderHarmonizationScience(registryPayload);
   renderDatasetCollection({

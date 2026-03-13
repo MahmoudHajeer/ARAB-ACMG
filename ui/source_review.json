@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-13T09:03:52.735847+00:00",
+  "generated_at": "2026-03-13T14:00:33.044287+00:00",
   "workflow_categories": [
     {
       "id": "raw_freeze",
@@ -60,6 +60,56 @@
       "output": "A clear normalization strategy or a justified block."
     }
   ],
+  "decision_summary": [
+    {
+      "tier": "adopted_100",
+      "label": "Adopted 100%",
+      "summary": "Core input",
+      "count": 4,
+      "members": [
+        "ClinVar GRCh38 VCF",
+        "gnomAD v4.1 genomes (chr13 + chr17)",
+        "gnomAD v4.1 exomes (chr13 + chr17)",
+        "SHGP Saudi allele-frequency table"
+      ]
+    },
+    {
+      "tier": "adopted_secondary",
+      "label": "Supporting source",
+      "summary": "Used as supporting evidence",
+      "count": 1,
+      "members": [
+        "GME hg38 summary table"
+      ]
+    },
+    {
+      "tier": "reference_only",
+      "label": "Reference only",
+      "summary": "Kept for context and audit",
+      "count": 1,
+      "members": [
+        "AVDB Emirati workbook"
+      ]
+    },
+    {
+      "tier": "demo_only",
+      "label": "Demo only",
+      "summary": "Useful for walkthroughs, not a core evidence stream",
+      "count": 1,
+      "members": [
+        "UAE BRCA supplement (PMC12011969)"
+      ]
+    },
+    {
+      "tier": "blocked",
+      "label": "Blocked",
+      "summary": "Frozen only until scientific gaps are resolved",
+      "count": 1,
+      "members": [
+        "Saudi breast cancer supplement (PMC10474689)"
+      ]
+    }
+  ],
   "sources": [
     {
       "source_key": "clinvar",
@@ -72,15 +122,35 @@
       "normalization_decision": "Split multiallelic alleles and normalize VCF representation",
       "brca_relevance": "Direct",
       "review_status": "ready",
+      "project_fit": "adopted_100",
+      "project_fit_note": "Primary clinical truth source. Keep as a mandatory anchor for downstream BRCA interpretation.",
+      "use_tier": "adopted_100",
+      "use_tier_label": "Adopted 100%",
+      "use_tier_summary": "Core input",
       "snapshot_date": "2026-03-03",
       "source_version": "lastmod-20260302",
       "upstream_url": "https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/clinvar.vcf.gz",
       "raw_vault_prefix": "gs://mahmoud-arab-acmg-research-data/raw/sources/clinvar/lastmod-20260302/snapshot_date=2026-03-03/",
+      "raw_manifest_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/clinvar/lastmod-20260302/snapshot_date=2026-03-03/manifest.json",
       "row_count": 4388226,
       "notes": [
         "Upstream path is the GRCh38 ClinVar VCF (`vcf_GRCh38`).",
         "Raw rows preserve CHROM, POS, REF, ALT, and INFO tags required for downstream parsing.",
         "last_modified=Mon, 02 Mar 2026 20:44:22 GMT; etag=\"b56e982-64c10a6d4c0b3\""
+      ],
+      "artifact_links": [
+        {
+          "label": "Upstream source",
+          "url": "https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/clinvar.vcf.gz"
+        },
+        {
+          "label": "Raw vault prefix",
+          "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/clinvar/lastmod-20260302/snapshot_date=2026-03-03/"
+        },
+        {
+          "label": "Raw manifest",
+          "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/clinvar/lastmod-20260302/snapshot_date=2026-03-03/manifest.json"
+        }
       ],
       "next_action": "Carry ClinVar rows directly into BRCA filtering and allele normalization.",
       "sample": {
@@ -223,15 +293,35 @@
       "normalization_decision": "Split multiallelic alleles and parse INFO tags into canonical frequency fields",
       "brca_relevance": "Direct",
       "review_status": "ready",
+      "project_fit": "adopted_100",
+      "project_fit_note": "Primary global population baseline. Keep as a mandatory comparator for allele-frequency interpretation.",
+      "use_tier": "adopted_100",
+      "use_tier_label": "Adopted 100%",
+      "use_tier_summary": "Core input",
       "snapshot_date": "2026-03-03",
       "source_version": "4.1",
       "upstream_url": "gs://gcp-public-data--gnomad/release/4.1/vcf/genomes/gnomad.genomes.v4.1.sites.chr13.vcf.bgz",
       "raw_vault_prefix": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr13/snapshot_date=2026-03-03/",
+      "raw_manifest_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr13/snapshot_date=2026-03-03/manifest.json",
       "row_count": 46938233,
       "notes": [
         "Frozen sources are gnomAD v4.1 GRCh38 VCFs for BRCA chromosomes chr13 and chr17.",
         "Genome and exome cohorts remain separate until harmonization logic combines them deliberately.",
         "Raw-as-is snapshot copied byte-for-byte (`.vcf.bgz` + `.tbi`) with manifest."
+      ],
+      "artifact_links": [
+        {
+          "label": "Upstream source",
+          "url": "https://storage.cloud.google.com/gcp-public-data--gnomad/release/4.1/vcf/genomes/gnomad.genomes.v4.1.sites.chr13.vcf.bgz"
+        },
+        {
+          "label": "Raw vault prefix",
+          "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr13/snapshot_date=2026-03-03/"
+        },
+        {
+          "label": "Raw manifest",
+          "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr13/snapshot_date=2026-03-03/manifest.json"
+        }
       ],
       "next_action": "Normalize chr13 and chr17 genome rows after BRCA window filtering."
     },
@@ -246,15 +336,35 @@
       "normalization_decision": "Split multiallelic alleles and parse INFO tags into canonical frequency fields",
       "brca_relevance": "Direct",
       "review_status": "ready",
+      "project_fit": "adopted_100",
+      "project_fit_note": "Primary global exome baseline. Keep alongside genomes so exome-specific frequency signals remain visible.",
+      "use_tier": "adopted_100",
+      "use_tier_label": "Adopted 100%",
+      "use_tier_summary": "Core input",
       "snapshot_date": "2026-03-03",
       "source_version": "4.1",
       "upstream_url": "gs://gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr13.vcf.bgz",
       "raw_vault_prefix": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr13/snapshot_date=2026-03-03/",
+      "raw_manifest_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr13/snapshot_date=2026-03-03/manifest.json",
       "row_count": 14293891,
       "notes": [
         "Frozen sources are gnomAD v4.1 GRCh38 VCFs for BRCA chromosomes chr13 and chr17.",
         "Exome rows must remain distinguishable from genome rows until the final checkpoint logic merges them.",
         "Raw-as-is snapshot copied byte-for-byte (`.vcf.bgz` + `.tbi`) with manifest."
+      ],
+      "artifact_links": [
+        {
+          "label": "Upstream source",
+          "url": "https://storage.cloud.google.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr13.vcf.bgz"
+        },
+        {
+          "label": "Raw vault prefix",
+          "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr13/snapshot_date=2026-03-03/"
+        },
+        {
+          "label": "Raw manifest",
+          "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr13/snapshot_date=2026-03-03/manifest.json"
+        }
       ],
       "next_action": "Normalize chr13 and chr17 exome rows after BRCA window filtering."
     },
@@ -269,15 +379,35 @@
       "normalization_decision": "Construct canonical keys from chrom/start/end/ref/alt and document summary-table assumptions",
       "brca_relevance": "Direct",
       "review_status": "partial",
+      "project_fit": "adopted_secondary",
+      "project_fit_note": "Keep as a secondary Arab/MENA frequency layer. It is usable and relevant, but it is a summary table and not the strongest primary population baseline.",
+      "use_tier": "adopted_secondary",
+      "use_tier_label": "Supporting source",
+      "use_tier_summary": "Used as supporting evidence",
       "snapshot_date": "2026-03-08",
       "source_version": "20161025-hg38",
       "upstream_url": "file:///Users/macbookpro/Desktop/storage/raw/gme/hg38_gme.txt.gz",
       "raw_vault_prefix": "gs://mahmoud-arab-acmg-research-data/raw/sources/gme/release=20161025-hg38/build=hg38/snapshot_date=2026-03-08/",
+      "raw_manifest_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gme/release=20161025-hg38/build=hg38/snapshot_date=2026-03-08/manifest.json",
       "row_count": 699496,
       "notes": [
         "The frozen source is explicitly labeled hg38.",
         "The raw table includes chrom/start/end/ref/alt plus GME subgroup frequencies rather than a native VCF INFO structure.",
         "local raw file supplied by user; archive_last_modified=Tue, 25 Oct 2016 03:27:34 +0000; workspace file covers chr1-22 and chrX only (699,496 rows), with no chrY/MT rows observed; public documentation describes the hg38 form as a liftover-style summary resource rather than a native raw GRCh38 VCF"
+      ],
+      "artifact_links": [
+        {
+          "label": "Upstream source",
+          "url": "file:///Users/macbookpro/Desktop/storage/raw/gme/hg38_gme.txt.gz"
+        },
+        {
+          "label": "Raw vault prefix",
+          "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/gme/release=20161025-hg38/build=hg38/snapshot_date=2026-03-08/"
+        },
+        {
+          "label": "Raw manifest",
+          "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/gme/release=20161025-hg38/build=hg38/snapshot_date=2026-03-08/manifest.json"
+        }
       ],
       "next_action": "Validate how `start`/`end` map onto the canonical key and then normalize as a summary-frequency input.",
       "sample": {
@@ -465,6 +595,242 @@
       }
     },
     {
+      "source_key": "shgp_saudi_af",
+      "display_name": "SHGP Saudi allele-frequency table",
+      "category": "Arab population-frequency baseline",
+      "source_kind": "TSV frequency table",
+      "source_build": "GRCh38",
+      "coordinate_readiness": "Genomic coordinates ready",
+      "liftover_decision": "not_needed",
+      "normalization_decision": "Parse CHROM/POS/REF/ALT directly and normalize alleles in Phase 3",
+      "brca_relevance": "Direct",
+      "review_status": "ready",
+      "project_fit": "adopted_100",
+      "project_fit_note": "Use as a primary Arab frequency source. It is large, genome-wide, GRCh38, and directly relevant to BRCA windows.",
+      "use_tier": "adopted_100",
+      "use_tier_label": "Adopted 100%",
+      "use_tier_summary": "Core input",
+      "snapshot_date": "2026-03-13",
+      "source_version": "figshare-28059686-v1",
+      "upstream_url": "https://ndownloader.figshare.com/files/51297884",
+      "raw_vault_prefix": "gs://mahmoud-arab-acmg-research-data/raw/sources/shgp_saudi_af/version=figshare-28059686-v1/snapshot_date=2026-03-13/",
+      "raw_manifest_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/shgp_saudi_af/version=figshare-28059686-v1/snapshot_date=2026-03-13/manifest.json",
+      "row_count": 25488989,
+      "notes": [
+        "Local SHGP file matched the official Figshare MD5 exactly during the 2026-03-13 freeze run.",
+        "The source exposes CHROM/POS/REF/ALT plus AC/AN and contains 1,607 rows inside the BRCA1/BRCA2 windows.",
+        "BRCA window rows in SHGP: BRCA1=951, BRCA2=656.",
+        "Official Figshare article `A list of Saudi Arabian variants and their allele frequencies` (DOI `10.6084/m9.figshare.28059686.v1`) was verified before freezing; local file MD5 matched the official Figshare MD5 exactly, and the frozen manifest records 25,488,989 rows."
+      ],
+      "artifact_links": [
+        {
+          "label": "Upstream source",
+          "url": "https://ndownloader.figshare.com/files/51297884"
+        },
+        {
+          "label": "Raw vault prefix",
+          "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/shgp_saudi_af/version=figshare-28059686-v1/snapshot_date=2026-03-13/"
+        },
+        {
+          "label": "Raw manifest",
+          "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/shgp_saudi_af/version=figshare-28059686-v1/snapshot_date=2026-03-13/manifest.json"
+        }
+      ],
+      "next_action": "Carry SHGP directly into Phase 3 normalization and canonical-key generation.",
+      "sample": {
+        "columns": [
+          "##Allele frequencies of Saudi Ariabian variants based on 302 whole genome sequenced individuals"
+        ],
+        "rows": [
+          {
+            "##Allele frequencies of Saudi Ariabian variants based on 302 whole genome sequenced individuals": "##INFO=<ID=CHROM, Chromosome number"
+          },
+          {
+            "##Allele frequencies of Saudi Ariabian variants based on 302 whole genome sequenced individuals": "##INFO=<ID=POS, Position of variant "
+          },
+          {
+            "##Allele frequencies of Saudi Ariabian variants based on 302 whole genome sequenced individuals": "##INFO=<ID=REF, Reference allele"
+          },
+          {
+            "##Allele frequencies of Saudi Ariabian variants based on 302 whole genome sequenced individuals": "##INFO=<ID=ALT, Alternative allele"
+          },
+          {
+            "##Allele frequencies of Saudi Ariabian variants based on 302 whole genome sequenced individuals": "##INFO=<ID=AN, Total alelle count"
+          }
+        ]
+      }
+    },
+    {
+      "source_key": "avdb_uae",
+      "display_name": "AVDB Emirati workbook",
+      "category": "Arab curated clinical-frequency workbook",
+      "source_kind": "Workbook",
+      "source_build": "GRCh37 workbook with GRCh38 liftover checkpoint",
+      "coordinate_readiness": "Genomic HGVS on GRCh37 parsed and lifted to GRCh38",
+      "liftover_decision": "required_and_completed",
+      "normalization_decision": "Liftover stage is complete; allele normalization remains a later step",
+      "brca_relevance": "Indirect",
+      "review_status": "partial",
+      "project_fit": "reference_only",
+      "project_fit_note": "Keep as secondary/reference evidence only. The liftover is scientifically valid, but the workbook is small, curated, and not BRCA-relevant in the current cohort.",
+      "use_tier": "reference_only",
+      "use_tier_label": "Reference only",
+      "use_tier_summary": "Kept for context and audit",
+      "snapshot_date": "2026-03-13",
+      "source_version": "workbook-created-2025-06-27",
+      "upstream_url": "https://avdb-arabgenome.ae/downloads",
+      "raw_vault_prefix": "gs://mahmoud-arab-acmg-research-data/raw/sources/avdb_uae/version=workbook-created-2025-06-27/build=GRCh37/snapshot_date=2026-03-13/",
+      "raw_manifest_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/avdb_uae/version=workbook-created-2025-06-27/build=GRCh37/snapshot_date=2026-03-13/manifest.json",
+      "row_count": 801,
+      "notes": [
+        "799 of 801 data rows were parsed and lifted to GRCh38 successfully; the 2 non-success rows are workbook footer noise rather than biological variants.",
+        "The workbook contains zero BRCA1/BRCA2 rows, so it does not materially affect the current BRCA-focused pipeline.",
+        "AVDB liftover success=799 / total=801.",
+        "AVDB BRCA rows=0.",
+        "Parsed AVDB HGVS_Genomic_GRCh37 rows, mapped RefSeq accessions to GRCh37 chromosomes via the official NCBI GRCh37 assembly report, then lifted genomic intervals to GRCh38 with the official Ensembl GRCh37->GRCh38 assembly map endpoint. Allele normalization was not performed in this stage.",
+        "User-supplied workbook frozen from the official AVDB download surface. Workbook properties show created=`2025-06-27T10:05:29`; public page verification succeeded, but a standalone public release-date field was not recoverable from the provider page. A GRCh37->GRCh38 liftover checkpoint was staged separately at `gs://mahmoud-arab-acmg-research-data/frozen/harmonized/source=avdb_uae/version=workbook-created-2025-06-27/stage=liftover/build=GRCh37_to_GRCh38/snapshot_date=2026-03-13/`."
+      ],
+      "artifact_links": [
+        {
+          "label": "Upstream source",
+          "url": "https://avdb-arabgenome.ae/downloads"
+        },
+        {
+          "label": "Raw vault prefix",
+          "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/avdb_uae/version=workbook-created-2025-06-27/build=GRCh37/snapshot_date=2026-03-13/"
+        },
+        {
+          "label": "Raw manifest",
+          "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/avdb_uae/version=workbook-created-2025-06-27/build=GRCh37/snapshot_date=2026-03-13/manifest.json"
+        },
+        {
+          "label": "Liftover report",
+          "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/frozen/harmonized/source=avdb_uae/version=workbook-created-2025-06-27/stage=liftover/build=GRCh37_to_GRCh38/snapshot_date=2026-03-13/avdb_uae_liftover_report.json"
+        },
+        {
+          "label": "Lifted Parquet",
+          "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/frozen/harmonized/source=avdb_uae/version=workbook-created-2025-06-27/stage=liftover/build=GRCh37_to_GRCh38/snapshot_date=2026-03-13/avdb_uae_liftover.parquet"
+        }
+      ],
+      "next_action": "Retain the lifted checkpoint for audit/reference and reconsider only if future work needs non-BRCA Emirati context.",
+      "liftover_method": {
+        "why_needed": "AVDB stores genomic coordinates as HGVS on GRCh37. The project canonical build is GRCh38, so keeping AVDB on GRCh37 would make direct joins with ClinVar, gnomAD, SHGP, and GME unsafe.",
+        "how_it_worked": [
+          "Use `HGVS_Genomic_GRCh37` as the row-level source-of-truth coordinate field.",
+          "Parse each genomic HGVS string into RefSeq accession, interval, and event type.",
+          "Map the RefSeq accession to a chromosome with the official NCBI GRCh37 assembly report.",
+          "Lift the genomic interval to GRCh38 with the official Ensembl GRCh37-to-GRCh38 assembly map endpoint.",
+          "Keep both the original GRCh37 interval and the mapped GRCh38 interval, and mark failures explicitly instead of dropping them."
+        ],
+        "counts": {
+          "total_rows": 801,
+          "parse_success_rows": 799,
+          "parse_failure_rows": 2,
+          "liftover_success_rows": 799,
+          "liftover_failure_rows": 2,
+          "brca_rows": 0,
+          "brca_liftover_success_rows": 0
+        },
+        "workflow_summary": "Parsed AVDB HGVS_Genomic_GRCh37 rows, mapped RefSeq accessions to GRCh37 chromosomes via the official NCBI GRCh37 assembly report, then lifted genomic intervals to GRCh38 with the official Ensembl GRCh37->GRCh38 assembly map endpoint. Allele normalization was not performed in this stage.",
+        "official_sources": [
+          "https://avdb-arabgenome.ae/downloads",
+          "https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/405/GCF_000001405.25_GRCh37.p13/GCF_000001405.25_GRCh37.p13_assembly_report.txt",
+          "https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/405/GCF_000001405.40_GRCh38.p14/GCF_000001405.40_GRCh38.p14_assembly_report.txt",
+          "https://grch37.rest.ensembl.org/map/human/GRCh37/{chrom}:{start}..{end}:1/GRCh38?content-type=application/json"
+        ],
+        "report_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/source=avdb_uae/version=workbook-created-2025-06-27/stage=liftover/build=GRCh37_to_GRCh38/snapshot_date=2026-03-13/avdb_uae_liftover_report.json",
+        "parquet_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/source=avdb_uae/version=workbook-created-2025-06-27/stage=liftover/build=GRCh37_to_GRCh38/snapshot_date=2026-03-13/avdb_uae_liftover.parquet",
+        "failure_examples": [
+          {
+            "source_row_number": 801,
+            "gene_symbol": NaN,
+            "hgvs_genomic_grch37": NaN,
+            "parse_status": "missing_coordinates",
+            "liftover_status": "not_applicable",
+            "liftover_notes": "HGVS_Genomic_GRCh37 was empty or unsupported."
+          },
+          {
+            "source_row_number": 802,
+            "gene_symbol": "Allele frequency is calcuated by No. of allele count/Total no.of alleles (2388)), carrier rate for each gene-disease [2qgene(1-qgene)], the cumulative probability of at-risk couples (2pq X1/8)",
+            "hgvs_genomic_grch37": NaN,
+            "parse_status": "missing_coordinates",
+            "liftover_status": "not_applicable",
+            "liftover_notes": "HGVS_Genomic_GRCh37 was empty or unsupported."
+          }
+        ]
+      },
+      "sample": {
+        "columns": [
+          "gene_symbol",
+          "hgvs_genomic_grch37",
+          "chrom37",
+          "start37",
+          "end37",
+          "chrom38",
+          "start38",
+          "end38",
+          "liftover_status"
+        ],
+        "rows": [
+          {
+            "gene_symbol": "CYP21A2",
+            "hgvs_genomic_grch37": "NC_000006.11:g.32008198C>T",
+            "chrom37": "6",
+            "start37": 32008198.0,
+            "end37": 32008198.0,
+            "chrom38": "6",
+            "start38": 32040421.0,
+            "end38": 32040421.0,
+            "liftover_status": "success"
+          },
+          {
+            "gene_symbol": "MEFV",
+            "hgvs_genomic_grch37": "NC_000016.9:g.3293257C>A",
+            "chrom37": "16",
+            "start37": 3293257.0,
+            "end37": 3293257.0,
+            "chrom38": "16",
+            "start38": 3243257.0,
+            "end38": 3243257.0,
+            "liftover_status": "success"
+          },
+          {
+            "gene_symbol": "ABCA4",
+            "hgvs_genomic_grch37": "NC_000001.10:g.94473807C>T",
+            "chrom37": "1",
+            "start37": 94473807.0,
+            "end37": 94473807.0,
+            "chrom38": "1",
+            "start38": 94008251.0,
+            "end38": 94008251.0,
+            "liftover_status": "success"
+          },
+          {
+            "gene_symbol": "HBB",
+            "hgvs_genomic_grch37": "NC_000011.9:g.5248155C>G",
+            "chrom37": "11",
+            "start37": 5248155.0,
+            "end37": 5248155.0,
+            "chrom38": "11",
+            "start38": 5226925.0,
+            "end38": 5226925.0,
+            "liftover_status": "success"
+          },
+          {
+            "gene_symbol": "HBB",
+            "hgvs_genomic_grch37": "NC_000011.9:g.5248232T>A",
+            "chrom37": "11",
+            "start37": 5248232.0,
+            "end37": 5248232.0,
+            "chrom38": "11",
+            "start38": 5227002.0,
+            "end38": 5227002.0,
+            "liftover_status": "success"
+          }
+        ]
+      }
+    },
+    {
       "source_key": "saudi_breast_cancer_pmc10474689",
       "display_name": "Saudi breast cancer supplement (PMC10474689)",
       "category": "Arab clinical publication supplement",
@@ -475,15 +841,35 @@
       "normalization_decision": "Do not normalize until genomic coordinates can be resolved",
       "brca_relevance": "Indirect until BRCA rows are confirmed in the retained table",
       "review_status": "blocked",
+      "project_fit": "blocked",
+      "project_fit_note": "Keep frozen as source evidence only. Do not use it downstream until transcript-to-genome mapping is justified.",
+      "use_tier": "blocked",
+      "use_tier_label": "Blocked",
+      "use_tier_summary": "Frozen only until scientific gaps are resolved",
       "snapshot_date": "2026-03-12",
       "source_version": "moesm1",
       "upstream_url": "https://pmc.ncbi.nlm.nih.gov/articles/instance/10474689/bin/13073_2023_1220_MOESM1_ESM.xls",
       "raw_vault_prefix": "gs://mahmoud-arab-acmg-research-data/raw/sources/saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/",
+      "raw_manifest_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/manifest.json",
       "row_count": 38,
       "notes": [
         "The retained Table S5 extract contains gene and transcript/protein HGVS fields but no genomic coordinate column.",
         "Current sample rows show cross-gene pathogenic carriers, so BRCA-specific relevance still needs confirmation inside the retained sheet.",
         "Article: \"Interplay of Mendelian and polygenic risk factors in Arab breast cancer patients\" (PMCID `PMC10474689`, DOI `10.1186/s13073-023-01220-4`). Raw workbook frozen privately; de-identified extract frozen at `gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/variant_carriers.parquet` with 38 rows from `Table S5`."
+      ],
+      "artifact_links": [
+        {
+          "label": "Upstream source",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/instance/10474689/bin/13073_2023_1220_MOESM1_ESM.xls"
+        },
+        {
+          "label": "Raw vault prefix",
+          "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/"
+        },
+        {
+          "label": "Raw manifest",
+          "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/manifest.json"
+        }
       ],
       "next_action": "Review Table S5 for BRCA-specific rows and map transcript HGVS to genomic coordinates before inclusion in harmonization.",
       "sample": {
@@ -568,15 +954,35 @@
       "normalization_decision": "Parse `Chr location (hg38)` and mutation fields into genomic alleles before normalization",
       "brca_relevance": "Direct",
       "review_status": "partial",
+      "project_fit": "demo_only",
+      "project_fit_note": "Keep as small targeted BRCA cohort evidence. It can help case-context review, but it is not a population-frequency baseline.",
+      "use_tier": "demo_only",
+      "use_tier_label": "Demo only",
+      "use_tier_summary": "Useful for walkthroughs, not a core evidence stream",
       "snapshot_date": "2026-03-12",
       "source_version": "moesm1",
       "upstream_url": "https://pmc.ncbi.nlm.nih.gov/articles/instance/12572518/bin/432_2025_6188_MOESM1_ESM.xlsx",
       "raw_vault_prefix": "gs://mahmoud-arab-acmg-research-data/raw/sources/uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/",
+      "raw_manifest_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/manifest.json",
       "row_count": 83,
       "notes": [
         "Both extracted UAE sheets retain `Mutations`, `HGVS`, and `Chr location (hg38)`.",
         "Only mutation-positive rows are carried forward into the de-identified extracts, so the working set is narrower than the raw workbook.",
         "Article: \"Genetic characterization of BRCA1 and BRCA2 variants in cancer and high-risk family screening cohorts in the UAE population\" (PMCID `PMC12011969`, DOI `10.1007/s00432-025-06188-9`). Raw workbook frozen privately because it includes patient-level columns; de-identified extracts frozen at `gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/` with 18 mutation-positive family-screening rows and 65 mutation-positive cancer-cohort rows."
+      ],
+      "artifact_links": [
+        {
+          "label": "Upstream source",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/instance/12572518/bin/432_2025_6188_MOESM1_ESM.xlsx"
+        },
+        {
+          "label": "Raw vault prefix",
+          "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/"
+        },
+        {
+          "label": "Raw manifest",
+          "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/manifest.json"
+        }
       ],
       "next_action": "Validate the `Chr location (hg38)` field row-by-row and resolve allele syntax before canonical-key construction.",
       "sample": {
