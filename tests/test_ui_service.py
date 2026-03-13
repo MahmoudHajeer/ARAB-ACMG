@@ -77,6 +77,46 @@ def sample_bundle():
     }
 
 
+def sample_source_review():
+    return {
+        "generated_at": "2026-03-13T08:00:00+00:00",
+        "workflow_categories": [
+            {
+                "id": "raw_freeze",
+                "title": "Stage 1",
+                "purpose": "Freeze raw source package",
+                "evidence_types": ["manifest checksum"],
+                "output": "raw/sources/...",
+            }
+        ],
+        "sources": [
+            {
+                "source_key": "clinvar",
+                "display_name": "ClinVar GRCh38 VCF",
+                "category": "Global clinical classification anchor",
+                "source_kind": "VCF",
+                "source_build": "GRCh38",
+                "coordinate_readiness": "Genomic coordinates ready",
+                "liftover_decision": "not_needed",
+                "normalization_decision": "normalize VCF",
+                "brca_relevance": "Direct",
+                "review_status": "ready",
+                "snapshot_date": "2026-03-03",
+                "source_version": "lastmod-20260302",
+                "upstream_url": "https://example.org/clinvar.vcf.gz",
+                "raw_vault_prefix": "gs://bucket/raw/sources/clinvar/",
+                "row_count": 123,
+                "notes": ["Evidence note"],
+                "next_action": "Normalize alleles",
+                "sample": {
+                    "columns": ["chrom", "pos"],
+                    "rows": [{"chrom": "17", "pos": 43044295}],
+                },
+            }
+        ],
+    }
+
+
 def test_index_route_disables_cache():
     response = client.get("/")
 
@@ -99,6 +139,17 @@ def test_workflow_route_returns_page_navigation(monkeypatch):
     assert response.status_code == 200
     payload = response.json()
     assert payload["pages"][0]["id"] == "overview"
+
+
+def test_source_review_route_returns_frozen_payload(monkeypatch):
+    monkeypatch.setattr(service, "load_source_review_payload", sample_source_review)
+
+    response = client.get("/api/source-review")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["workflow_categories"][0]["id"] == "raw_freeze"
+    assert payload["sources"][0]["display_name"] == "ClinVar GRCh38 VCF"
 
 
 def test_overview_route_returns_payload(monkeypatch):

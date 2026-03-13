@@ -9,9 +9,11 @@ from fastapi.responses import FileResponse, RedirectResponse, Response
 try:  # pragma: no cover - import path differs between local package and Cloud Run container
     from ui.overview_data import load_overview_payload as load_bundled_or_live_overview_payload
     from ui.review_bundle import load_review_bundle
+    from ui.source_review import load_source_review_payload
 except ModuleNotFoundError:  # pragma: no cover - runtime fallback inside the ui/ build context
     from overview_data import load_overview_payload as load_bundled_or_live_overview_payload  # type: ignore[no-redef]
     from review_bundle import load_review_bundle  # type: ignore[no-redef]
+    from source_review import load_source_review_payload  # type: ignore[no-redef]
 
 UI_ROOT: Final[Path] = Path(__file__).resolve().parent
 NO_STORE_HEADERS: Final[dict[str, str]] = {"Cache-Control": "no-store"}
@@ -58,6 +60,7 @@ def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
+# [AI-Agent: Codex]: API Group 1 / Overview shell - enough metadata to orient the supervisor without loading the heavier evidence panels yet.
 @app.get("/api/overview")
 def overview() -> dict[str, object]:
     return load_bundled_or_live_overview_payload()
@@ -68,6 +71,13 @@ def workflow_meta() -> dict[str, object]:
     return review_bundle()["workflow"]
 
 
+# [AI-Agent: Codex]: Serve the scientific source-review bundle as static evidence so build/liftover decisions stay auditable in the supervisor UI.
+@app.get("/api/source-review")
+def source_review() -> dict[str, object]:
+    return load_source_review_payload()
+
+
+# [AI-Agent: Codex]: API Group 2 / Raw source evidence - frozen previews of the untouched source-of-truth tables only.
 @app.get("/api/raw-datasets")
 def raw_datasets() -> dict[str, object]:
     return review_bundle()["raw_datasets"]
@@ -86,6 +96,7 @@ def raw_dataset_sample(dataset_key: str) -> dict[str, object]:
     return sample
 
 
+# [AI-Agent: Codex]: API Group 3 / Checkpoint evidence - static previews of the approved BRCA checkpoint artifacts.
 @app.get("/api/datasets")
 def datasets() -> dict[str, object]:
     return review_bundle()["datasets"]
@@ -117,6 +128,7 @@ def pre_gme_sample() -> dict[str, object]:
     return sample
 
 
+# [AI-Agent: Codex]: API Group 4 / Final registry evidence - the only downloadable artifact left in the supervisor runtime.
 @app.get("/api/registry")
 def registry_metadata() -> dict[str, object]:
     return review_bundle()["registry"]

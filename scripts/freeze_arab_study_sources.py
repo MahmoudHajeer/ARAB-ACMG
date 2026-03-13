@@ -62,6 +62,7 @@ class StudySource:
         )
 
 
+# [AI-Agent: Codex]: Stage 1 / Source Registration - declare each upstream workbook once so future Arab-source intake stays config-driven.
 STUDY_SOURCES: Final[tuple[StudySource, ...]] = (
     StudySource(
         slug="saudi_breast_cancer_pmc10474689",
@@ -195,7 +196,7 @@ def apply_extract_spec(frame: pd.DataFrame, spec: ExtractSpec) -> pd.DataFrame:
     """Create one de-identified, variant-centric extract from a raw sheet."""
     trimmed = normalize_headers(frame).reset_index(drop=True)
 
-    # [AI-Agent: Codex]: Preserve a stable locator back to the raw workbook while removing direct identifiers.
+    # [AI-Agent: Codex]: Stage 2 / De-identification - preserve a stable locator back to the raw workbook while removing direct identifiers.
     trimmed["source_sheet_name"] = spec.sheet_name
     trimmed["source_row_number"] = trimmed.index + 2
     trimmed["source_record_locator"] = trimmed["source_row_number"].map(
@@ -317,7 +318,7 @@ def run_source_pipeline(storage_client: storage.Client, source: StudySource, sna
         )
 
         for spec in source.extracts:
-            # [AI-Agent: Codex]: Keep extraction logic linear and explicit so every retained column is reviewable.
+            # [AI-Agent: Codex]: Stage 3 / Extract Freeze - keep extraction logic linear and explicit so every retained column is reviewable.
             raw_frame = pd.read_excel(source.local_source, sheet_name=spec.sheet_name)
             extracted = apply_extract_spec(raw_frame, spec)
 
@@ -383,7 +384,7 @@ def main() -> None:
     snapshot_date = dt.date.today().isoformat()
     storage_client = storage.Client(project=PROJECT_ID)
 
-    # [AI-Agent: Codex]: Process sources one by one so failures are easy to attribute and resume.
+    # [AI-Agent: Codex]: Stage 4 / Intake Orchestration - process sources one by one so failures are easy to attribute and resume.
     summaries = [run_source_pipeline(storage_client, source, snapshot_date) for source in STUDY_SOURCES]
 
     report = {

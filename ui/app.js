@@ -7,6 +7,7 @@ let workflowPayload = null;
 let overviewPayload = null;
 let globalButtonsWired = false;
 
+// [AI-Agent: Codex]: Section 1 / Core text helpers - keep all UI rendering escaped and deterministic because the page is built from frozen JSON artifacts.
 function toTitle(text) {
   return text.replaceAll("_", " ");
 }
@@ -81,6 +82,7 @@ function renderNoteStack(items) {
   `;
 }
 
+// [AI-Agent: Codex]: Section 2 / Navigation and overview rendering - the supervisor should see the current stage first, then drill into evidence only when needed.
 function renderWorkflowNav(pages) {
   const root = document.getElementById("workflow-nav");
   root.innerHTML = pages
@@ -107,6 +109,30 @@ function renderWorkflowMap(pages) {
         <div class="workflow-title">${escapeHtml(page.title)}</div>
         <p class="workflow-summary">${escapeHtml(page.summary)}</p>
         <a class="workflow-jump" href="#${page.id}">Open page</a>
+      </article>
+    `
+    )
+    .join("");
+}
+
+// [AI-Agent: Codex]: Review Stage A - explain the harmonization workflow as explicit scientific gates so the supervisor can audit each decision boundary.
+function renderWorkflowCategories(categories) {
+  const root = document.getElementById("workflow-categories");
+  root.innerHTML = categories
+    .map(
+      (category) => `
+      <article class="workflow-card scientific-card">
+        <div class="workflow-step">${escapeHtml(category.id)}</div>
+        <div class="workflow-title">${escapeHtml(category.title)}</div>
+        <p class="workflow-summary">${escapeHtml(category.purpose)}</p>
+        <details class="details-card">
+          <summary>Evidence used</summary>
+          ${renderNoteStack(category.evidence_types.map((item) => `Evidence: ${item}`))}
+        </details>
+        <details class="details-card">
+          <summary>Output of this stage</summary>
+          <div class="metric-sub">${escapeHtml(category.output)}</div>
+        </details>
       </article>
     `
     )
@@ -232,6 +258,88 @@ function renderScientificMetrics(metrics) {
   `;
 }
 
+function renderInlineEvidenceTable(sample) {
+  const columns = sample?.columns || [];
+  const rows = sample?.rows || [];
+  if (!columns.length) {
+    return `<div class="empty-state">No evidence rows bundled for this source.</div>`;
+  }
+
+  const head = columns.map((column) => `<th>${escapeHtml(column)}</th>`).join("");
+  const body = rows
+    .map(
+      (row) => `
+      <tr>
+        ${columns.map((column) => `<td>${escapeHtml(row[column] ?? "")}</td>`).join("")}
+      </tr>
+    `
+    )
+    .join("");
+
+  return `
+    <div class="sample-table-wrap">
+      <table class="sample-table live-table compact-table">
+        <thead><tr>${head}</tr></thead>
+        <tbody>${body}</tbody>
+      </table>
+    </div>
+  `;
+}
+
+function renderSourceEvidenceList(source) {
+  const evidenceLines = [
+    `Source version: ${source.source_version || "not recorded"}`,
+    `Raw vault prefix: ${source.raw_vault_prefix || "not recorded"}`,
+    ...source.notes,
+  ];
+  return renderNoteStack(evidenceLines);
+}
+
+// [AI-Agent: Codex]: Review Stage B - render one source card per dataset so build readiness, coordinate readiness, and next action remain visible together.
+function renderSourceReviewGrid(payload) {
+  const root = document.getElementById("source-review-grid");
+  root.innerHTML = payload.sources
+    .map(
+      (source) => `
+      <article class="explorer-card scientific-source-card">
+        <div class="card-head">
+          <div>
+            <div class="sample-title">${escapeHtml(source.display_name)}</div>
+            <div class="metric-sub">${escapeHtml(source.category)} • ${escapeHtml(source.source_kind)}</div>
+            <div class="metric-sub">snapshot ${escapeHtml(source.snapshot_date || "n/a")} • rows ${Number(source.row_count || 0).toLocaleString()}</div>
+          </div>
+          <div class="review-pill ${escapeHtml(source.review_status)}">${escapeHtml(String(source.review_status).toUpperCase())}</div>
+        </div>
+        <div class="scientific-matrix">
+          <div><strong>Build</strong><span>${escapeHtml(source.source_build)}</span></div>
+          <div><strong>Coordinates</strong><span>${escapeHtml(source.coordinate_readiness)}</span></div>
+          <div><strong>Liftover</strong><span>${escapeHtml(source.liftover_decision)}</span></div>
+          <div><strong>Normalization</strong><span>${escapeHtml(source.normalization_decision)}</span></div>
+          <div><strong>BRCA relevance</strong><span>${escapeHtml(source.brca_relevance)}</span></div>
+          <div><strong>Upstream</strong><span class="truncate">${escapeHtml(source.upstream_url || "")}</span></div>
+        </div>
+        <details class="details-card">
+          <summary>Scientific rationale and evidence</summary>
+          ${renderSourceEvidenceList(source)}
+        </details>
+        <details class="details-card">
+          <summary>Next exact action</summary>
+          <div class="metric-sub">${escapeHtml(source.next_action)}</div>
+        </details>
+        ${
+          source.sample
+            ? `<details class="details-card">
+                <summary>Frozen evidence sample</summary>
+                ${renderInlineEvidenceTable(source.sample)}
+              </details>`
+            : ""
+        }
+      </article>
+    `
+    )
+    .join("");
+}
+
 function renderSourceCounts(metrics) {
   const sourceCounts = metrics.source_row_counts || [];
   const frozenAt = metrics.frozen_at || "frozen snapshot";
@@ -249,6 +357,7 @@ function renderSourceCounts(metrics) {
   `;
 }
 
+// [AI-Agent: Codex]: Section 3 / Frozen evidence rendering - every preview must state that it comes from the approved static bundle, not from a live analytical query.
 function renderQueryResult(targetId, payload) {
   const root = document.getElementById(targetId);
   const columns = payload.columns || [];
@@ -272,8 +381,12 @@ function renderQueryResult(targetId, payload) {
 
   root.innerHTML = `
     <details class="details-card">
-      <summary>Frozen extraction evidence</summary>
+      <summary>Frozen sample provenance</summary>
       <div class="query-meta">
+        <div class="note-stack">
+          <div class="note-item">Mode: ${escapeHtml(payload.mode || "frozen bundle")}</div>
+          <div class="note-item">Frozen at: ${escapeHtml(payload.frozen_at || "not recorded")}</div>
+        </div>
         <pre class="sql-box">${escapeHtml(payload.query_sql)}</pre>
       </div>
     </details>
@@ -314,11 +427,14 @@ async function runButtonAction(button, busyLabel, callback) {
   }
 }
 
+// [AI-Agent: Codex]: Section 4 / Interactive cards - cards surface frozen artifacts first, and only then show any historical build references used to create them.
 function renderDatasetCollection({ targetId, payload, sampleAttr, samplePath }) {
   const root = document.getElementById(targetId);
   root.innerHTML = payload.datasets
     .map(
       (entry) => {
+        const primaryRef = entry.storage_ref || entry.table_ref;
+        const historicalRef = entry.storage_ref ? entry.table_ref : null;
         const downloadLink = entry.download_url
           ? `<a class="action-button secondary-link" href="${entry.download_url}">Download static file</a>`
           : "";
@@ -327,7 +443,8 @@ function renderDatasetCollection({ targetId, payload, sampleAttr, samplePath }) 
         <div class="card-head">
           <div>
             <div class="sample-title">${escapeHtml(entry.title)}</div>
-            <div class="metric-sub">${escapeHtml(entry.table_ref)}</div>
+            <div class="metric-sub">${escapeHtml(primaryRef)}</div>
+            ${historicalRef ? `<div class="metric-sub">Historical build reference: ${escapeHtml(historicalRef)}</div>` : ""}
             <div class="metric-sub">frozen row count: ${(entry.row_count || 0).toLocaleString()}</div>
           </div>
           <div class="action-row compact-actions">
@@ -426,6 +543,7 @@ function renderHarmonizationScience(payload) {
   `;
 }
 
+// [AI-Agent: Codex]: Section 5 / Stage-specific metadata panels - keep the same narrative order: what exists, why it exists, then the field-level contract.
 function renderPreGmeMeta(payload) {
   const root = document.getElementById("pre-gme-meta");
   root.innerHTML = `
@@ -500,6 +618,7 @@ async function loadShellData() {
   renderOverviewHeader(overview);
 }
 
+// [AI-Agent: Codex]: Section 6 / Button wiring and lazy page loaders - keep the startup cheap, then fetch only the frozen bundle slice needed for the active page.
 function wireGlobalButtons() {
   if (globalButtonsWired) {
     return;
@@ -563,15 +682,20 @@ async function loadHarmonizationPage() {
     return;
   }
 
+  setLoading("workflow-categories", "Loading workflow categories...");
+  setLoading("source-review-grid", "Loading scientific source review...");
   setLoading("harmonization-science", "Loading frozen scientific checkpoint evidence...");
   setLoading("harmonized-dataset-explorer", "Loading frozen checkpoint tables...");
   setLoading("harmonization-steps", "Loading frozen evidence steps...");
 
-  const [harmonizedPayload, registryPayload] = await Promise.all([
+  const [harmonizedPayload, registryPayload, sourceReviewPayload] = await Promise.all([
     fetchResource("checkpoint-datasets", "/api/datasets"),
     fetchResource("registry-meta", "/api/registry"),
+    fetchResource("source-review", "/api/source-review"),
   ]);
 
+  renderWorkflowCategories(sourceReviewPayload.workflow_categories);
+  renderSourceReviewGrid(sourceReviewPayload);
   renderHarmonizationScience(registryPayload);
   renderDatasetCollection({
     targetId: "harmonized-dataset-explorer",
@@ -631,6 +755,8 @@ async function loadActivePage(pageId) {
   } catch (error) {
     if (pageId === "raw") setError("raw-dataset-explorer", error);
     if (pageId === "harmonization") {
+      setError("workflow-categories", error);
+      setError("source-review-grid", error);
       setError("harmonization-science", error);
       setError("harmonized-dataset-explorer", error);
       setError("harmonization-steps", error);

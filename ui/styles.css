@@ -259,10 +259,43 @@ h1 {
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
+.scientific-matrix {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.scientific-matrix div {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 1), rgba(31, 167, 173, 0.04));
+}
+
+.scientific-matrix strong {
+  color: var(--red);
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.scientific-matrix span {
+  color: var(--text);
+  line-height: 1.55;
+}
+
 .workflow-card {
   display: grid;
   gap: 8px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 1), rgba(31, 167, 173, 0.05));
+}
+
+.scientific-card {
+  align-content: start;
 }
 
 .workflow-step {
@@ -328,10 +361,30 @@ h1 {
   white-space: nowrap;
 }
 
+.review-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 88px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
 .track-status.done,
 .pill.pass {
   background: rgba(20, 120, 125, 0.12);
   color: var(--done);
+}
+
+.review-pill.ready {
+  color: var(--done);
+  background: rgba(20, 120, 125, 0.12);
+  border-color: rgba(20, 120, 125, 0.2);
 }
 
 .track-status.in_progress,
@@ -340,10 +393,22 @@ h1 {
   color: var(--progress);
 }
 
+.review-pill.partial {
+  color: #8b5a00;
+  background: rgba(214, 152, 44, 0.14);
+  border-color: rgba(214, 152, 44, 0.28);
+}
+
 .track-status.not_started,
 .pill.fail {
   background: rgba(214, 44, 44, 0.12);
   color: var(--todo);
+}
+
+.review-pill.blocked {
+  color: var(--red);
+  background: rgba(214, 44, 44, 0.12);
+  border-color: rgba(214, 44, 44, 0.22);
 }
 
 .track-desc,
@@ -352,6 +417,10 @@ h1 {
   margin: 6px 0 0;
   font-size: 0.9rem;
   line-height: 1.6;
+}
+
+.truncate {
+  overflow-wrap: anywhere;
 }
 
 .progress-wrap {
@@ -580,6 +649,12 @@ h1 {
   margin-top: 14px;
   display: grid;
   gap: 10px;
+}
+
+.query-meta {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
 }
 
 .sql-box {
