@@ -250,13 +250,57 @@ h1 {
 .runtime-results,
 .explorer-stack,
 .note-stack,
-.workflow-map {
+.workflow-map,
+.trace-grid,
+.lineage-strip {
   display: grid;
   gap: 12px;
 }
 
 .workflow-map {
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.lineage-strip {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  margin: 12px 0;
+}
+
+.lineage-step,
+.trace-item {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 10px 12px;
+  background: rgba(31, 167, 173, 0.05);
+}
+
+.lineage-label,
+.trace-label {
+  color: var(--red);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.lineage-value,
+.trace-value {
+  margin-top: 6px;
+  color: var(--text);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.lineage-flag {
+  margin-top: 8px;
+  color: var(--teal-deep);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.trace-card {
+  margin: 12px 0;
 }
 
 .scientific-matrix {

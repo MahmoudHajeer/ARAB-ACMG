@@ -174,3 +174,13 @@ Do not rewrite previous entries.
 - Files changed: `scripts/update_source_review_state.py`, `tests/test_source_review_state.py`, `tests/test_ui_service.py`, `ui/app.js`, `ui/index.html`, `ui/source_review.json`, `ui/overview_state.json`, `conductor/tracks/T003-DataHarmonization/index.md`
 - Verification run + result: `python3 scripts/update_source_review_state.py (pass)`, `python3 -m pytest -q tests/test_source_review_state.py tests/test_ui_service.py tests/test_ui_overview.py (25 passed)`, `node --check ui/app.js (pass)`, `gcloud run deploy supervisor-ui --source ui --region europe-west1 --project genome-services-platform --allow-unauthenticated --quiet (pass: revision supervisor-ui-00027-mcl)`, `live Playwright browser checks (pass: #raw shows Additional frozen source packages with 10-row samples; #harmonization shows Raw -> BRCA -> final lineage and final inclusion status for each source)`
 - Next exact action: Continue `3.1` by building the actual normalization outputs for the ready GRCh38-capable Arab-aware sources, then replace the current historical checkpoint references with the next Arab-extended checkpoint artifacts.
+
+### Entry 18
+- Timestamp: `2026-03-13T21:15:46+03:00`
+- Agent: `Codex`
+- Task ID: `3.1`
+- Status: `Started`
+- Summary: Added compact traceability metadata to every frozen review surface so no displayed count, sample, or table now appears without an explicit source, operation summary, count basis, and display basis. The UI was also tightened by collapsing long explanatory sections and replacing the old always-open lineage block with a shorter `Raw / BRCA / Final` strip.
+- Files changed: `ui/traceability.py`, `ui/review_bundle.py`, `ui/source_review.py`, `ui/service.py`, `ui/app.js`, `ui/styles.css`, `tests/test_traceability.py`, `conductor/tracks/T003-DataHarmonization/index.md`
+- Verification run + result: `python3 -m py_compile ui/traceability.py ui/review_bundle.py ui/source_review.py ui/service.py (pass)`, `python3 -m pytest -q tests (69 passed)`, `node --check ui/app.js (pass)`, `gcloud run deploy supervisor-ui --source ui --region europe-west1 --project genome-services-platform --allow-unauthenticated --quiet (pass: revision supervisor-ui-00028-pnw)`, `live checks (pass: /review_bundle.json trace fields present; /api/source-review trace present; Playwright check on #harmonization shows compact Raw/BRCA/Final strip + collapsed Trace sections)`
+- Next exact action: Continue `3.1` by materializing the first Arab-extended normalized checkpoint from the ready GRCh38-capable sources, while preserving the same explicit trace fields for every derived artifact.

@@ -95,6 +95,37 @@ function renderNoteStack(items) {
   `;
 }
 
+function renderTraceSummary(trace) {
+  if (!trace) {
+    return "";
+  }
+
+  const rows = [
+    ["Input", trace.input_surface],
+    ["Operation", trace.operation],
+    ["Count", trace.count_basis],
+    ["Display", trace.display_basis],
+  ].filter(([, value]) => Boolean(value));
+
+  return `
+    <details class="details-card trace-card">
+      <summary>Trace</summary>
+      <div class="trace-grid">
+        ${rows
+          .map(
+            ([label, value]) => `
+            <article class="trace-item">
+              <div class="trace-label">${escapeHtml(label)}</div>
+              <div class="trace-value">${escapeHtml(value)}</div>
+            </article>
+          `
+          )
+          .join("")}
+      </div>
+    </details>
+  `;
+}
+
 // [AI-Agent: Codex]: Section 2 / Navigation and overview rendering - the supervisor should see the current stage first, then drill into evidence only when needed.
 function renderWorkflowNav(pages) {
   const root = document.getElementById("workflow-nav");
@@ -396,22 +427,36 @@ function renderSourceWorkflowPosition(source) {
   const inclusionLabel = workflow.included_in_current_final ? "Already in current final checkpoint" : "Not in current final checkpoint";
 
   return `
-    <details class="details-card" open>
-      <summary>Raw -> BRCA -> final lineage</summary>
-      <div class="metric-stack">
-        <div class="metric-item">
-          <div class="metric-title">Stage 1: Frozen raw source</div>
-          <div class="metric-sub">${escapeHtml(workflow.raw_stage || "Not recorded")}</div>
-        </div>
-        <div class="metric-item">
-          <div class="metric-title">Stage 2: BRCA1/BRCA2 handling</div>
-          <div class="metric-sub">${escapeHtml(workflow.brca_stage || "Not recorded")}</div>
-        </div>
-        <div class="metric-item">
-          <div class="metric-title">Stage 3: Final-table status</div>
-          <div class="metric-sub">${escapeHtml(workflow.final_stage || "Not recorded")}</div>
-          <div class="metric-sub"><strong>${escapeHtml(inclusionLabel)}</strong></div>
-        </div>
+    <div class="lineage-strip">
+      <article class="lineage-step">
+        <div class="lineage-label">Raw</div>
+        <div class="lineage-value">${escapeHtml(workflow.raw_stage || "Not recorded")}</div>
+      </article>
+      <article class="lineage-step">
+        <div class="lineage-label">BRCA</div>
+        <div class="lineage-value">${escapeHtml(workflow.brca_stage || "Not recorded")}</div>
+      </article>
+      <article class="lineage-step">
+        <div class="lineage-label">Final</div>
+        <div class="lineage-value">${escapeHtml(workflow.final_stage || "Not recorded")}</div>
+        <div class="lineage-flag">${escapeHtml(inclusionLabel)}</div>
+      </article>
+    </div>
+    <details class="details-card">
+      <summary>Exact workflow wording</summary>
+      <div class="trace-grid">
+        <article class="trace-item">
+          <div class="trace-label">Stage 1</div>
+          <div class="trace-value">${escapeHtml(workflow.raw_stage || "Not recorded")}</div>
+        </article>
+        <article class="trace-item">
+          <div class="trace-label">Stage 2</div>
+          <div class="trace-value">${escapeHtml(workflow.brca_stage || "Not recorded")}</div>
+        </article>
+        <article class="trace-item">
+          <div class="trace-label">Stage 3</div>
+          <div class="trace-value">${escapeHtml(workflow.final_stage || "Not recorded")}</div>
+        </article>
       </div>
     </details>
   `;
@@ -542,11 +587,12 @@ function renderSourceReviewGrid(payload) {
           <div><strong>Use strength</strong><span>${escapeHtml(source.use_tier_summary || "")}</span></div>
           <div><strong>Upstream</strong><span class="truncate">${escapeHtml(source.upstream_url || "")}</span></div>
         </div>
-        <details class="details-card" open>
+        ${renderSourceWorkflowPosition(source)}
+        ${renderTraceSummary(source.trace)}
+        <details class="details-card">
           <summary>Why this source is kept or limited</summary>
           <div class="metric-sub">${escapeHtml(source.project_fit_note)}</div>
         </details>
-        ${renderSourceWorkflowPosition(source)}
         ${renderSourceLiftoverMethod(source)}
         <details class="details-card">
           <summary>Scientific rationale and evidence</summary>
@@ -687,6 +733,7 @@ function renderDatasetCollection({ targetId, payload, sampleAttr, samplePath }) 
           </div>
         </div>
         <p class="card-summary">${escapeHtml(entry.simple_summary)}</p>
+        ${renderTraceSummary(entry.trace)}
         <details class="details-card">
           <summary>How this table is used</summary>
           ${renderNoteStack(entry.notes)}
@@ -736,6 +783,7 @@ function renderSupplementalRawSources(payload) {
           </div>
         </div>
         <p class="card-summary">${escapeHtml(source.workflow_position?.raw_stage || "Frozen source package")}</p>
+        ${renderTraceSummary(source.trace)}
         <details class="details-card">
           <summary>Why this raw package matters</summary>
           <div class="metric-sub">${escapeHtml(source.project_fit_note || "Not recorded")}</div>
@@ -773,6 +821,7 @@ function renderStepCards(targetId, steps) {
             <button type="button" class="action-button secondary" data-step-sample="${step.id}">Show frozen 10 rows</button>
           </div>
         </div>
+        ${renderTraceSummary(step.trace)}
         <details class="details-card">
           <summary>Technical note</summary>
           <div class="metric-sub">${escapeHtml(step.technical)}</div>
@@ -825,6 +874,7 @@ function renderPreGmeMeta(payload) {
       <div class="metric-sub">${escapeHtml(payload.table_ref)}</div>
       <div class="metric-sub">frozen row count: ${payload.row_count === null ? "not built yet" : Number(payload.row_count).toLocaleString()}</div>
       <div class="metric-sub">${escapeHtml(payload.scope_note)}</div>
+      ${renderTraceSummary(payload.trace)}
       ${renderNoteStack(payload.accuracy_notes)}
       <details class="details-card">
         <summary>Why this checkpoint exists</summary>
@@ -851,6 +901,7 @@ function renderFinalRegistryMeta(payload) {
       <div class="metric-sub">${escapeHtml(payload.table_ref)}</div>
       <div class="metric-sub">frozen row count: ${payload.row_count === null ? "not built yet" : Number(payload.row_count).toLocaleString()}</div>
       <div class="metric-sub">${escapeHtml(payload.scope_note)}</div>
+      ${renderTraceSummary(payload.trace)}
       ${renderNoteStack(payload.accuracy_notes)}
       <details class="details-card">
         <summary>Scientific explanation</summary>

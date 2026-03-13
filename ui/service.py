@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Final
 
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse, RedirectResponse, Response
+from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, Response
 
 try:  # pragma: no cover - import path differs between local package and Cloud Run container
     from ui.controlled_access import load_controlled_access_payload
@@ -48,8 +48,8 @@ def snapshot() -> FileResponse:
 
 
 @app.get("/review_bundle.json")
-def bundle_file() -> FileResponse:
-    return FileResponse(UI_ROOT / "review_bundle.json", headers=NO_STORE_HEADERS)
+def bundle_file() -> JSONResponse:
+    return JSONResponse(review_bundle(), headers=NO_STORE_HEADERS)
 
 
 @app.get("/controlled_access.json")
