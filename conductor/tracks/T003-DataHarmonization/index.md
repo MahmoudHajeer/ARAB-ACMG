@@ -84,3 +84,23 @@ Do not rewrite previous entries.
 - Files changed: `conductor/data-contracts.md`, `conductor/product-guidelines.md`, `conductor/source-freeze.md`, `conductor/tech-stack.md`, `conductor/tracks.md`, `conductor/tracks/T003-DataHarmonization/spec.md`, `conductor/tracks/T003-DataHarmonization/plan.md`, `conductor/tracks/T004-AnalysisEngine/*`, `conductor/tracks/T005-StatsResults/*`, `conductor/checkpoints/2026-03-12-t003-arab-study-intake.md`, `environment.yml`, `scripts/freeze_arab_study_sources.py`, `scripts/verify_arab_study_sources.py`, `tests/test_freeze_arab_study_sources.py`
 - Verification run + result: `python3 -m pytest -q tests (57 passed)`, `python3 scripts/freeze_arab_study_sources.py (pass: Saudi extract rows=38; UAE family-screening rows=18; UAE cancer-cohort rows=65)`, `python3 scripts/verify_arab_study_sources.py (pass)`, `python3 scripts/update_ui_overview_state.py (pass)`
 - Next exact action: Start task `2.1` in `conductor/tracks/T003-DataHarmonization/plan.md`, document `source_build` and coordinate readiness for ClinVar, gnomAD, GME, Saudi `PMC10474689`, and UAE `PMC12011969`, then decide which sources require liftover versus direct GRCh38 normalization.
+
+### Entry 9
+- Timestamp: `2026-03-13T09:45:00+03:00`
+- Agent: `Codex`
+- Task ID: `2.1`
+- Status: `Started`
+- Summary: Starting a scientific source-readiness review for all active inputs. The goal is to classify each source by build status, coordinate readiness, and next transformation step, then surface that evidence clearly in both the supervisor UI and the code comments.
+- Files changed: `conductor/tracks/T003-DataHarmonization/plan.md`, `conductor/tracks/T003-DataHarmonization/index.md`
+- Verification run + result: `state update only before implementation`
+- Next exact action: Build a frozen source-review payload for the UI, add scientific review notes and workflow categories, then verify the rendered evidence with tests and a browser check.
+
+### Entry 10
+- Timestamp: `2026-03-13T09:25:00+03:00`
+- Agent: `Codex`
+- Task ID: `2.1`
+- Status: `Completed`
+- Summary: Completed a scientific source-readiness review across ClinVar, gnomAD genomes/exomes, GME, and the newly frozen Arab study sources. Added frozen supervisor UI evidence for build status, coordinate readiness, liftover decisions, source-of-truth provenance, and next exact action, while clarifying checkpoint artifact references as GCS-first with historical build provenance shown separately.
+- Files changed: `conductor/index.md`, `conductor/source-readiness.md`, `conductor/checkpoints/2026-03-13-t003-source-readiness-review.md`, `scripts/freeze_arab_study_sources.py`, `scripts/update_source_review_state.py`, `tests/test_source_review_state.py`, `tests/test_ui_service.py`, `ui/app.js`, `ui/index.html`, `ui/service.py`, `ui/source_review.json`, `ui/source_review.py`, `ui/styles.css`
+- Verification run + result: `python3 scripts/update_source_review_state.py (pass)`, `python3 -m py_compile scripts/update_source_review_state.py ui/source_review.py ui/service.py (pass)`, `python3 -m pytest -q tests (61 passed)`, `node --check ui/app.js (pass)`, `Playwright browser check on http://127.0.0.1:8082/?v=2#harmonization (pass: workflow categories rendered, source-review cards showed source version + raw-vault evidence, checkpoint cards preferred GCS artifact refs, frozen sample preview loaded)`
+- Next exact action: Start task `2.2` in `conductor/tracks/T003-DataHarmonization/plan.md` and implement the first coordinate-aware normalization path for `gme_hg38` plus row-validated `uae_brca_pmc12011969`, while keeping `saudi_breast_cancer_pmc10474689` blocked until transcript-to-genome mapping is justified.

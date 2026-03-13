@@ -6,7 +6,7 @@
 - [x] 1.3 Define required transformation metadata fields (`parse_status`, `source_artifact_*`, `liftover_status`, `norm_status`, tool versions) and remove any remaining downstream BigQuery dependency from active plans/specs. (`7693bb7`)
 
 ## Phase 2: Genome Build Standardization (LiftOver)
-- [ ] 2.1 Identify any sources not already GRCh38 and document their `source_build`.
+- [x] 2.1 Identify any sources not already GRCh38 and document their `source_build`. (`eb740c5`)
 - [ ] 2.2 Implement liftover workflow and stage results as Parquet in GCS.
 - [ ] 2.3 Produce a liftover report (success count, failure count, failure examples).
 
