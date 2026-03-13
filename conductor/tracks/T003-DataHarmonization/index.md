@@ -104,3 +104,23 @@ Do not rewrite previous entries.
 - Files changed: `conductor/index.md`, `conductor/source-readiness.md`, `conductor/checkpoints/2026-03-13-t003-source-readiness-review.md`, `scripts/freeze_arab_study_sources.py`, `scripts/update_source_review_state.py`, `tests/test_source_review_state.py`, `tests/test_ui_service.py`, `ui/app.js`, `ui/index.html`, `ui/service.py`, `ui/source_review.json`, `ui/source_review.py`, `ui/styles.css`
 - Verification run + result: `python3 scripts/update_source_review_state.py (pass)`, `python3 -m py_compile scripts/update_source_review_state.py ui/source_review.py ui/service.py (pass)`, `python3 -m pytest -q tests (61 passed)`, `node --check ui/app.js (pass)`, `Playwright browser check on http://127.0.0.1:8082/?v=2#harmonization (pass: workflow categories rendered, source-review cards showed source version + raw-vault evidence, checkpoint cards preferred GCS artifact refs, frozen sample preview loaded)`
 - Next exact action: Start task `2.2` in `conductor/tracks/T003-DataHarmonization/plan.md` and implement the first coordinate-aware normalization path for `gme_hg38` plus row-validated `uae_brca_pmc12011969`, while keeping `saudi_breast_cancer_pmc10474689` blocked until transcript-to-genome mapping is justified.
+
+### Entry 11
+- Timestamp: `2026-03-13T12:40:00+03:00`
+- Agent: `Codex`
+- Task ID: `2.2`
+- Status: `Started`
+- Summary: Starting Arab-source triage before any new liftover or normalization work. The immediate goal is to verify candidate Arab frequency datasets against their published source pages, separate large reusable frequency resources from small study supplements, and avoid duplicate or weak sources before freezing anything new.
+- Files changed: `conductor/tracks/T003-DataHarmonization/plan.md`, `conductor/tracks/T003-DataHarmonization/index.md`
+- Verification run + result: `state update only before implementation`
+- Next exact action: Inspect the local `shgp`, `uae`, and `arab_studies` source files, verify their source pages and publication dates, then build a keep/exclude shortlist grounded in scientific utility and provenance quality.
+
+### Entry 12
+- Timestamp: `2026-03-13T13:10:00+03:00`
+- Agent: `Codex`
+- Task ID: `2.2`
+- Status: `Started`
+- Summary: Recorded an Arab frequency-source triage checkpoint before freezing any new inputs. Verified that the local Saudi SHGP file is a large population-frequency table worth onboarding next, while AVDB is a smaller GRCh37 curated subset and the Saudi/UAE study supplements are not valid frequency-layer inputs.
+- Files changed: `conductor/index.md`, `conductor/checkpoints/2026-03-13-t003-arab-frequency-source-triage.md`, `conductor/tracks/T003-DataHarmonization/index.md`
+- Verification run + result: `local file profiling (pass: SHGP rows=25,488,982; AVDB rows=801; UAE study positives=83; Saudi study rows=38)`, `web verification (pass: SHGP Figshare DOI/date captured; Almena site online with 26M-variant statement; Emirati Population Variome verified as controlled-access EGA candidate)`
+- Next exact action: Freeze `SHGP` into the raw-vault and decide whether `AVDB` merits a dedicated GRCh37->GRCh38 conversion path or should stay as a secondary manual-reference source.

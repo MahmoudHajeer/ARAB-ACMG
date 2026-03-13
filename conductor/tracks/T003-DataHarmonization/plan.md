@@ -7,7 +7,7 @@
 
 ## Phase 2: Genome Build Standardization (LiftOver)
 - [x] 2.1 Identify any sources not already GRCh38 and document their `source_build`. (`eb740c5`)
-- [ ] 2.2 Implement liftover workflow and stage results as Parquet in GCS.
+- [~] 2.2 Implement liftover workflow and stage results as Parquet in GCS.
 - [ ] 2.3 Produce a liftover report (success count, failure count, failure examples).
 
 ## Phase 3: Variant Normalization
