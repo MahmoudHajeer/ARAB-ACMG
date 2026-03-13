@@ -7,10 +7,12 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse, RedirectResponse, Response
 
 try:  # pragma: no cover - import path differs between local package and Cloud Run container
+    from ui.controlled_access import load_controlled_access_payload
     from ui.overview_data import load_overview_payload as load_bundled_or_live_overview_payload
     from ui.review_bundle import load_review_bundle
     from ui.source_review import load_source_review_payload
 except ModuleNotFoundError:  # pragma: no cover - runtime fallback inside the ui/ build context
+    from controlled_access import load_controlled_access_payload  # type: ignore[no-redef]
     from overview_data import load_overview_payload as load_bundled_or_live_overview_payload  # type: ignore[no-redef]
     from review_bundle import load_review_bundle  # type: ignore[no-redef]
     from source_review import load_source_review_payload  # type: ignore[no-redef]
@@ -50,6 +52,11 @@ def bundle_file() -> FileResponse:
     return FileResponse(UI_ROOT / "review_bundle.json", headers=NO_STORE_HEADERS)
 
 
+@app.get("/controlled_access.json")
+def controlled_access_file() -> FileResponse:
+    return FileResponse(UI_ROOT / "controlled_access.json", headers=NO_STORE_HEADERS)
+
+
 @app.get("/favicon.ico")
 def favicon() -> Response:
     return Response(status_code=204)
@@ -75,6 +82,12 @@ def workflow_meta() -> dict[str, object]:
 @app.get("/api/source-review")
 def source_review() -> dict[str, object]:
     return load_source_review_payload()
+
+
+# [AI-Agent: Codex]: API Group 1b / Controlled-access roadmap - static official guidance for datasets that still require provider approval.
+@app.get("/api/controlled-access")
+def controlled_access() -> dict[str, object]:
+    return load_controlled_access_payload()
 
 
 # [AI-Agent: Codex]: API Group 2 / Raw source evidence - frozen previews of the untouched source-of-truth tables only.

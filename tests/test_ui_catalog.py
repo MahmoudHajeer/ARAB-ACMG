@@ -37,3 +37,4 @@ def test_registry_catalog_payload_exposes_required_and_extra_columns():
     assert "CREATE OR REPLACE TABLE" in payload["build_sql"]
     assert any(column["name"] == "CHROM" for column in payload["columns"])
     assert any(column["name"] == "GME_AF" and column["kind"] == "extra" for column in payload["columns"])
+    assert any(column["name"] == "GME_ISRAEL" and column["kind"] == "context_extra" for column in payload["columns"])

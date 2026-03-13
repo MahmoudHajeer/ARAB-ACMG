@@ -259,11 +259,13 @@ def registry_catalog_payload() -> dict[str, object]:
             "The first columns stay aligned to the requested publication-facing header.",
             "GME is added only after the pre-GME checkpoint exists and can be reviewed independently.",
             "Extra columns remain visually distinguished from the required floor.",
+            "GME_ISRAEL, GME_TP, and GME_CA are kept only as upstream context extras, not as core Arab-analysis outputs.",
         ],
         "scientific_notes": [
             "GNOMAD_ALL_AF and GNOMAD_MID_AF are derived from the currently loaded genomes + exomes cohorts, not from a hidden external merged table.",
             "Fields such as TOPMED, ALFA, OMIM, JGP, and in-silico predictors remain NULL until those sources are added explicitly.",
             "The final checkpoint is the only durable harmonized output after GME integration.",
+            "Broader regional GME subgroup fields can support QC or sensitivity analysis, but they should be dropped from a publication-facing export if they do not answer a declared research question.",
         ],
         "columns": column_payload(final_columns()),
         "steps": list(FINAL_STEPS),

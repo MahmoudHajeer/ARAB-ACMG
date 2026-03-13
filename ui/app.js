@@ -1,5 +1,12 @@
 const DEFAULT_PAGE = "overview";
-const KNOWN_PAGE_IDS = new Set(["overview", "raw", "harmonization", "pre-gme", "final"]);
+const EXTRA_WORKFLOW_PAGES = [
+  {
+    id: "access",
+    title: "Controlled Access",
+    summary: "Official access paths for large Arab datasets that still require provider approval.",
+  },
+];
+const KNOWN_PAGE_IDS = new Set(["overview", "raw", "harmonization", "access", "pre-gme", "final"]);
 const resourceCache = new Map();
 const inflightRequests = new Map();
 const renderedPages = new Set();
@@ -55,6 +62,12 @@ async function fetchResource(key, path) {
 
   inflightRequests.set(key, request);
   return request;
+}
+
+function workflowPages() {
+  const basePages = workflowPayload?.pages || [];
+  const seen = new Set(basePages.map((page) => page.id));
+  return [...basePages, ...EXTRA_WORKFLOW_PAGES.filter((page) => !seen.has(page.id))];
 }
 
 function currentPageId() {
@@ -113,6 +126,22 @@ function renderWorkflowMap(pages) {
     `
     )
     .join("");
+}
+
+function renderLinkList(links) {
+  return `
+    <div class="link-list">
+      ${links
+        .map(
+          (link) => `
+          <a class="action-button secondary-link compact-link" href="${escapeHtml(link.url)}" target="_blank" rel="noreferrer">
+            ${escapeHtml(link.label)}
+          </a>
+        `
+        )
+        .join("")}
+    </div>
+  `;
 }
 
 // [AI-Agent: Codex]: Review Stage A - explain the harmonization workflow as explicit scientific gates so the supervisor can audit each decision boundary.
@@ -293,6 +322,86 @@ function renderSourceEvidenceList(source) {
     ...source.notes,
   ];
   return renderNoteStack(evidenceLines);
+}
+
+// [AI-Agent: Codex]: Review Stage C - controlled-access cards separate approved public data from high-value datasets that still need DAC or portal approval.
+function renderControlledAccess(payload) {
+  const guidesRoot = document.getElementById("controlled-access-guides");
+  const sourcesRoot = document.getElementById("controlled-access-sources");
+  const browseRoot = document.getElementById("controlled-access-browse-only");
+
+  guidesRoot.innerHTML = payload.process_guides
+    .map(
+      (guide) => `
+      <article class="workflow-card scientific-card">
+        <div class="workflow-step">${escapeHtml(guide.key.toUpperCase())}</div>
+        <div class="workflow-title">${escapeHtml(guide.title)}</div>
+        <p class="workflow-summary">${escapeHtml(guide.why_it_exists)}</p>
+        <details class="details-card" open>
+          <summary>Exact steps</summary>
+          ${renderNoteStack(guide.steps)}
+        </details>
+        <details class="details-card">
+          <summary>Official links</summary>
+          ${renderLinkList(guide.official_links)}
+        </details>
+        <div class="metric-sub">${escapeHtml(guide.source_note)}</div>
+      </article>
+    `
+    )
+    .join("");
+
+  sourcesRoot.innerHTML = payload.sources
+    .map(
+      (source) => `
+      <article class="explorer-card scientific-source-card">
+        <div class="card-head">
+          <div>
+            <div class="sample-title">${escapeHtml(source.display_name)}</div>
+            <div class="metric-sub">${escapeHtml(source.country_or_region)} • ${escapeHtml(source.priority.replaceAll("_", " "))}</div>
+            <div class="metric-sub">${escapeHtml(source.access_model.replaceAll("_", " "))}</div>
+          </div>
+          <div class="review-pill partial">${escapeHtml(source.process_guide.toUpperCase())}</div>
+        </div>
+        <div class="scientific-matrix">
+          <div><strong>What data</strong><span>${escapeHtml(source.data_scope)}</span></div>
+          <div><strong>Why it matters</strong><span>${escapeHtml(source.why_we_need_it)}</span></div>
+          <div><strong>Release evidence</strong><span>${escapeHtml(source.official_release_evidence)}</span></div>
+          <div><strong>Build note</strong><span>${escapeHtml(source.build_or_coordinate_note)}</span></div>
+        </div>
+        <details class="details-card" open>
+          <summary>How to get access</summary>
+          ${renderNoteStack(source.access_steps)}
+        </details>
+        <details class="details-card">
+          <summary>Official source links</summary>
+          ${renderLinkList(source.official_links)}
+        </details>
+        <details class="details-card">
+          <summary>Decision for this project</summary>
+          <div class="metric-sub">${escapeHtml(source.practical_decision)}</div>
+        </details>
+      </article>
+    `
+    )
+    .join("");
+
+  browseRoot.innerHTML = payload.browse_only_sources
+    .map(
+      (source) => `
+      <article class="explorer-card">
+        <div class="card-head">
+          <div>
+            <div class="sample-title">${escapeHtml(source.display_name)}</div>
+            <div class="metric-sub">${escapeHtml(source.status.replaceAll("_", " "))}</div>
+          </div>
+          <a class="action-button secondary-link compact-link" href="${escapeHtml(source.url)}" target="_blank" rel="noreferrer">Open source</a>
+        </div>
+        <p class="card-summary">${escapeHtml(source.summary)}</p>
+      </article>
+    `
+    )
+    .join("");
 }
 
 // [AI-Agent: Codex]: Review Stage B - render one source card per dataset so build readiness, coordinate readiness, and next action remain visible together.
@@ -603,7 +712,7 @@ function renderOverviewPage() {
   renderStatusCards(overviewPayload.track_status_counts);
   renderTrackGrid(overviewPayload);
   renderRuntimeResults(overviewPayload.latest_t002_verification);
-  renderWorkflowMap(workflowPayload.pages);
+  renderWorkflowMap(workflowPages());
 }
 
 async function loadShellData() {
@@ -614,7 +723,7 @@ async function loadShellData() {
 
   overviewPayload = overview;
   workflowPayload = workflow;
-  renderWorkflowNav(workflow.pages);
+  renderWorkflowNav(workflowPages());
   renderOverviewHeader(overview);
 }
 
@@ -707,6 +816,28 @@ async function loadHarmonizationPage() {
   renderedPages.add("harmonization");
 }
 
+async function loadAccessPage() {
+  if (renderedPages.has("access")) {
+    return;
+  }
+
+  setLoading("controlled-access-summary", "Loading controlled-access summary...");
+  setLoading("controlled-access-guides", "Loading official process guides...");
+  setLoading("controlled-access-sources", "Loading source-specific access cards...");
+  setLoading("controlled-access-browse-only", "Loading browse-only notes...");
+
+  const payload = await fetchResource("controlled-access", "/api/controlled-access");
+  document.getElementById("controlled-access-summary").innerHTML = `
+    <article class="metric-item">
+      <div class="metric-title">Controlled-access acquisition roadmap</div>
+      <div class="metric-sub">${escapeHtml(payload.scope_note)}</div>
+      ${renderNoteStack([payload.decision_note])}
+    </article>
+  `;
+  renderControlledAccess(payload);
+  renderedPages.add("access");
+}
+
 async function loadPreGmePage() {
   if (renderedPages.has("pre-gme")) {
     return;
@@ -745,6 +876,10 @@ async function loadActivePage(pageId) {
       await loadHarmonizationPage();
       return;
     }
+    if (pageId === "access") {
+      await loadAccessPage();
+      return;
+    }
     if (pageId === "pre-gme") {
       await loadPreGmePage();
       return;
@@ -760,6 +895,12 @@ async function loadActivePage(pageId) {
       setError("harmonization-science", error);
       setError("harmonized-dataset-explorer", error);
       setError("harmonization-steps", error);
+    }
+    if (pageId === "access") {
+      setError("controlled-access-summary", error);
+      setError("controlled-access-guides", error);
+      setError("controlled-access-sources", error);
+      setError("controlled-access-browse-only", error);
     }
     if (pageId === "pre-gme") setError("pre-gme-meta", error);
     if (pageId === "final") {

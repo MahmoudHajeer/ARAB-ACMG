@@ -70,11 +70,13 @@ FINAL_GME_EXTRA_COLUMNS: Final[tuple[tuple[str, str], ...]] = (
     ("GME_NWA", "GME North West Africa subgroup frequency."),
     ("GME_NEA", "GME North East Africa subgroup frequency."),
     ("GME_AP", "GME Arabian Peninsula subgroup frequency."),
-    ("GME_ISRAEL", "GME Israel/Jewish subgroup frequency."),
+    ("GME_ISRAEL", "Upstream GME Israel/Jewish subgroup frequency kept only as broader regional context; not a core Arab endpoint."),
     ("GME_SD", "GME Syrian Desert subgroup frequency."),
-    ("GME_TP", "GME Turkish Peninsula subgroup frequency."),
-    ("GME_CA", "GME Central Asia subgroup frequency."),
+    ("GME_TP", "Upstream GME Turkish Peninsula subgroup frequency kept only as broader regional context; not a core Arab endpoint."),
+    ("GME_CA", "Upstream GME Central Asia subgroup frequency kept only as broader regional context; not a core Arab endpoint."),
 )
+
+CONTEXT_EXTRA_COLUMNS: Final[set[str]] = {"GME_ISRAEL", "GME_TP", "GME_CA"}
 
 
 def pre_gme_columns() -> tuple[tuple[str, str], ...]:
@@ -91,7 +93,11 @@ def column_payload(columns: tuple[tuple[str, str], ...]) -> list[dict[str, str]]
         {
             "name": name,
             "description": description,
-            "kind": "required" if name in required_names else "extra",
+            "kind": (
+                "required"
+                if name in required_names
+                else "context_extra" if name in CONTEXT_EXTRA_COLUMNS else "extra"
+            ),
         }
         for name, description in columns
     ]

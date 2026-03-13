@@ -117,6 +117,48 @@ def sample_source_review():
     }
 
 
+def sample_controlled_access():
+    return {
+        "generated_at": "2026-03-13T10:00:00+00:00",
+        "scope_note": "Controlled datasets still need approval.",
+        "decision_note": "Priority favors scale and coordinate readiness.",
+        "process_guides": [
+            {
+                "key": "ega",
+                "title": "EGA controlled-access workflow",
+                "official_links": [{"label": "EGA register", "url": "https://ega-archive.org/register/"}],
+                "steps": ["Create account", "Request access"],
+                "source_note": "Official EGA guide",
+            }
+        ],
+        "sources": [
+            {
+                "key": "emirati_population_variome",
+                "display_name": "Emirati Population Variome",
+                "country_or_region": "UAE",
+                "priority": "priority_1",
+                "access_model": "controlled_access",
+                "process_guide": "ega",
+                "data_scope": "GRCh38 WGS",
+                "why_we_need_it": "Large Arab AF source",
+                "official_release_evidence": "Published 2025-07-18",
+                "build_or_coordinate_note": "GRCh38 public metadata",
+                "official_links": [{"label": "Study", "url": "https://ega-archive.org/studies/EGAS50000001071/"}],
+                "access_steps": ["Register", "Request access"],
+                "practical_decision": "Priority dataset",
+            }
+        ],
+        "browse_only_sources": [
+            {
+                "display_name": "Almena",
+                "status": "browse_only",
+                "summary": "Manual cross-check only",
+                "url": "https://clingen.igib.res.in/almena/",
+            }
+        ],
+    }
+
+
 def test_index_route_disables_cache():
     response = client.get("/")
 
@@ -150,6 +192,17 @@ def test_source_review_route_returns_frozen_payload(monkeypatch):
     payload = response.json()
     assert payload["workflow_categories"][0]["id"] == "raw_freeze"
     assert payload["sources"][0]["display_name"] == "ClinVar GRCh38 VCF"
+
+
+def test_controlled_access_route_returns_frozen_payload(monkeypatch):
+    monkeypatch.setattr(service, "load_controlled_access_payload", sample_controlled_access)
+
+    response = client.get("/api/controlled-access")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["process_guides"][0]["key"] == "ega"
+    assert payload["sources"][0]["display_name"] == "Emirati Population Variome"
 
 
 def test_overview_route_returns_payload(monkeypatch):

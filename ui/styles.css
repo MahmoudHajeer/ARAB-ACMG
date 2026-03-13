@@ -552,6 +552,11 @@ h1 {
   background: linear-gradient(180deg, rgba(214, 44, 44, 0.04), rgba(255, 255, 255, 1));
 }
 
+.glossary-item.context_extra {
+  border-left: 4px solid #8f6a1f;
+  background: linear-gradient(180deg, rgba(143, 106, 31, 0.06), rgba(255, 255, 255, 1));
+}
+
 .column-kind {
   display: inline-flex;
   align-items: center;
@@ -569,6 +574,11 @@ h1 {
 .column-kind.extra {
   background: rgba(214, 44, 44, 0.12);
   color: var(--red);
+}
+
+.column-kind.context_extra {
+  background: rgba(143, 106, 31, 0.12);
+  color: #8f6a1f;
 }
 
 .action-row {
@@ -624,6 +634,19 @@ h1 {
   opacity: 0.72;
   cursor: wait;
   box-shadow: none;
+}
+
+.link-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.compact-link {
+  min-height: 38px;
+  padding: 8px 12px;
+  font-size: 0.92rem;
 }
 
 .header-preview-grid {

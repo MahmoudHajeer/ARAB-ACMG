@@ -2539,8 +2539,8 @@
           },
           {
             "name": "GME_ISRAEL",
-            "description": "GME Israel/Jewish subgroup frequency.",
-            "kind": "extra"
+            "description": "Upstream GME Israel/Jewish subgroup frequency kept only as broader regional context; not a core Arab endpoint.",
+            "kind": "context_extra"
           },
           {
             "name": "GME_SD",
@@ -2549,13 +2549,13 @@
           },
           {
             "name": "GME_TP",
-            "description": "GME Turkish Peninsula subgroup frequency.",
-            "kind": "extra"
+            "description": "Upstream GME Turkish Peninsula subgroup frequency kept only as broader regional context; not a core Arab endpoint.",
+            "kind": "context_extra"
           },
           {
             "name": "GME_CA",
-            "description": "GME Central Asia subgroup frequency.",
-            "kind": "extra"
+            "description": "Upstream GME Central Asia subgroup frequency kept only as broader regional context; not a core Arab endpoint.",
+            "kind": "context_extra"
           }
         ],
         "storage_ref": "gs://mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/final/supervisor_variant_registry_brca_v1.parquet",
@@ -4478,12 +4478,14 @@
     "accuracy_notes": [
       "The first columns stay aligned to the requested publication-facing header.",
       "GME is added only after the pre-GME checkpoint exists and can be reviewed independently.",
-      "Extra columns remain visually distinguished from the required floor."
+      "Extra columns remain visually distinguished from the required floor.",
+      "GME_ISRAEL, GME_TP, and GME_CA are kept only as upstream context extras, not as core Arab-analysis outputs."
     ],
     "scientific_notes": [
       "GNOMAD_ALL_AF and GNOMAD_MID_AF are derived from the currently loaded genomes + exomes cohorts, not from a hidden external merged table.",
       "Fields such as TOPMED, ALFA, OMIM, JGP, and in-silico predictors remain NULL until those sources are added explicitly.",
-      "The final checkpoint is the only durable harmonized output after GME integration."
+      "The final checkpoint is the only durable harmonized output after GME integration.",
+      "Broader regional GME subgroup fields can support QC or sensitivity analysis, but they should be dropped from a publication-facing export if they do not answer a declared research question."
     ],
     "columns": [
       {
@@ -4793,8 +4795,8 @@
       },
       {
         "name": "GME_ISRAEL",
-        "description": "GME Israel/Jewish subgroup frequency.",
-        "kind": "extra"
+        "description": "Upstream GME Israel/Jewish subgroup frequency kept only as broader regional context; not a core Arab endpoint.",
+        "kind": "context_extra"
       },
       {
         "name": "GME_SD",
@@ -4803,13 +4805,13 @@
       },
       {
         "name": "GME_TP",
-        "description": "GME Turkish Peninsula subgroup frequency.",
-        "kind": "extra"
+        "description": "Upstream GME Turkish Peninsula subgroup frequency kept only as broader regional context; not a core Arab endpoint.",
+        "kind": "context_extra"
       },
       {
         "name": "GME_CA",
-        "description": "GME Central Asia subgroup frequency.",
-        "kind": "extra"
+        "description": "Upstream GME Central Asia subgroup frequency kept only as broader regional context; not a core Arab endpoint.",
+        "kind": "context_extra"
       }
     ],
     "steps": [

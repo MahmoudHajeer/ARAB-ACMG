@@ -11,6 +11,7 @@ This index serves as the entry point to all project documentation and tracking.
 - **Source Freeze Register**: [conductor/source-freeze.md](./source-freeze.md)
 - **Source Readiness Review**: [conductor/source-readiness.md](./source-readiness.md)
 - **Arab Frequency Candidate Triage**: [conductor/checkpoints/2026-03-13-t003-arab-frequency-source-triage.md](./checkpoints/2026-03-13-t003-arab-frequency-source-triage.md)
+- **Controlled-Access Roadmap**: [conductor/checkpoints/2026-03-13-t003-controlled-access-roadmap.md](./checkpoints/2026-03-13-t003-controlled-access-roadmap.md)
 - **Data Collection Roadmap**: [Data collection.MD](../Data%20collection.MD)
 - **AI Collaboration Protocol**: [conductor/ai-collaboration.md](./ai-collaboration.md)
 

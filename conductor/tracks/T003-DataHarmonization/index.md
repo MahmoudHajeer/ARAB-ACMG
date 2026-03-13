@@ -124,3 +124,13 @@ Do not rewrite previous entries.
 - Files changed: `conductor/index.md`, `conductor/checkpoints/2026-03-13-t003-arab-frequency-source-triage.md`, `conductor/tracks/T003-DataHarmonization/index.md`
 - Verification run + result: `local file profiling (pass: SHGP rows=25,488,982; AVDB rows=801; UAE study positives=83; Saudi study rows=38)`, `web verification (pass: SHGP Figshare DOI/date captured; Almena site online with 26M-variant statement; Emirati Population Variome verified as controlled-access EGA candidate)`
 - Next exact action: Freeze `SHGP` into the raw-vault and decide whether `AVDB` merits a dedicated GRCh37->GRCh38 conversion path or should stay as a secondary manual-reference source.
+
+### Entry 13
+- Timestamp: `2026-03-13T15:55:00+03:00`
+- Agent: `Codex`
+- Task ID: `2.2`
+- Status: `Started`
+- Summary: Added a frozen controlled-access roadmap to the supervisor UI using official EGA and QPHI process pages, and clarified that non-Arab GME subgroup columns are context-only extras rather than core Arab-analysis outputs. The UI remains static and does not introduce new analytical runtime cost.
+- Files changed: `ui/app.js`, `ui/index.html`, `ui/styles.css`, `ui/service.py`, `ui/controlled_access.py`, `ui/controlled_access.json`, `ui/review_bundle.json`, `ui/schema_columns.py`, `ui/catalog.py`, `scripts/update_controlled_access_state.py`, `tests/test_ui_service.py`, `tests/test_ui_catalog.py`, `tests/test_controlled_access_state.py`, `conductor/checkpoints/2026-03-13-t003-controlled-access-roadmap.md`, `conductor/index.md`
+- Verification run + result: `python3 scripts/update_controlled_access_state.py (pass)`, `python3 -m pytest -q tests (63 passed)`, `python3 -m py_compile ui/service.py ui/controlled_access.py scripts/update_controlled_access_state.py (pass)`, `node --check ui/app.js (pass)`, `local browser check on http://127.0.0.1:8090/#access (pass)`, `gcloud run deploy supervisor-ui --source ui --region europe-west1 --project genome-services-platform --allow-unauthenticated --quiet (pass: revision supervisor-ui-00023-qdr)`, `live API checks (pass: /api/controlled-access, /api/registry context_extra labels)`
+- Next exact action: Continue `2.2` by freezing the SHGP source with provenance metadata and deciding whether AVDB should enter a dedicated GRCh37-to-GRCh38 conversion path or remain a secondary manual-reference source.

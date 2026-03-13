@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-13T09:11:20.453988+00:00",
+  "generated_at": "2026-03-13T12:38:22.044954+00:00",
   "tracks": [
     {
       "track_id": "T001",
@@ -62,10 +62,10 @@
     "T003": {
       "total_tasks": 14,
       "done_tasks": 6,
-      "in_progress_tasks": 0,
-      "todo_tasks": 8,
+      "in_progress_tasks": 1,
+      "todo_tasks": 7,
       "done_pct": 42.9,
-      "progress_pct": 42.9
+      "progress_pct": 46.4
     },
     "T004": {
       "total_tasks": 11,
@@ -99,5 +99,5 @@
       "status": "pass"
     }
   ],
-  "last_successful_step": "T003 step 2.1 finalized on 2026-03-13: scientific source-readiness review is now frozen in the supervisor UI and source-review documentation. ClinVar and gnomAD genomes/exomes are ready without liftover, GME is partial but hg38-ready for canonical-key work, UAE PMC12011969 is partial pending row-level coordinate parsing, and Saudi PMC10474689 remains blocked until transcript-to-genome mapping is justified. T003 task 2.2 is next."
+  "last_successful_step": "T003 step 2.2 checkpoint recorded on 2026-03-13: the supervisor UI now includes a frozen controlled-access roadmap grounded in official EGA and QPHI application pages, and non-Arab GME subgroup columns are explicitly labeled as context-only extras in the final checkpoint glossary. T003 task 2.2 remains in progress; SHGP freeze and the AVDB path decision are next."
 }
