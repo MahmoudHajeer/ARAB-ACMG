@@ -44,9 +44,9 @@
     </section>
 
     <section class="panel page-panel" data-page="harmonization">
-      <h2>Harmonization</h2>
+      <h2>Normalization</h2>
       <p class="panel-note">
-        This page shows the BRCA scientific method, the frozen gene windows, and the direct raw-to-checkpoint extraction logic. It now also makes explicit which sources are only frozen raw evidence, which ones already feed the current BRCA final checkpoint, and which ones are waiting for the next Arab-extended checkpoint. The evidence below is frozen from the last approved build and no longer queries BigQuery at runtime.
+        This page shows the BRCA scientific method, the frozen gene windows, and the explicit source-by-source normalization workflow. It also makes clear which sources are active checkpoint inputs, which ones are supporting only, and which ones remain blocked or reference-only. The evidence below is frozen from the last approved build and no longer queries BigQuery at runtime.
       </p>
       <h3 class="subheading">Workflow Categories</h3>
       <div id="workflow-categories" class="workflow-map"></div>
@@ -77,7 +77,7 @@
     <section class="panel page-panel" data-page="pre-gme">
       <h2>Pre-GME Review</h2>
       <p class="panel-note">
-        This checkpoint is the last full review stage before GME is added. Its metadata and samples are frozen for low-cost review; no live export is exposed from this page anymore.
+        This checkpoint is the Arab-aware BRCA table before GME is added. Its metadata and samples are frozen for low-cost review; no live export is exposed from this page anymore.
       </p>
       <div id="pre-gme-meta" class="registry-meta"></div>
       <div class="action-row">
@@ -97,7 +97,7 @@
         <div id="pre-gme-columns" class="glossary-grid"></div>
       </details>
       <details class="details-card">
-        <summary>Pre-GME build SQL</summary>
+        <summary>Pre-GME build logic</summary>
         <pre id="pre-gme-build-sql" class="sql-box"></pre>
       </details>
     </section>
@@ -120,7 +120,7 @@
         <div id="registry-columns" class="glossary-grid"></div>
       </details>
       <details class="details-card">
-        <summary>Final build SQL</summary>
+        <summary>Final build logic</summary>
         <pre id="registry-build-sql" class="sql-box"></pre>
       </details>
     </section>

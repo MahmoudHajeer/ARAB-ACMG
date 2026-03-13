@@ -16,8 +16,8 @@ def _trace_card(*, input_surface: str, operation: str, count_basis: str, display
 def _raw_dataset_trace(entry: dict[str, Any], frozen_at: str, bundle_uri: str) -> dict[str, str]:
     return _trace_card(
         input_surface=str(entry.get("table_ref", "raw table ref not recorded")),
-        operation="No transformation. This card shows the untouched raw source before any BRCA filtering or normalization.",
-        count_basis=f"Frozen raw-table row count captured in the review bundle on {frozen_at}.",
+        operation="No transformation. This card shows the frozen raw source package or BRCA-window raw extract before any normalization.",
+        count_basis=f"Frozen raw-source row count or BRCA-window raw count captured in the review bundle on {frozen_at}.",
         display_basis=f"Displayed from {bundle_uri}; the 10-row sample is the frozen sample stored in the bundle.",
     )
 
@@ -32,16 +32,16 @@ def _checkpoint_dataset_trace(entry: dict[str, Any], frozen_at: str, bundle_uri:
     )
     return _trace_card(
         input_surface=storage_ref,
-        operation=f"Checkpoint artifact only. The card shows a frozen BRCA checkpoint instead of rerunning the build.{historical_note}",
-        count_basis=f"Frozen checkpoint row count captured in the review bundle on {frozen_at}.",
-        display_basis=f"Displayed from {bundle_uri}; the 10-row sample comes from the frozen checkpoint sample stored in the bundle.",
+        operation=f"Frozen artifact only. The card shows a persisted normalized source artifact or checkpoint instead of rerunning the build.{historical_note}",
+        count_basis=f"Frozen artifact row count captured in the review bundle on {frozen_at}.",
+        display_basis=f"Displayed from {bundle_uri}; the 10-row sample comes from the frozen artifact sample stored in the bundle.",
     )
 
 
 def _pre_gme_trace(payload: dict[str, Any], frozen_at: str, bundle_uri: str) -> dict[str, str]:
     return _trace_card(
-        input_surface="ClinVar raw + gnomAD genomes raw + gnomAD exomes raw",
-        operation="Filter to BRCA1/BRCA2 windows, split ALT alleles, parse source-backed fields, and materialize the mandated publication-facing header.",
+        input_surface="Normalized ClinVar + normalized gnomAD genomes + normalized gnomAD exomes + normalized SHGP",
+        operation="Join canonical variant keys from the normalized source artifacts and materialize the mandated publication-facing header before any GME layer is added.",
         count_basis=f"Frozen pre-GME checkpoint row count captured on {frozen_at}.",
         display_basis=f"Displayed from {bundle_uri}; preview rows come from the frozen pre-GME checkpoint sample.",
     )
@@ -49,7 +49,7 @@ def _pre_gme_trace(payload: dict[str, Any], frozen_at: str, bundle_uri: str) -> 
 
 def _registry_trace(payload: dict[str, Any], frozen_at: str, bundle_uri: str) -> dict[str, str]:
     return _trace_card(
-        input_surface="Pre-GME checkpoint + GME raw summary table",
+        input_surface="Pre-GME Arab checkpoint + normalized GME",
         operation="Preserve the pre-GME checkpoint, then add GME-derived Arab frequency extras without reordering the required header floor.",
         count_basis=f"Frozen final-checkpoint row count captured on {frozen_at}.",
         display_basis=f"Displayed from {bundle_uri}; preview rows come from the frozen final checkpoint sample and the downloadable CSV is served from GCS.",
@@ -58,11 +58,12 @@ def _registry_trace(payload: dict[str, Any], frozen_at: str, bundle_uri: str) ->
 
 def _step_trace(step: dict[str, Any], frozen_at: str, bundle_uri: str) -> dict[str, str]:
     source_hint = {
-        "clinvar_raw_brca": "ClinVar raw table",
-        "gnomad_genomes_raw_brca": "gnomAD genomes raw tables (chr13 + chr17)",
-        "gnomad_exomes_raw_brca": "gnomAD exomes raw tables (chr13 + chr17)",
+        "clinvar_normalized_brca": "ClinVar BRCA normalized artifact",
+        "gnomad_genomes_normalized_brca": "gnomAD genomes BRCA normalized artifact",
+        "gnomad_exomes_normalized_brca": "gnomAD exomes BRCA normalized artifact",
+        "shgp_normalized_brca": "SHGP BRCA normalized artifact",
         "pre_gme_checkpoint": "Pre-GME checkpoint artifact",
-        "gme_raw_brca": "GME raw summary table + final checkpoint context",
+        "gme_normalized_brca": "GME BRCA normalized artifact",
         "final_checkpoint": "Final checkpoint artifact",
     }.get(str(step.get("id")), "Frozen checkpoint artifact")
     return _trace_card(

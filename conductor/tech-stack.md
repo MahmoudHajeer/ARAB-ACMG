@@ -8,7 +8,8 @@
 
 ## Bioinformatics Tools (High-Performance)
 - **bcftools**: Essential for variant manipulation and VCF filtering.
-- **vt**: For normalization (multiallelic splitting and indel left-alignment).
+- **bcftools norm**: Default normalization engine for T003 because it is already available in the workstation/runtime and covers multiallelic splitting, left-alignment, and parsimonious trimming reproducibly.
+- **vt**: Optional fallback normalization tool only if a later source exposes a case that `bcftools norm` cannot handle cleanly.
 - **Ensembl VEP / Annovar**: For comprehensive variant annotation.
 - **cyvcf2 / pysam**: High-performance Python interfaces for reading VCF and BAM/SAM files.
 - **Hail**: (Optional) For large-scale genomic data analysis in Python/Spark, ideal for gnomAD-scale data.
