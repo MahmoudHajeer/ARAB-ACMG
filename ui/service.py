@@ -141,7 +141,7 @@ def pre_gme_sample() -> dict[str, object]:
     return sample
 
 
-# [AI-Agent: Codex]: API Group 4 / Final registry evidence - the only downloadable artifact left in the supervisor runtime.
+# [AI-Agent: Codex]: API Group 4 / Legacy baseline review - keep the historical registry under the original routes.
 @app.get("/api/registry")
 def registry_metadata() -> dict[str, object]:
     return review_bundle()["registry"]
@@ -157,7 +157,7 @@ def registry_sample() -> dict[str, object]:
 
 @app.get("/api/registry/steps/{step_id}/sample")
 def registry_step_sample(step_id: str) -> dict[str, object]:
-    step_payload = review_bundle()["step_samples"].get(step_id)
+    step_payload = review_bundle().get("legacy_step_samples", {}).get(step_id)
     if step_payload is None:
         raise HTTPException(status_code=404, detail=f"Unknown registry step: {step_id}")
     return {"step_id": step_id, **step_payload}
@@ -169,3 +169,52 @@ def registry_download_csv() -> RedirectResponse:
     if not download_url:
         raise HTTPException(status_code=404, detail="Final registry download is not configured.")
     return RedirectResponse(str(download_url), status_code=307)
+
+
+# [AI-Agent: Codex]: API Group 5 / Arab extension review - the SHGP/GME-aware checkpoints remain explicit and separate from the baseline.
+@app.get("/api/arab/pre-gme")
+def arab_pre_gme_metadata() -> dict[str, object]:
+    return review_bundle()["arab_pre_gme"]
+
+
+@app.get("/api/arab/pre-gme/sample")
+def arab_pre_gme_sample() -> dict[str, object]:
+    payload = review_bundle()["arab_pre_gme"]
+    sample = dict(payload["sample"])
+    sample["table_ref"] = payload["table_ref"]
+    return sample
+
+
+@app.get("/api/arab/registry")
+def arab_registry_metadata() -> dict[str, object]:
+    return review_bundle()["arab_registry"]
+
+
+@app.get("/api/arab/registry/sample")
+def arab_registry_sample() -> dict[str, object]:
+    payload = review_bundle()["arab_registry"]
+    sample = dict(payload["sample"])
+    sample["table_ref"] = payload["table_ref"]
+    return sample
+
+
+@app.get("/api/arab/steps/{step_id}/sample")
+def arab_registry_step_sample(step_id: str) -> dict[str, object]:
+    step_payload = review_bundle().get("arab_step_samples", {}).get(step_id)
+    if step_payload is None:
+        raise HTTPException(status_code=404, detail=f"Unknown Arab step: {step_id}")
+    return {"step_id": step_id, **step_payload}
+
+
+@app.get("/api/arab/registry/download.csv")
+def arab_registry_download_csv() -> RedirectResponse:
+    download_url = review_bundle()["arab_registry"].get("csv_download_url")
+    if not download_url:
+        raise HTTPException(status_code=404, detail="Arab final registry download is not configured.")
+    return RedirectResponse(str(download_url), status_code=307)
+
+
+# [AI-Agent: Codex]: API Group 6 / Structured artifact center - download URLs for every frozen derived artifact shown in the dashboard.
+@app.get("/api/artifacts")
+def artifact_catalog() -> dict[str, object]:
+    return review_bundle()["artifact_catalog"]

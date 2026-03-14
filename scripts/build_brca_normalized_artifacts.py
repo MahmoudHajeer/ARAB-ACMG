@@ -10,6 +10,7 @@ explicit and cheap:
    - pre-GME Arab checkpoint: ClinVar + gnomAD + SHGP
    - final Arab checkpoint: pre-GME + GME
 6. Refresh the frozen supervisor UI bundle so the review surface stays static.
+7. Re-compose the supervisor bundle so the legacy baseline stays separate from the Arab extension review.
 
 The script does not use BigQuery and it does not hide intermediate logic behind
 runtime queries. Every displayed number comes from the artifacts written here.
@@ -2100,8 +2101,8 @@ def main() -> None:
         source_review = build_source_review_json(sources=source_entries, decision_summary=build_decision_summary(source_entries))
         write_ui_files(review_bundle, source_review)
         update_overview_state()
+        subprocess.run(["python3", "scripts/refresh_supervisor_review_bundle.py"], check=True, cwd=ROOT)
 
-        upload_text(storage_client, f"frozen/review_bundle/snapshot_date={SNAPSHOT_DATE}/review_bundle.json", json.dumps(review_bundle, indent=2), content_type="application/json")
         upload_text(storage_client, f"frozen/review_bundle/snapshot_date={SNAPSHOT_DATE}/source_review.json", json.dumps(source_review, indent=2), content_type="application/json")
 
         print(json.dumps({

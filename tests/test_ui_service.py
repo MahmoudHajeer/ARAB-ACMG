@@ -12,7 +12,8 @@ def sample_bundle():
         "workflow": {
             "pages": [{"id": "overview", "title": "Overview", "summary": "Summary"}],
             "harmonization_steps": [{"id": "clinvar_raw_brca", "title": "Step 1", "simple": "Simple", "technical": "Tech"}],
-            "final_steps": [{"id": "final_checkpoint", "title": "Step 6", "simple": "Simple", "technical": "Tech"}],
+            "final_steps": [{"id": "legacy_final_checkpoint", "title": "Step 6", "simple": "Simple", "technical": "Tech"}],
+            "arab_extension_steps": [{"id": "final_checkpoint", "title": "Step 7", "simple": "Simple", "technical": "Tech"}],
         },
         "raw_datasets": {
             "datasets": [
@@ -49,6 +50,7 @@ def sample_bundle():
             "table_ref": "gs://bucket/pre_gme.parquet",
             "row_count": 77,
             "columns": [{"name": "CHROM", "kind": "required", "description": "chromosome"}],
+            "csv_download_url": "https://storage.googleapis.com/example/pre_gme.csv",
             "sample": {
                 "columns": ["sample_row_number", "GENE"],
                 "rows": [{"sample_row_number": 1, "GENE": "BRCA1"}],
@@ -67,12 +69,58 @@ def sample_bundle():
                 "query_sql": "SELECT * FROM final_sample",
             },
         },
-        "step_samples": {
+        "arab_pre_gme": {
+            "title": "supervisor_variant_registry_brca_arab_pre_gme_v2",
+            "table_ref": "gs://bucket/arab_pre_gme.parquet",
+            "row_count": 130,
+            "columns": [{"name": "CHROM", "kind": "required", "description": "chromosome"}],
+            "csv_download_url": "https://storage.googleapis.com/example/arab_pre_gme.csv",
+            "sample": {
+                "columns": ["sample_row_number", "GENE"],
+                "rows": [{"sample_row_number": 1, "GENE": "BRCA1"}],
+                "query_sql": "SELECT * FROM arab_pre_gme_sample",
+            },
+        },
+        "arab_registry": {
+            "title": "supervisor_variant_registry_brca_arab_v2",
+            "table_ref": "gs://bucket/arab_final.parquet",
+            "row_count": 140,
+            "columns": [{"name": "SHGP_AF", "kind": "extra", "description": "shgp"}],
+            "csv_download_url": "https://storage.googleapis.com/example/arab_final.csv",
+            "sample": {
+                "columns": ["sample_row_number", "GENE"],
+                "rows": [{"sample_row_number": 1, "GENE": "BRCA2"}],
+                "query_sql": "SELECT * FROM arab_final_sample",
+            },
+        },
+        "legacy_step_samples": {
+            "legacy_final_checkpoint": {
+                "columns": ["sample_row_number", "GENE"],
+                "rows": [{"sample_row_number": 1, "GENE": "BRCA1"}],
+                "query_sql": "SELECT * FROM legacy_step_sample",
+            }
+        },
+        "arab_step_samples": {
             "clinvar_raw_brca": {
                 "columns": ["sample_row_number", "GENE"],
                 "rows": [{"sample_row_number": 1, "GENE": "BRCA1"}],
                 "query_sql": "SELECT * FROM step_sample",
+            },
+            "final_checkpoint": {
+                "columns": ["sample_row_number", "GENE"],
+                "rows": [{"sample_row_number": 1, "GENE": "BRCA2"}],
+                "query_sql": "SELECT * FROM arab_step_sample",
             }
+        },
+        "artifact_catalog": {
+            "groups": [
+                {
+                    "id": "normalized_artifacts",
+                    "title": "Normalized artifacts",
+                    "summary": "summary",
+                    "entries": [],
+                }
+            ]
         },
     }
 
@@ -326,11 +374,11 @@ def test_registry_sample_route_returns_frozen_payload(monkeypatch):
 def test_registry_step_sample_route_returns_frozen_payload(monkeypatch):
     monkeypatch.setattr(service, "review_bundle", sample_bundle)
 
-    response = client.get("/api/registry/steps/clinvar_raw_brca/sample")
+    response = client.get("/api/registry/steps/legacy_final_checkpoint/sample")
 
     assert response.status_code == 200
     payload = response.json()
-    assert payload["step_id"] == "clinvar_raw_brca"
+    assert payload["step_id"] == "legacy_final_checkpoint"
     assert payload["rows"][0]["GENE"] == "BRCA1"
 
 
@@ -347,3 +395,43 @@ def test_removed_raw_download_route_is_not_exposed():
     response = client.get("/api/raw-datasets/clinvar_raw_vcf/download.csv")
 
     assert response.status_code == 404
+
+
+def test_arab_pre_gme_route_returns_frozen_payload(monkeypatch):
+    monkeypatch.setattr(service, "review_bundle", sample_bundle)
+
+    response = client.get("/api/arab/pre-gme")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["row_count"] == 130
+
+
+def test_arab_registry_download_route_redirects_to_static_csv(monkeypatch):
+    monkeypatch.setattr(service, "review_bundle", sample_bundle)
+
+    response = client.get("/api/arab/registry/download.csv", follow_redirects=False)
+
+    assert response.status_code == 307
+    assert response.headers["location"] == "https://storage.googleapis.com/example/arab_final.csv"
+
+
+def test_arab_step_sample_route_returns_frozen_payload(monkeypatch):
+    monkeypatch.setattr(service, "review_bundle", sample_bundle)
+
+    response = client.get("/api/arab/steps/final_checkpoint/sample")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["step_id"] == "final_checkpoint"
+    assert payload["rows"][0]["GENE"] == "BRCA2"
+
+
+def test_artifact_catalog_route_returns_static_groups(monkeypatch):
+    monkeypatch.setattr(service, "review_bundle", sample_bundle)
+
+    response = client.get("/api/artifacts")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["groups"][0]["id"] == "normalized_artifacts"

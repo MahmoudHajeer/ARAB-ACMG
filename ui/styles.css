@@ -184,6 +184,20 @@ h1 {
   box-shadow: var(--shadow-sm);
 }
 
+.inset-panel {
+  display: block;
+  margin: 0;
+  padding: 16px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(31, 167, 173, 0.04));
+}
+
+.arab-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 14px;
+}
+
 .page-panel.active {
   display: block;
 }
@@ -252,7 +266,8 @@ h1 {
 .note-stack,
 .workflow-map,
 .trace-grid,
-.lineage-strip {
+.lineage-strip,
+.catalog-group {
   display: grid;
   gap: 12px;
 }

@@ -7,16 +7,16 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="./styles.css?v=20260313c" />
+  <link rel="stylesheet" href="./styles.css?v=20260314b" />
 </head>
 <body>
   <div class="bg-noise"></div>
   <main class="layout">
     <header class="hero">
       <p class="kicker">ARAB-ACMG / Supervisor Workflow</p>
-      <h1>BRCA evidence dashboard from frozen raw inputs to the final registry</h1>
+      <h1>BRCA evidence dashboard from frozen raw inputs to baseline and Arab-extension checkpoints</h1>
       <p class="sub">
-        Each page represents one scientific workflow stage. The dashboard now serves a frozen review bundle: static 10-row evidence samples, frozen counts, and one static final-registry download. BigQuery remains reserved for the raw source-of-truth tables only.
+        Each page represents one scientific workflow stage. The dashboard serves frozen 10-row samples, frozen counts, and static GCS downloads for the derived artifacts. BigQuery remains reserved for the raw source-of-truth tables only.
       </p>
       <p id="generated-at" class="generated-at" aria-live="polite">Loading frozen supervisor data...</p>
       <p id="last-successful-step" class="last-successful-step" aria-live="polite"></p>
@@ -75,57 +75,86 @@
     </section>
 
     <section class="panel page-panel" data-page="pre-gme">
-      <h2>Pre-GME Review</h2>
+      <h2>Legacy Pre-GME</h2>
       <p class="panel-note">
-        This checkpoint is the Arab-aware BRCA table before GME is added. Its metadata and samples are frozen for low-cost review; no live export is exposed from this page anymore.
+        This is the historical pre-GME checkpoint that existed before the Arab extension work started. It stays frozen here as the baseline review surface.
       </p>
       <div id="pre-gme-meta" class="registry-meta"></div>
       <div class="action-row">
-        <button id="pre-gme-sample-button" type="button" class="action-button">Show frozen 10 pre-GME rows</button>
+        <button id="pre-gme-sample-button" type="button" class="action-button">Show frozen 10 baseline rows</button>
+        <a id="pre-gme-download-csv-link" class="action-button secondary-link" href="#">Download frozen baseline CSV</a>
       </div>
       <div id="pre-gme-sample" class="query-result"></div>
-      <details class="details-card">
-        <summary>Excel metadata preview</summary>
-        <pre id="pre-gme-metadata-preview" class="sql-box"></pre>
-      </details>
-      <details class="details-card">
-        <summary>Excel header preview</summary>
-        <div id="pre-gme-header-preview" class="header-preview-grid"></div>
-      </details>
       <details class="details-card">
         <summary>Pre-GME column glossary</summary>
         <div id="pre-gme-columns" class="glossary-grid"></div>
       </details>
       <details class="details-card">
-        <summary>Pre-GME build logic</summary>
+        <summary>Baseline build logic</summary>
         <pre id="pre-gme-build-sql" class="sql-box"></pre>
       </details>
     </section>
 
     <section class="panel page-panel" data-page="final">
-      <h2>Final Registry</h2>
+      <h2>Legacy Final</h2>
       <p class="panel-note">
-        This page shows what changed after GME entered the workflow and exposes the final BRCA registry as a frozen static artifact. This is the only table that remains downloadable from the review interface.
+        This is the historical final BRCA checkpoint frozen before the Arab extension work. It stays visible so the supervisor can compare the old baseline against the new Arab-aware extension.
       </p>
       <div id="registry-meta" class="registry-meta"></div>
-      <h3 class="subheading">Final-stage evidence</h3>
-      <div id="final-steps" class="explorer-stack"></div>
       <div class="action-row">
-        <button id="registry-sample-button" type="button" class="action-button">Show frozen 10 final-registry rows</button>
-        <a id="registry-download-csv-link" class="action-button secondary-link" href="/api/registry/download.csv">Download frozen final-registry CSV</a>
+        <button id="registry-sample-button" type="button" class="action-button">Show frozen 10 baseline-final rows</button>
+        <a id="registry-download-csv-link" class="action-button secondary-link" href="/api/registry/download.csv">Download frozen baseline-final CSV</a>
       </div>
       <div id="registry-sample" class="query-result"></div>
       <details class="details-card">
-        <summary>Final registry column glossary</summary>
+        <summary>Baseline final column glossary</summary>
         <div id="registry-columns" class="glossary-grid"></div>
       </details>
       <details class="details-card">
-        <summary>Final build logic</summary>
+        <summary>Baseline final build logic</summary>
         <pre id="registry-build-sql" class="sql-box"></pre>
       </details>
     </section>
+
+    <section class="panel page-panel" data-page="arab-extension">
+      <h2>Arab Extension</h2>
+      <p class="panel-note">
+        This page contains the new Arab-aware checkpoints only. The first table adds SHGP to the normalized global sources. The second table adds GME as a supporting layer without replacing the legacy baseline above.
+      </p>
+      <div id="arab-extension-summary" class="registry-meta"></div>
+      <div class="arab-grid">
+        <article class="panel inset-panel">
+          <h3>Arab Pre-GME</h3>
+          <div id="arab-pre-gme-meta" class="registry-meta"></div>
+          <div class="action-row">
+            <button id="arab-pre-gme-sample-button" type="button" class="action-button">Show frozen 10 Arab pre-GME rows</button>
+            <a id="arab-pre-gme-download-csv-link" class="action-button secondary-link" href="#">Download frozen Arab pre-GME CSV</a>
+          </div>
+          <div id="arab-pre-gme-sample" class="query-result"></div>
+        </article>
+        <article class="panel inset-panel">
+          <h3>Arab Final</h3>
+          <div id="arab-registry-meta" class="registry-meta"></div>
+          <div class="action-row">
+            <button id="arab-registry-sample-button" type="button" class="action-button">Show frozen 10 Arab-final rows</button>
+            <a id="arab-registry-download-csv-link" class="action-button secondary-link" href="/api/arab/registry/download.csv">Download frozen Arab-final CSV</a>
+          </div>
+          <div id="arab-registry-sample" class="query-result"></div>
+        </article>
+      </div>
+      <h3 class="subheading">Arab-extension evidence</h3>
+      <div id="arab-extension-steps" class="explorer-stack"></div>
+    </section>
+
+    <section class="panel page-panel" data-page="artifacts">
+      <h2>Data Downloads</h2>
+      <p class="panel-note">
+        Every derived table shown in the dashboard has a frozen downloadable copy in GCS. Raw source-of-truth datasets stay raw; for those, this page gives the official source link or raw-vault reference instead of exporting a new copy.
+      </p>
+      <div id="artifact-catalog" class="explorer-stack"></div>
+    </section>
   </main>
 
-  <script src="./app.js?v=20260313c"></script>
+  <script src="./app.js?v=20260314b"></script>
 </body>
 </html>

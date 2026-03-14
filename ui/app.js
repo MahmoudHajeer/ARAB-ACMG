@@ -6,7 +6,7 @@ const EXTRA_WORKFLOW_PAGES = [
     summary: "Official access paths for large Arab datasets that still require provider approval.",
   },
 ];
-const KNOWN_PAGE_IDS = new Set(["overview", "raw", "harmonization", "access", "pre-gme", "final"]);
+const KNOWN_PAGE_IDS = new Set(["overview", "raw", "harmonization", "pre-gme", "final", "arab-extension", "artifacts", "access"]);
 const resourceCache = new Map();
 const inflightRequests = new Map();
 const renderedPages = new Set();
@@ -360,7 +360,12 @@ function renderSourceArtifactLinks(source) {
   if (!links.length) {
     return `<div class="metric-sub">No additional frozen artifact links were recorded for this source.</div>`;
   }
-  return renderLinkList(links);
+  const clickable = links.filter((link) => String(link.url || "").startsWith("http"));
+  const references = links.filter((link) => !String(link.url || "").startsWith("http"));
+  return `
+    ${clickable.length ? renderLinkList(clickable) : ""}
+    ${references.length ? renderNoteStack(references.map((link) => `${link.label}: ${link.url}`)) : ""}
+  `;
 }
 
 function renderSourceLiftoverMethod(source) {
@@ -806,7 +811,7 @@ function renderSupplementalRawSources(payload) {
     .join("");
 }
 
-function renderStepCards(targetId, steps) {
+function renderStepCards(targetId, steps, samplePath) {
   const root = document.getElementById(targetId);
   root.innerHTML = steps
     .map(
@@ -839,7 +844,7 @@ function renderStepCards(targetId, steps) {
       setLoading(target, "Loading frozen step sample...");
       await runButtonAction(button, "Loading sample...", async () => {
         try {
-          const payload = await fetchJson(`/api/registry/steps/${stepId}/sample`);
+          const payload = await fetchJson(`${samplePath}/${stepId}/sample`);
           renderQueryResult(target, payload);
         } catch (error) {
           setError(target, error);
@@ -847,6 +852,70 @@ function renderStepCards(targetId, steps) {
       });
     });
   });
+}
+
+function renderArtifactCatalog(payload) {
+  const root = document.getElementById("artifact-catalog");
+  root.innerHTML = payload.groups
+    .map(
+      (group) => `
+      <article class="catalog-group">
+        <div class="card-head">
+          <div>
+            <div class="sample-title">${escapeHtml(group.title)}</div>
+            <p class="card-summary">${escapeHtml(group.summary)}</p>
+          </div>
+        </div>
+        <div class="explorer-stack">
+          ${group.entries
+            .map(
+              (entry) => `
+              <article class="explorer-card">
+                <div class="card-head">
+                  <div>
+                    <div class="sample-title">${escapeHtml(entry.title)}</div>
+                    <div class="metric-sub">${escapeHtml(entry.stage)}</div>
+                    <div class="metric-sub">rows: ${Number(entry.row_count || 0).toLocaleString()}</div>
+                  </div>
+                  <div class="action-row compact-actions">
+                    ${(entry.downloads || [])
+                      .map(
+                        (download) =>
+                          `<a class="action-button secondary-link" href="${escapeHtml(download.url)}" target="_blank" rel="noreferrer">${escapeHtml(download.label)}</a>`
+                      )
+                      .join("")}
+                  </div>
+                </div>
+                <p class="card-summary">${escapeHtml(entry.overview)}</p>
+                ${
+                  (entry.links || []).length
+                    ? `<details class="details-card">
+                        <summary>Official links</summary>
+                        ${renderLinkList(entry.links)}
+                      </details>`
+                    : ""
+                }
+                ${
+                  (entry.references || []).length
+                    ? `<details class="details-card">
+                        <summary>Stored reference</summary>
+                        ${renderNoteStack(entry.references)}
+                      </details>`
+                    : ""
+                }
+                <details class="details-card">
+                  <summary>Download note</summary>
+                  <div class="metric-sub">${escapeHtml(entry.download_note || "No additional note recorded.")}</div>
+                </details>
+              </article>
+            `
+            )
+            .join("")}
+        </div>
+      </article>
+    `
+    )
+    .join("");
 }
 
 function renderHarmonizationScience(payload) {
@@ -861,6 +930,26 @@ function renderHarmonizationScience(payload) {
         ${renderNoteStack(payload.scientific_notes)}
       </details>
       ${payload.scientific_metrics ? renderScientificMetrics(payload.scientific_metrics) : ""}
+    </article>
+  `;
+}
+
+function renderArabExtensionSummary(legacyPayload, arabPayload) {
+  const root = document.getElementById("arab-extension-summary");
+  const delta = Number(arabPayload.row_count || 0) - Number(legacyPayload.row_count || 0);
+  root.innerHTML = `
+    <article class="metric-item">
+      <div class="metric-title">What changed relative to the legacy baseline</div>
+      <div class="scientific-matrix">
+        <div><strong>Legacy final rows</strong><span>${Number(legacyPayload.row_count || 0).toLocaleString()}</span></div>
+        <div><strong>Arab final rows</strong><span>${Number(arabPayload.row_count || 0).toLocaleString()}</span></div>
+        <div><strong>Delta rows</strong><span>${delta.toLocaleString()}</span></div>
+        <div><strong>New Arab layers</strong><span>SHGP first, then GME as support</span></div>
+      </div>
+      ${renderNoteStack([
+        "Legacy final stays unchanged on its own page.",
+        "Arab extension is reviewed separately so the supervisor can decide whether to keep it or not.",
+      ])}
     </article>
   `;
 }
@@ -886,11 +975,7 @@ function renderPreGmeMeta(payload) {
 
   document.getElementById("pre-gme-columns").innerHTML = renderGlossary(payload.columns);
   document.getElementById("pre-gme-build-sql").textContent = payload.build_sql;
-  document.getElementById("pre-gme-metadata-preview").textContent = payload.export_metadata_preview.join("\n");
-  const kindByName = Object.fromEntries(payload.columns.map((column) => [column.name, column.kind || "required"]));
-  document.getElementById("pre-gme-header-preview").innerHTML = payload.export_header_columns
-    .map((column) => `<div class="header-chip ${kindByName[column] || "required"}">${escapeHtml(column)}</div>`)
-    .join("");
+  document.getElementById("pre-gme-download-csv-link").setAttribute("href", payload.csv_download_url);
 }
 
 function renderFinalRegistryMeta(payload) {
@@ -914,6 +999,36 @@ function renderFinalRegistryMeta(payload) {
   document.getElementById("registry-columns").innerHTML = renderGlossary(payload.columns);
   document.getElementById("registry-build-sql").textContent = payload.build_sql;
   document.getElementById("registry-download-csv-link").setAttribute("href", payload.csv_download_url);
+}
+
+function renderArabPreGmeMeta(payload) {
+  const root = document.getElementById("arab-pre-gme-meta");
+  root.innerHTML = `
+    <article class="metric-item">
+      <div class="metric-title">${escapeHtml(payload.title)}</div>
+      <div class="metric-sub">${escapeHtml(payload.table_ref)}</div>
+      <div class="metric-sub">frozen row count: ${payload.row_count === null ? "not built yet" : Number(payload.row_count).toLocaleString()}</div>
+      <div class="metric-sub">${escapeHtml(payload.scope_note)}</div>
+      ${renderTraceSummary(payload.trace)}
+      ${renderNoteStack(payload.accuracy_notes)}
+    </article>
+  `;
+  document.getElementById("arab-pre-gme-download-csv-link").setAttribute("href", payload.csv_download_url);
+}
+
+function renderArabRegistryMeta(payload) {
+  const root = document.getElementById("arab-registry-meta");
+  root.innerHTML = `
+    <article class="metric-item">
+      <div class="metric-title">${escapeHtml(payload.title)}</div>
+      <div class="metric-sub">${escapeHtml(payload.table_ref)}</div>
+      <div class="metric-sub">frozen row count: ${payload.row_count === null ? "not built yet" : Number(payload.row_count).toLocaleString()}</div>
+      <div class="metric-sub">${escapeHtml(payload.scope_note)}</div>
+      ${renderTraceSummary(payload.trace)}
+      ${renderNoteStack(payload.accuracy_notes)}
+    </article>
+  `;
+  document.getElementById("arab-registry-download-csv-link").setAttribute("href", payload.csv_download_url);
 }
 
 function renderOverviewHeader(payload) {
@@ -950,6 +1065,8 @@ function wireGlobalButtons() {
 
   const preGmeButton = document.getElementById("pre-gme-sample-button");
   const registryButton = document.getElementById("registry-sample-button");
+  const arabPreGmeButton = document.getElementById("arab-pre-gme-sample-button");
+  const arabRegistryButton = document.getElementById("arab-registry-sample-button");
 
   preGmeButton.addEventListener("click", async () => {
     const target = "pre-gme-sample";
@@ -970,6 +1087,32 @@ function wireGlobalButtons() {
     await runButtonAction(registryButton, "Loading sample...", async () => {
       try {
         const payload = await fetchJson("/api/registry/sample");
+        renderQueryResult(target, payload);
+      } catch (error) {
+        setError(target, error);
+      }
+    });
+  });
+
+  arabPreGmeButton.addEventListener("click", async () => {
+    const target = "arab-pre-gme-sample";
+    setLoading(target, "Loading frozen Arab pre-GME sample...");
+    await runButtonAction(arabPreGmeButton, "Loading sample...", async () => {
+      try {
+        const payload = await fetchJson("/api/arab/pre-gme/sample");
+        renderQueryResult(target, payload);
+      } catch (error) {
+        setError(target, error);
+      }
+    });
+  });
+
+  arabRegistryButton.addEventListener("click", async () => {
+    const target = "arab-registry-sample";
+    setLoading(target, "Loading frozen Arab-final sample...");
+    await runButtonAction(arabRegistryButton, "Loading sample...", async () => {
+      try {
+        const payload = await fetchJson("/api/arab/registry/sample");
         renderQueryResult(target, payload);
       } catch (error) {
         setError(target, error);
@@ -1020,7 +1163,7 @@ async function loadHarmonizationPage() {
 
   const [harmonizedPayload, registryPayload, sourceReviewPayload] = await Promise.all([
     fetchResource("checkpoint-datasets", "/api/datasets"),
-    fetchResource("registry-meta", "/api/registry"),
+    fetchResource("arab-registry-meta", "/api/arab/registry"),
     fetchResource("source-review", "/api/source-review"),
   ]);
 
@@ -1034,7 +1177,7 @@ async function loadHarmonizationPage() {
     sampleAttr: "harmonized-sample",
     samplePath: "/api/datasets",
   });
-  renderStepCards("harmonization-steps", workflowPayload.harmonization_steps);
+  renderStepCards("harmonization-steps", workflowPayload.harmonization_steps, "/api/arab/steps");
   renderedPages.add("harmonization");
 }
 
@@ -1077,11 +1220,43 @@ async function loadFinalPage() {
   }
 
   setLoading("registry-meta", "Loading frozen final checkpoint metadata...");
-  setLoading("final-steps", "Loading frozen final-stage evidence...");
   const payload = await fetchResource("registry-meta", "/api/registry");
   renderFinalRegistryMeta(payload);
-  renderStepCards("final-steps", workflowPayload.final_steps);
   renderedPages.add("final");
+}
+
+async function loadArabExtensionPage() {
+  if (renderedPages.has("arab-extension")) {
+    return;
+  }
+
+  setLoading("arab-extension-summary", "Loading Arab extension summary...");
+  setLoading("arab-pre-gme-meta", "Loading Arab pre-GME metadata...");
+  setLoading("arab-registry-meta", "Loading Arab final metadata...");
+  setLoading("arab-extension-steps", "Loading Arab-extension evidence...");
+
+  const [legacyRegistryPayload, arabPreGmePayload, arabRegistryPayload] = await Promise.all([
+    fetchResource("registry-meta", "/api/registry"),
+    fetchResource("arab-pre-gme-meta", "/api/arab/pre-gme"),
+    fetchResource("arab-registry-meta", "/api/arab/registry"),
+  ]);
+
+  renderArabExtensionSummary(legacyRegistryPayload, arabRegistryPayload);
+  renderArabPreGmeMeta(arabPreGmePayload);
+  renderArabRegistryMeta(arabRegistryPayload);
+  renderStepCards("arab-extension-steps", workflowPayload.arab_extension_steps || [], "/api/arab/steps");
+  renderedPages.add("arab-extension");
+}
+
+async function loadArtifactsPage() {
+  if (renderedPages.has("artifacts")) {
+    return;
+  }
+
+  setLoading("artifact-catalog", "Loading structured artifact catalog...");
+  const payload = await fetchResource("artifact-catalog", "/api/artifacts");
+  renderArtifactCatalog(payload);
+  renderedPages.add("artifacts");
 }
 
 async function loadActivePage(pageId) {
@@ -1108,6 +1283,14 @@ async function loadActivePage(pageId) {
     }
     if (pageId === "final") {
       await loadFinalPage();
+      return;
+    }
+    if (pageId === "arab-extension") {
+      await loadArabExtensionPage();
+      return;
+    }
+    if (pageId === "artifacts") {
+      await loadArtifactsPage();
     }
   } catch (error) {
     if (pageId === "raw") setError("raw-dataset-explorer", error);
@@ -1127,7 +1310,15 @@ async function loadActivePage(pageId) {
     if (pageId === "pre-gme") setError("pre-gme-meta", error);
     if (pageId === "final") {
       setError("registry-meta", error);
-      setError("final-steps", error);
+    }
+    if (pageId === "arab-extension") {
+      setError("arab-extension-summary", error);
+      setError("arab-pre-gme-meta", error);
+      setError("arab-registry-meta", error);
+      setError("arab-extension-steps", error);
+    }
+    if (pageId === "artifacts") {
+      setError("artifact-catalog", error);
     }
   }
 }

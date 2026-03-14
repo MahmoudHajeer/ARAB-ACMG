@@ -2,19 +2,20 @@
 
 ## What it shows
 - Live Conductor track statuses and progress from `/api/overview`
-- Separate workflow pages for `Overview`, `Raw Sources`, `Normalization`, `Pre-GME Review`, `Final Registry`, and `Controlled Access`
+- Separate workflow pages for `Overview`, `Raw Sources`, `Normalization`, `Legacy Pre-GME`, `Legacy Final`, `Arab Extension`, `Data Downloads`, and `Controlled Access`
 - Frozen 10-row evidence samples for raw source packages, normalized per-source artifacts, checkpoint tables, and workflow steps
-- A dedicated Arab-aware pre-GME review checkpoint and a final Arab checkpoint kept as frozen review artifacts
+- A preserved legacy baseline (`pre-GME` + `final`) that stays separate from the new Arab-extension checkpoints
+- A structured download center for every derived artifact shown in the dashboard
 - Step-by-step frozen evidence for the BRCA1/BRCA2 normalization workflow
 - Build-logic notes explaining how the checkpoints are assembled from normalized source artifacts
 - Short scientific notes explaining why the BRCA windows are authoritative across ClinVar, gnomAD genomes, gnomAD exomes, SHGP, and GME
 - Required publication-facing columns are shown first; any extra pipeline columns are explicitly marked as extras
-- One static final-registry CSV download sourced from Cloud Storage
+- Static GCS downloads for normalized artifacts, the legacy baseline tables, and the Arab-extension tables
 
 ## Runtime cost policy
 - The deployed UI no longer queries BigQuery at runtime for samples, counts, or workflow evidence.
 - BigQuery is reserved for the historical raw source-of-truth mirrors only.
-- The active T003 workflow is GCS-first and exports normalized Parquet/checkpoint artifacts to GCS, then freezes the review surface into `ui/review_bundle.json`.
+- The active T003 workflow is GCS-first and exports normalized Parquet/checkpoint artifacts to GCS, then composes the review surface into `ui/review_bundle.json`.
 
 ## Local run
 From repo root:
@@ -45,7 +46,10 @@ ui/review_bundle.json
 ui/source_review.json
 ```
 
-It also exports the frozen normalized source artifacts, the Arab pre-GME checkpoint, the final Arab checkpoint, and the final CSV download to GCS so the review surface stays low-cost.
+The build now also runs `scripts/refresh_supervisor_review_bundle.py`, which:
+- reattaches the historical legacy bundle as the baseline review surface
+- publishes CSV downloads for every derived artifact shown in the UI
+- keeps the Arab extension in a separate page instead of overwriting the legacy final table
 
 ## Refresh the bundled overview state for Cloud Run
 Run:

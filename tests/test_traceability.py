@@ -23,11 +23,14 @@ def test_enrich_review_bundle_trace_adds_trace_cards():
                 }
             ]
         },
-        "pre_gme": {"title": "pre_gme"},
-        "registry": {"title": "registry"},
+        "pre_gme": {"title": "legacy_pre_gme", "table_ref": "gs://bucket/legacy_pre_gme.parquet"},
+        "registry": {"title": "legacy_registry", "table_ref": "gs://bucket/legacy_registry.parquet"},
+        "arab_pre_gme": {"title": "arab_pre_gme"},
+        "arab_registry": {"title": "arab_registry"},
         "workflow": {
             "harmonization_steps": [{"id": "clinvar_normalized_brca", "simple": "simple", "technical": "technical"}],
             "final_steps": [{"id": "final_checkpoint", "simple": "simple", "technical": "technical"}],
+            "arab_extension_steps": [{"id": "final_checkpoint", "simple": "simple", "technical": "technical"}],
         },
     }
 
@@ -36,7 +39,9 @@ def test_enrich_review_bundle_trace_adds_trace_cards():
     assert enriched["raw_datasets"]["datasets"][0]["trace"]["input_surface"] == "project.dataset.clinvar_raw_vcf"
     assert "Frozen raw-source row count" in enriched["raw_datasets"]["datasets"][0]["trace"]["count_basis"]
     assert enriched["datasets"]["datasets"][0]["trace"]["input_surface"] == "gs://bucket/pre_gme.parquet"
-    assert "Pre-GME Arab checkpoint" in enriched["registry"]["trace"]["input_surface"]
+    assert enriched["registry"]["trace"]["input_surface"] == "gs://bucket/legacy_registry.parquet"
+    assert "Historical final BRCA checkpoint" in enriched["registry"]["trace"]["operation"]
+    assert "Arab pre-GME checkpoint" in enriched["arab_pre_gme"]["trace"]["count_basis"]
     assert "sample SQL" in enriched["workflow"]["harmonization_steps"][0]["trace"]["display_basis"]
 
 

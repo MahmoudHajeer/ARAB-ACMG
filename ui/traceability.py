@@ -38,21 +38,39 @@ def _checkpoint_dataset_trace(entry: dict[str, Any], frozen_at: str, bundle_uri:
     )
 
 
-def _pre_gme_trace(payload: dict[str, Any], frozen_at: str, bundle_uri: str) -> dict[str, str]:
+def _legacy_pre_gme_trace(payload: dict[str, Any], frozen_at: str, bundle_uri: str) -> dict[str, str]:
     return _trace_card(
-        input_surface="Normalized ClinVar + normalized gnomAD genomes + normalized gnomAD exomes + normalized SHGP",
-        operation="Join canonical variant keys from the normalized source artifacts and materialize the mandated publication-facing header before any GME layer is added.",
-        count_basis=f"Frozen pre-GME checkpoint row count captured on {frozen_at}.",
-        display_basis=f"Displayed from {bundle_uri}; preview rows come from the frozen pre-GME checkpoint sample.",
+        input_surface=str(payload.get("table_ref", "legacy pre-GME artifact not recorded")),
+        operation="Historical baseline checkpoint preserved from the legacy frozen review bundle. No Arab-extension source is added at this stage.",
+        count_basis=f"Frozen legacy pre-GME row count captured on {frozen_at}.",
+        display_basis=f"Displayed from {bundle_uri}; preview rows come from the frozen legacy pre-GME sample.",
     )
 
 
-def _registry_trace(payload: dict[str, Any], frozen_at: str, bundle_uri: str) -> dict[str, str]:
+def _legacy_registry_trace(payload: dict[str, Any], frozen_at: str, bundle_uri: str) -> dict[str, str]:
+    return _trace_card(
+        input_surface=str(payload.get("table_ref", "legacy final artifact not recorded")),
+        operation="Historical final BRCA checkpoint preserved as the baseline review surface before the Arab extension work.",
+        count_basis=f"Frozen legacy final-checkpoint row count captured on {frozen_at}.",
+        display_basis=f"Displayed from {bundle_uri}; preview rows come from the frozen legacy final sample and the downloadable CSV is served from GCS.",
+    )
+
+
+def _arab_pre_gme_trace(payload: dict[str, Any], frozen_at: str, bundle_uri: str) -> dict[str, str]:
+    return _trace_card(
+        input_surface="Normalized ClinVar + normalized gnomAD genomes + normalized gnomAD exomes + normalized SHGP",
+        operation="Join canonical variant keys from the normalized source artifacts and materialize the mandated publication-facing header before any GME layer is added.",
+        count_basis=f"Frozen Arab pre-GME checkpoint row count captured on {frozen_at}.",
+        display_basis=f"Displayed from {bundle_uri}; preview rows come from the frozen Arab pre-GME checkpoint sample.",
+    )
+
+
+def _arab_registry_trace(payload: dict[str, Any], frozen_at: str, bundle_uri: str) -> dict[str, str]:
     return _trace_card(
         input_surface="Pre-GME Arab checkpoint + normalized GME",
         operation="Preserve the pre-GME checkpoint, then add GME-derived Arab frequency extras without reordering the required header floor.",
-        count_basis=f"Frozen final-checkpoint row count captured on {frozen_at}.",
-        display_basis=f"Displayed from {bundle_uri}; preview rows come from the frozen final checkpoint sample and the downloadable CSV is served from GCS.",
+        count_basis=f"Frozen Arab final-checkpoint row count captured on {frozen_at}.",
+        display_basis=f"Displayed from {bundle_uri}; preview rows come from the frozen Arab final checkpoint sample and the downloadable CSV is served from GCS.",
     )
 
 
@@ -86,12 +104,18 @@ def enrich_review_bundle_trace(bundle: dict[str, Any]) -> dict[str, Any]:
         entry["trace"] = _checkpoint_dataset_trace(entry, frozen_at, bundle_uri)
 
     if "pre_gme" in enriched:
-        enriched["pre_gme"]["trace"] = _pre_gme_trace(enriched["pre_gme"], frozen_at, bundle_uri)
+        enriched["pre_gme"]["trace"] = _legacy_pre_gme_trace(enriched["pre_gme"], frozen_at, bundle_uri)
 
     if "registry" in enriched:
-        enriched["registry"]["trace"] = _registry_trace(enriched["registry"], frozen_at, bundle_uri)
+        enriched["registry"]["trace"] = _legacy_registry_trace(enriched["registry"], frozen_at, bundle_uri)
 
-    for group_name in ("harmonization_steps", "final_steps"):
+    if "arab_pre_gme" in enriched:
+        enriched["arab_pre_gme"]["trace"] = _arab_pre_gme_trace(enriched["arab_pre_gme"], frozen_at, bundle_uri)
+
+    if "arab_registry" in enriched:
+        enriched["arab_registry"]["trace"] = _arab_registry_trace(enriched["arab_registry"], frozen_at, bundle_uri)
+
+    for group_name in ("harmonization_steps", "final_steps", "arab_extension_steps", "legacy_final_steps"):
         for step in enriched.get("workflow", {}).get(group_name, []):
             step["trace"] = _step_trace(step, frozen_at, bundle_uri)
 
