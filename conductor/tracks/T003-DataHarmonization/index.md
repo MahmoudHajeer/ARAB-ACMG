@@ -204,3 +204,23 @@ Do not rewrite previous entries.
 - Files changed: `conductor/tech-stack.md`, `scripts/build_brca_normalized_artifacts.py`, `scripts/verify_brca_normalized_artifacts.py`, `tests/test_build_brca_normalized_artifacts.py`, `tests/test_verify_brca_normalized_artifacts.py`, `tests/test_traceability.py`, `ui/README.md`, `ui/index.html`, `ui/overview_state.json`, `ui/review_bundle.json`, `ui/source_review.json`, `ui/traceability.py`, `conductor/checkpoints/2026-03-14-t003-brca-normalization-pass.md`, `conductor/tracks/T003-DataHarmonization/plan.md`, `conductor/setup_state.json`, `conductor/tracks/T003-DataHarmonization/index.md`
 - Verification run + result: `python3 scripts/build_brca_normalized_artifacts.py (pass: pre-GME=116,398 rows; final=116,413 rows)`, `python3 scripts/verify_brca_normalized_artifacts.py (pass)`, `python3 -m pytest -q tests (75 passed)`, `python3 -m py_compile scripts/build_brca_normalized_artifacts.py scripts/verify_brca_normalized_artifacts.py ui/traceability.py ui/service.py (pass)`, `node --check ui/app.js (pass)`, `local Playwright browser checks on Raw/Normalization pages (pass: frozen raw previews, normalized artifact samples, and traceability cards rendered)`
 - Next exact action: Start task `4.3` and add canonical-key validation tests against the frozen normalized artifacts/checkpoints before introducing GE suites in `5.1`.
+
+### Entry 21
+- Timestamp: `2026-03-14T18:02:00+03:00`
+- Agent: `Codex`
+- Task ID: `4.3`
+- Status: `Started`
+- Summary: Starting frozen-artifact canonical-key validation and supervisor UI restructuring. The baseline final table will be restored as its own frozen review surface, while Arab-extension outputs and downloadable GCS artifacts will move into explicit separate sections without reintroducing live BigQuery use.
+- Files changed: `conductor/tracks/T003-DataHarmonization/plan.md`, `conductor/tracks/T003-DataHarmonization/index.md`
+- Verification run + result: `state update only before implementation`
+- Next exact action: Build a low-cost refresh pipeline that composes the supervisor bundle from the current frozen artifacts plus the historical legacy bundle, then add canonical-key validation over those frozen artifacts and redeploy the UI.
+
+### Entry 22
+- Timestamp: `2026-03-14T20:05:00+03:00`
+- Agent: `Codex`
+- Task ID: `4.3`
+- Status: `Completed`
+- Summary: Added frozen-artifact canonical-key validation over the normalized Parquet artifacts and both baseline/Arab checkpoint layers, then restructured the supervisor UI so the historical BRCA baseline stays separate from the Arab-extension review. Every derived artifact shown in the dashboard now has a static GCS CSV download, while raw source surfaces remain link/reference-only.
+- Files changed: `scripts/build_brca_normalized_artifacts.py`, `scripts/refresh_supervisor_review_bundle.py`, `scripts/verify_brca_normalized_artifacts.py`, `tests/test_refresh_supervisor_review_bundle.py`, `tests/test_traceability.py`, `tests/test_ui_service.py`, `tests/test_verify_brca_normalized_artifacts.py`, `ui/README.md`, `ui/app.js`, `ui/index.html`, `ui/review_bundle.json`, `ui/service.py`, `ui/styles.css`, `ui/traceability.py`, `conductor/checkpoints/2026-03-14-t003-baseline-arab-review-split.md`, `conductor/tracks/T003-DataHarmonization/plan.md`, `conductor/tracks/T003-DataHarmonization/index.md`, `conductor/setup_state.json`
+- Verification run + result: `python3 scripts/refresh_supervisor_review_bundle.py (pass: legacy + Arab bundle composed, 5 normalized downloads published)`, `python3 scripts/verify_brca_normalized_artifacts.py (pass: canonical validation over 5 normalized artifacts + 4 checkpoints)`, `python3 -m pytest -q tests (83 passed)`, `python3 -m py_compile scripts/refresh_supervisor_review_bundle.py scripts/verify_brca_normalized_artifacts.py ui/service.py ui/traceability.py (pass)`, `node --check ui/app.js (pass)`, `local browser verification on http://127.0.0.1:8098/ via Playwright CLI (pass: legacy baseline pages restored, Arab Extension page isolated, Data Downloads page rendered, static CSV links present)`
+- Next exact action: Start `5.1` and create Great Expectations suites/checkpoints for the frozen harmonized artifacts now that the baseline/Arab review split and canonical-key invariants are stable.

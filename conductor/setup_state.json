@@ -1,3 +1,3 @@
 {
-  "last_successful_step": "T003 steps 3.1, 3.2, and 3.3 finalized on 2026-03-14: ClinVar, gnomAD, SHGP, and GME now have frozen BRCA normalization artifacts in GCS, the Arab pre-GME/final BRCA checkpoints were rebuilt from those normalized sources, and the supervisor UI now shows raw -> normalized -> checkpoint evidence without live BigQuery queries. T003 step 4.3 canonical-key validation is next."
+  "last_successful_step": "T003 step 4.3 finalized on 2026-03-14: canonical-key validation now runs against the frozen normalized/checkpoint Parquet artifacts, the supervisor UI preserves the legacy BRCA baseline separately from the Arab-extension checkpoints, and every derived review artifact now has a static GCS CSV download. T003 step 5.1 Great Expectations suites/checkpoints for harmonized artifacts are next."
 }

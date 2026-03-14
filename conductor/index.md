@@ -13,6 +13,7 @@ This index serves as the entry point to all project documentation and tracking.
 - **Arab Frequency Candidate Triage**: [conductor/checkpoints/2026-03-13-t003-arab-frequency-source-triage.md](./checkpoints/2026-03-13-t003-arab-frequency-source-triage.md)
 - **SHGP + AVDB LiftOver Checkpoint**: [conductor/checkpoints/2026-03-13-t003-shgp-avdb-liftover.md](./checkpoints/2026-03-13-t003-shgp-avdb-liftover.md)
 - **Controlled-Access Roadmap**: [conductor/checkpoints/2026-03-13-t003-controlled-access-roadmap.md](./checkpoints/2026-03-13-t003-controlled-access-roadmap.md)
+- **Baseline vs Arab Review Split**: [conductor/checkpoints/2026-03-14-t003-baseline-arab-review-split.md](./checkpoints/2026-03-14-t003-baseline-arab-review-split.md)
 - **Data Collection Roadmap**: [Data collection.MD](../Data%20collection.MD)
 - **AI Collaboration Protocol**: [conductor/ai-collaboration.md](./ai-collaboration.md)
 

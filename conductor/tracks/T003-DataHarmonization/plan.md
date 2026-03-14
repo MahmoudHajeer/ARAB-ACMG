@@ -18,7 +18,7 @@
 ## Phase 4: Frozen Artifact Layer + Modeling
 - [x] 4.1 Adopt frozen GCS checkpoint artifacts as the default harmonized handoff surface for downstream work. (`f1c2974`, implemented via T002 step 5.7 closeout)
 - [x] 4.2 Remove durable harmonized BigQuery outputs and keep active BigQuery usage raw-only. (`f1c2974`, implemented via T002 step 5.7 closeout)
-- [ ] 4.3 Add canonical-key validation tests against the frozen harmonized artifacts (DuckDB/pytest, whichever is lowest cost and reproducible).
+- [x] 4.3 Add canonical-key validation tests against the frozen harmonized artifacts (DuckDB/pytest, whichever is lowest cost and reproducible). (`ce413a7`)
 
 ## Phase 5: GE Quality Gates
 - [ ] 5.1 Create GE suites/checkpoints for harmonized artifacts (canonical key, duplicates, status enums).
