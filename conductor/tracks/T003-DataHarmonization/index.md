@@ -224,3 +224,23 @@ Do not rewrite previous entries.
 - Files changed: `scripts/build_brca_normalized_artifacts.py`, `scripts/refresh_supervisor_review_bundle.py`, `scripts/verify_brca_normalized_artifacts.py`, `tests/test_refresh_supervisor_review_bundle.py`, `tests/test_traceability.py`, `tests/test_ui_service.py`, `tests/test_verify_brca_normalized_artifacts.py`, `ui/README.md`, `ui/app.js`, `ui/index.html`, `ui/review_bundle.json`, `ui/service.py`, `ui/styles.css`, `ui/traceability.py`, `conductor/checkpoints/2026-03-14-t003-baseline-arab-review-split.md`, `conductor/tracks/T003-DataHarmonization/plan.md`, `conductor/tracks/T003-DataHarmonization/index.md`, `conductor/setup_state.json`
 - Verification run + result: `python3 scripts/refresh_supervisor_review_bundle.py (pass: legacy + Arab bundle composed, 5 normalized downloads published)`, `python3 scripts/verify_brca_normalized_artifacts.py (pass: canonical validation over 5 normalized artifacts + 4 checkpoints)`, `python3 -m pytest -q tests (83 passed)`, `python3 -m py_compile scripts/refresh_supervisor_review_bundle.py scripts/verify_brca_normalized_artifacts.py ui/service.py ui/traceability.py (pass)`, `node --check ui/app.js (pass)`, `local browser verification on http://127.0.0.1:8098/ via Playwright CLI (pass: legacy baseline pages restored, Arab Extension page isolated, Data Downloads page rendered, static CSV links present)`
 - Next exact action: Start `5.1` and create Great Expectations suites/checkpoints for the frozen harmonized artifacts now that the baseline/Arab review split and canonical-key invariants are stable.
+
+### Entry 23
+- Timestamp: `2026-03-15T10:05:00+03:00`
+- Agent: `Codex`
+- Task ID: `5.1`
+- Status: `Started`
+- Summary: Starting a review-and-hardening pass over the current frozen review surface before adding GE gates. The immediate goal is to inspect for scientific/logical/UI regressions, confirm whether the Arab final table actually lost columns or only lost their display surface, and simplify the supervisor pages so downloads live only in the dedicated artifact center.
+- Files changed: `conductor/tracks/T003-DataHarmonization/plan.md`, `conductor/tracks/T003-DataHarmonization/index.md`
+- Verification run + result: `state update only before implementation`
+- Next exact action: Compare legacy vs Arab checkpoint schemas from the frozen artifacts, review the live UI structure, then patch the bundle and UI so section purposes, schema visibility, and download placement are unambiguous.
+
+### Entry 24
+- Timestamp: `2026-03-15T18:15:00+03:00`
+- Agent: `Codex`
+- Task ID: `5.1`
+- Status: `Started`
+- Summary: Completed the scientific/UI hardening checkpoint before GE work. The supervisor UI now shows the workflow as explicit review stages, exposes the AVDB `GRCh37 -> GRCh38` evidence on its own page, keeps downloads only in the artifact center, and confirms the Arab final table is a true superset of the baseline final table rather than a lossy replacement.
+- Files changed: `scripts/build_brca_normalized_artifacts.py`, `scripts/update_source_review_state.py`, `scripts/refresh_supervisor_review_bundle.py`, `tests/test_build_brca_normalized_artifacts.py`, `tests/test_refresh_supervisor_review_bundle.py`, `tests/test_source_review_state.py`, `tests/test_ui_catalog.py`, `ui/index.html`, `ui/app.js`, `ui/styles.css`, `ui/source_review.json`, `ui/review_bundle.json`, `ui/traceability.py`, `conductor/checkpoints/2026-03-15-t003-scientific-review-ui-hardening.md`, `conductor/tracks/T003-DataHarmonization/index.md`
+- Verification run + result: `python3 scripts/build_brca_normalized_artifacts.py (pass)`, `python3 scripts/update_source_review_state.py (pass)`, `python3 scripts/refresh_supervisor_review_bundle.py (pass)`, `python3 scripts/verify_brca_normalized_artifacts.py (pass)`, `python3 -m pytest -q tests (85 passed)`, `node --check ui/app.js (pass)`, `local Playwright review on overview/standardization/final/arab-extension/artifacts (pass)`
+- Next exact action: Implement the actual GE suites/checkpoints for the frozen normalized artifacts and checkpoint tables, then publish the validation outputs in the same static supervisor surface.

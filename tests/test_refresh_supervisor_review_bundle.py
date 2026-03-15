@@ -1,4 +1,4 @@
-from scripts.refresh_supervisor_review_bundle import build_artifact_catalog, csv_object_from_parquet_uri
+from scripts.refresh_supervisor_review_bundle import build_artifact_catalog, csv_object_from_parquet_uri, schema_lineage_summary
 
 
 def test_csv_object_from_parquet_uri_swaps_extension():
@@ -80,3 +80,17 @@ def test_build_artifact_catalog_groups_raw_and_derived_entries():
     assert groups["normalized_artifacts"]["entries"][0]["downloads"][0]["url"].endswith("clinvar.csv")
     assert groups["legacy_checkpoint_artifacts"]["entries"][0]["title"] == "legacy_pre"
     assert groups["arab_extension_artifacts"]["entries"][1]["title"] == "arab_final"
+
+
+def test_schema_lineage_summary_reports_added_and_missing_columns():
+    lineage = schema_lineage_summary(
+        baseline_entry={"columns": [{"name": "CHROM"}, {"name": "POS"}, {"name": "OLD_COL"}]},
+        current_entry={"columns": [{"name": "CHROM"}, {"name": "POS"}, {"name": "NEW_COL"}]},
+        added_label="Added fields",
+    )
+
+    assert lineage["baseline_column_count"] == 3
+    assert lineage["current_column_count"] == 3
+    assert lineage["preserved_column_count"] == 2
+    assert lineage["missing_columns"] == ["OLD_COL"]
+    assert lineage["added_columns"] == ["NEW_COL"]

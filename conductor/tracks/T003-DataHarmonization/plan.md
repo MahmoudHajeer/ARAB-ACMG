@@ -21,7 +21,7 @@
 - [x] 4.3 Add canonical-key validation tests against the frozen harmonized artifacts (DuckDB/pytest, whichever is lowest cost and reproducible). (`ce413a7`)
 
 ## Phase 5: GE Quality Gates
-- [ ] 5.1 Create GE suites/checkpoints for harmonized artifacts (canonical key, duplicates, status enums).
+- [~] 5.1 Create GE suites/checkpoints for harmonized artifacts (canonical key, duplicates, status enums).
 - [ ] 5.2 Publish GE Data Docs for harmonized validation runs to GCS.
 
 ---

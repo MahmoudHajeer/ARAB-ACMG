@@ -63,4 +63,4 @@ def test_build_source_decision_summary_groups_sources_by_use_tier():
 
 def test_workflow_position_rules_identify_current_final_inclusion():
     assert WORKFLOW_POSITION_RULES["clinvar"]["included_in_current_final"] is True
-    assert WORKFLOW_POSITION_RULES["shgp_saudi_af"]["included_in_current_final"] is False
+    assert WORKFLOW_POSITION_RULES["shgp_saudi_af"]["included_in_current_final"] is True

@@ -24,6 +24,7 @@ import gzip
 import hashlib
 import io
 import json
+import logging
 import re
 import subprocess
 import tempfile
@@ -41,6 +42,7 @@ BUCKET_NAME: Final[str] = "mahmoud-arab-acmg-research-data"
 SNAPSHOT_DATE: Final[str] = dt.date.today().isoformat()
 RUN_ID: Final[str] = f"brca-normalize-{dt.datetime.now(dt.UTC).strftime('%Y%m%dT%H%M%SZ')}"
 TIMESTAMP_UTC: Final[str] = dt.datetime.now(dt.UTC).isoformat()
+LOGGER = logging.getLogger("build_brca_normalized_artifacts")
 
 BRCA_WINDOWS: Final[dict[str, dict[str, int | str]]] = {
     "BRCA1": {"chrom": "chr17", "start": 43044295, "end": 43170245},
@@ -165,7 +167,7 @@ GME_LOCAL_FILE: Final[Path] = Path("/Users/macbookpro/Desktop/storage/raw/gme/hg
 OLD_REC_TAG: Final[str] = "OLD_REC"
 QUERY_FORMATS: Final[dict[str, str]] = {
     "clinvar": "%CHROM\t%POS\t%ID\t%REF\t%ALT\t%INFO/OLD_REC\t%INFO/ALLELEID\t%INFO/CLNSIG\t%INFO/CLNREVSTAT\t%INFO/GENEINFO\t%INFO/MC\t%INFO/CLNVC\t%INFO/CLNHGVS\t%INFO/CLNDN\t%INFO/CLNDISDB\n",
-    "gnomad": "%CHROM\t%POS\t%ID\t%REF\t%ALT\t%INFO/OLD_REC\t%INFO/AC\t%INFO/AN\t%INFO/AF\t%INFO/nhomalt\t%INFO/AC_mid\t%INFO/AN_mid\t%INFO/AF_mid\t%INFO/nhomalt_mid\t%INFO/AC_afr\t%INFO/AF_afr\n",
+    "gnomad": "%CHROM\t%POS\t%ID\t%REF\t%ALT\t%INFO/OLD_REC\t%INFO/AC\t%INFO/AN\t%INFO/AF\t%INFO/nhomalt\t%INFO/AC_mid\t%INFO/AN_mid\t%INFO/AF_mid\t%INFO/nhomalt_mid\t%INFO/AC_afr\t%INFO/AF_afr\t%INFO/AC_nfe\t%INFO/AN_nfe\t%INFO/AC_fin\t%INFO/AN_fin\t%INFO/AC_asj\t%INFO/AN_asj\t%INFO/VarDP\n",
     "shgp": "%CHROM\t%POS\t%ID\t%REF\t%ALT\t%INFO/OLD_REC\t%INFO/SRC_ROW\t%INFO/SRC_LOC\t%INFO/SHGP_AC\t%INFO/SHGP_AN\t%INFO/SHGP_AF\n",
     "gme": "%CHROM\t%POS\t%ID\t%REF\t%ALT\t%INFO/OLD_REC\t%INFO/SRC_ROW\t%INFO/SRC_LOC\t%INFO/GME_AF\t%INFO/GME_NWA\t%INFO/GME_NEA\t%INFO/GME_AP\t%INFO/GME_ISRAEL\t%INFO/GME_SD\t%INFO/GME_TP\t%INFO/GME_CA\n",
 }
@@ -790,6 +792,13 @@ def parse_gnomad_frame(raw: pd.DataFrame, source: SourceArtifact, *, cohort: str
             "nhomalt_mid": "hom_mid",
             "AC_afr": "ac_afr",
             "AF_afr": "af_afr",
+            "AC_nfe": "ac_nfe",
+            "AN_nfe": "an_nfe",
+            "AC_fin": "ac_fin",
+            "AN_fin": "an_fin",
+            "AC_asj": "ac_asj",
+            "AN_asj": "an_asj",
+            "VarDP": "vardp",
         }
     )
     frame["pos38"] = frame["pos38"].astype(int)
@@ -797,10 +806,14 @@ def parse_gnomad_frame(raw: pd.DataFrame, source: SourceArtifact, *, cohort: str
     frame["gene"] = [infer_gene(chrom, pos) for chrom, pos in zip(frame["chrom38"], frame["pos38"])]
     frame["variant_key"] = frame.apply(lambda row: f"{row['chrom38']}:{row['pos38']}:{row['ref_norm']}:{row['alt_norm']}", axis=1)
     frame["vartype"] = [variant_type(ref, alt) for ref, alt in zip(frame["ref_norm"], frame["alt_norm"])]
-    for column in ["ac", "an", "hom", "ac_mid", "an_mid", "hom_mid", "ac_afr"]:
+    for column in ["ac", "an", "hom", "ac_mid", "an_mid", "hom_mid", "ac_afr", "ac_nfe", "an_nfe", "ac_fin", "an_fin", "ac_asj", "an_asj"]:
         frame[column] = pd.to_numeric(frame[column].replace("", 0), errors="coerce").fillna(0).astype(int)
-    for column in ["af", "af_mid", "af_afr"]:
+    for column in ["af", "af_mid", "af_afr", "vardp"]:
         frame[column] = pd.to_numeric(frame[column].replace("", 0), errors="coerce").fillna(0.0)
+    frame["ac_eur_proxy"] = frame["ac_nfe"] + frame["ac_fin"] + frame["ac_asj"]
+    frame["an_eur_proxy"] = frame["an_nfe"] + frame["an_fin"] + frame["an_asj"]
+    frame["af_eur_proxy"] = frame["ac_eur_proxy"].divide(frame["an_eur_proxy"].where(frame["an_eur_proxy"] != 0)).where(frame["an_eur_proxy"] != 0)
+    frame["depth"] = frame["vardp"].where(frame["vardp"] > 0)
     frame["cohort"] = cohort
     frame["source_row_number"] = None
     frame["source_record_locator"] = frame["raw_record"].map(lambda value: f"vcf_record={value}" if value and value != "." else "vcf_record=as_emitted")
@@ -918,10 +931,17 @@ def aggregate_gnomad(frame: pd.DataFrame, *, prefix: str) -> pd.DataFrame:
             hom_mid=("hom_mid", "first"),
             ac_afr=("ac_afr", "first"),
             af_afr=("af_afr", "first"),
+            ac_eur_proxy=("ac_eur_proxy", "first"),
+            an_eur_proxy=("an_eur_proxy", "first"),
+            af_eur_proxy=("af_eur_proxy", "first"),
+            depth=("depth", "first"),
         )
         .reset_index()
     )
-    rename_map = {column: f"{prefix}_{column}" for column in ["ac", "an", "af", "hom", "ac_mid", "an_mid", "af_mid", "hom_mid", "ac_afr", "af_afr"]}
+    rename_map = {
+        column: f"{prefix}_{column}"
+        for column in ["ac", "an", "af", "hom", "ac_mid", "an_mid", "af_mid", "hom_mid", "ac_afr", "af_afr", "ac_eur_proxy", "an_eur_proxy", "af_eur_proxy", "depth"]
+    }
     return grouped.rename(columns=rename_map)
 
 
@@ -1003,6 +1023,16 @@ def build_checkpoint(
     mid_an = merged[[column for column in ["genomes_an_mid", "exomes_an_mid"] if column in merged.columns]].fillna(0).sum(axis=1)
     mid_hom = merged[[column for column in ["genomes_hom_mid", "exomes_hom_mid"] if column in merged.columns]].fillna(0).sum(axis=1)
 
+    def optional_value(column: str) -> pd.Series | list[None]:
+        if column in merged.columns:
+            return merged[column]
+        return null_series(len(merged))
+
+    def presence_flag(column: str) -> pd.Series:
+        if column not in merged.columns:
+            return pd.Series(0, index=merged.index, dtype=int)
+        return merged[column].notna().astype(int)
+
     result = pd.DataFrame(
         {
             "CHROM": merged["chrom38"],
@@ -1016,14 +1046,14 @@ def build_checkpoint(
             "Segdup": null_series(len(merged)),
             "Blacklist": null_series(len(merged)),
             "GENE": merged["gene"],
-            "EFFECT": merged.get("effect"),
+            "EFFECT": optional_value("effect"),
             "HGVS_C": null_series(len(merged)),
             "HGVS_P": null_series(len(merged)),
-            "PHENOTYPES_OMIM": merged.get("phenotypes_omim"),
-            "PHENOTYPES_OMIM_ID": merged.get("phenotypes_omim_id"),
+            "PHENOTYPES_OMIM": optional_value("phenotypes_omim"),
+            "PHENOTYPES_OMIM_ID": optional_value("phenotypes_omim_id"),
             "INHERITANCE_PATTERN": null_series(len(merged)),
-            "ALLELEID": merged.get("alleleid"),
-            "CLNSIG": merged.get("clnsig"),
+            "ALLELEID": optional_value("alleleid"),
+            "CLNSIG": optional_value("clnsig"),
             "TOPMED_AF": null_series(len(merged)),
             "TOPMed_Hom": null_series(len(merged)),
             "ALFA_AF": null_series(len(merged)),
@@ -1046,30 +1076,40 @@ def build_checkpoint(
             "POLYPHEN2_HVAR_PRED": null_series(len(merged)),
             "PROVEAN_PRE": null_series(len(merged)),
             "VARIANT_KEY": merged["variant_key"],
-            "CLNREVSTAT": merged.get("clnrevstat"),
-            "GNOMAD_GENOMES_AC": merged.get("genomes_ac"),
-            "GNOMAD_GENOMES_AN": merged.get("genomes_an"),
-            "GNOMAD_GENOMES_AF": merged.get("genomes_af"),
-            "GNOMAD_GENOMES_HOM": merged.get("genomes_hom"),
-            "GNOMAD_EXOMES_AC": merged.get("exomes_ac"),
-            "GNOMAD_EXOMES_AN": merged.get("exomes_an"),
-            "GNOMAD_EXOMES_AF": merged.get("exomes_af"),
-            "GNOMAD_EXOMES_HOM": merged.get("exomes_hom"),
-            "SHGP_AC": merged.get("shgp_ac"),
-            "SHGP_AN": merged.get("shgp_an"),
-            "SHGP_AF": merged.get("shgp_af"),
-            "GME_AF": merged.get("gme_af") if gme is not None else null_series(len(merged)),
-            "GME_NWA": merged.get("gme_nwa") if gme is not None else null_series(len(merged)),
-            "GME_NEA": merged.get("gme_nea") if gme is not None else null_series(len(merged)),
-            "GME_AP": merged.get("gme_ap") if gme is not None else null_series(len(merged)),
-            "GME_SD": merged.get("gme_sd") if gme is not None else null_series(len(merged)),
+            "CLNREVSTAT": optional_value("clnrevstat"),
+            "GNOMAD_GENOMES_AC": optional_value("genomes_ac"),
+            "GNOMAD_GENOMES_AN": optional_value("genomes_an"),
+            "GNOMAD_GENOMES_AF": optional_value("genomes_af"),
+            "GNOMAD_GENOMES_HOM": optional_value("genomes_hom"),
+            "GNOMAD_GENOMES_AF_AFR": optional_value("genomes_af_afr"),
+            "GNOMAD_GENOMES_AF_EUR_PROXY": optional_value("genomes_af_eur_proxy"),
+            "GNOMAD_EXOMES_AC": optional_value("exomes_ac"),
+            "GNOMAD_EXOMES_AN": optional_value("exomes_an"),
+            "GNOMAD_EXOMES_AF": optional_value("exomes_af"),
+            "GNOMAD_EXOMES_HOM": optional_value("exomes_hom"),
+            "GNOMAD_EXOMES_AF_AFR": optional_value("exomes_af_afr"),
+            "GNOMAD_EXOMES_AF_EUR_PROXY": optional_value("exomes_af_eur_proxy"),
+            "GNOMAD_GENOMES_DEPTH": optional_value("genomes_depth"),
+            "GNOMAD_EXOMES_DEPTH": optional_value("exomes_depth"),
+            "SHGP_AC": optional_value("shgp_ac"),
+            "SHGP_AN": optional_value("shgp_an"),
+            "SHGP_AF": optional_value("shgp_af"),
+            "GME_AF": optional_value("gme_af") if gme is not None else null_series(len(merged)),
+            "GME_NWA": optional_value("gme_nwa") if gme is not None else null_series(len(merged)),
+            "GME_NEA": optional_value("gme_nea") if gme is not None else null_series(len(merged)),
+            "GME_AP": optional_value("gme_ap") if gme is not None else null_series(len(merged)),
+            "GME_SD": optional_value("gme_sd") if gme is not None else null_series(len(merged)),
         }
     )
-    result["PRESENT_IN_CLINVAR"] = merged.get("alleleid").notna().astype(int)
-    result["PRESENT_IN_GNOMAD_GENOMES"] = merged.get("genomes_af").notna().astype(int)
-    result["PRESENT_IN_GNOMAD_EXOMES"] = merged.get("exomes_af").notna().astype(int)
-    result["PRESENT_IN_SHGP"] = merged.get("shgp_af").notna().astype(int)
-    result["PRESENT_IN_GME"] = merged.get("gme_af").notna().astype(int) if "gme_af" in merged else 0
+    if gme is not None:
+        result["GME_ISRAEL"] = optional_value("gme_israel")
+        result["GME_TP"] = optional_value("gme_tp")
+        result["GME_CA"] = optional_value("gme_ca")
+    result["PRESENT_IN_CLINVAR"] = presence_flag("alleleid")
+    result["PRESENT_IN_GNOMAD_GENOMES"] = presence_flag("genomes_af")
+    result["PRESENT_IN_GNOMAD_EXOMES"] = presence_flag("exomes_af")
+    result["PRESENT_IN_SHGP"] = presence_flag("shgp_af")
+    result["PRESENT_IN_GME"] = presence_flag("gme_af")
     result["SOURCE_COUNT"] = result[["PRESENT_IN_CLINVAR", "PRESENT_IN_GNOMAD_GENOMES", "PRESENT_IN_GNOMAD_EXOMES", "PRESENT_IN_SHGP", "PRESENT_IN_GME"]].sum(axis=1)
     result["PIPELINE_STAGE"] = stage_label
     return result.where(pd.notnull(result), None)
@@ -1099,7 +1139,7 @@ def source_columns() -> list[dict[str, str]]:
     ]
 
 
-def required_and_extra_glossary() -> list[dict[str, str]]:
+def required_and_extra_glossary(*, include_gme_context: bool) -> list[dict[str, str]]:
     required = [
         ("CHROM", "Canonical GRCh38 chromosome label with chr prefix."),
         ("POS", "1-based canonical start position."),
@@ -1149,10 +1189,16 @@ def required_and_extra_glossary() -> list[dict[str, str]]:
         ("GNOMAD_GENOMES_AN", "Normalized gnomAD genomes allele number."),
         ("GNOMAD_GENOMES_AF", "Normalized gnomAD genomes allele frequency."),
         ("GNOMAD_GENOMES_HOM", "Normalized gnomAD genomes homozygote count."),
+        ("GNOMAD_GENOMES_AF_AFR", "Normalized gnomAD genomes African-ancestry allele frequency."),
+        ("GNOMAD_GENOMES_AF_EUR_PROXY", "Normalized gnomAD genomes Europe-proxy AF built from NFE + FIN + ASJ counts."),
         ("GNOMAD_EXOMES_AC", "Normalized gnomAD exomes allele count."),
         ("GNOMAD_EXOMES_AN", "Normalized gnomAD exomes allele number."),
         ("GNOMAD_EXOMES_AF", "Normalized gnomAD exomes allele frequency."),
         ("GNOMAD_EXOMES_HOM", "Normalized gnomAD exomes homozygote count."),
+        ("GNOMAD_EXOMES_AF_AFR", "Normalized gnomAD exomes African-ancestry allele frequency."),
+        ("GNOMAD_EXOMES_AF_EUR_PROXY", "Normalized gnomAD exomes Europe-proxy AF built from NFE + FIN + ASJ counts."),
+        ("GNOMAD_GENOMES_DEPTH", "gnomAD genomes depth field preserved from the raw INFO payload when present."),
+        ("GNOMAD_EXOMES_DEPTH", "gnomAD exomes depth field preserved from the raw INFO payload when present."),
         ("SHGP_AC", "Saudi frequency-table alternate allele count."),
         ("SHGP_AN", "Saudi frequency-table total allele count."),
         ("SHGP_AF", "Saudi frequency-table allele frequency."),
@@ -1169,6 +1215,14 @@ def required_and_extra_glossary() -> list[dict[str, str]]:
         ("SOURCE_COUNT", "How many source streams support the canonical allele in this checkpoint."),
         ("PIPELINE_STAGE", "Checkpoint label used for the frozen artifact."),
     ]
+    if include_gme_context:
+        extras.extend(
+            [
+                ("GME_ISRAEL", "Upstream GME Israel/Jewish subgroup frequency preserved only as regional context for audit."),
+                ("GME_TP", "Upstream GME Turkish Peninsula subgroup frequency preserved only as regional context for audit."),
+                ("GME_CA", "Upstream GME Central Asia subgroup frequency preserved only as regional context for audit."),
+            ]
+        )
     return build_header_glossary(required, extras)
 
 
@@ -1255,7 +1309,7 @@ def build_review_bundle(
                     "id": "final_checkpoint",
                     "title": "Step 7: Build the final Arab checkpoint",
                     "simple": "Add the supporting GME layer on top of the Arab pre-GME checkpoint without changing the required header order.",
-                    "technical": "Only the Arab-relevant GME fields are carried forward as extras, so context-only subgroup columns do not clutter the final registry.",
+                    "technical": "The final table keeps the full legacy extra surface, then adds SHGP audit fields and GME fields; context-only GME subgroup columns remain marked as context extras.",
                 },
             ],
         },
@@ -1300,8 +1354,9 @@ def build_review_bundle(
             "row_count": final_artifact.row_count,
             "scope_note": "This final checkpoint keeps the Arab-aware pre-GME table intact, then adds the supporting GME layer as explicit extras.",
             "accuracy_notes": [
-                "Context-only GME subgroup columns were intentionally left out of the final checkpoint to keep the Arab analysis focused.",
-                "The only added GME extras are the overall AF and the Arab-relevant subgroup frequencies (NWA, NEA, AP, SD).",
+                "All legacy final-review columns are preserved before any Arab-specific additions are appended.",
+                "SHGP fields and source-presence audit flags are added as new extras without replacing the earlier gnomAD extra fields.",
+                "GME_ISRAEL, GME_TP, and GME_CA remain available only as context extras and should not be treated as core Arab-study endpoints.",
             ],
             "scientific_notes": [
                 "The final CSV download points to the frozen GCS export of this checkpoint, not a live query.",
@@ -1489,6 +1544,8 @@ def artifact_prefix(name: str) -> str:
 
 
 def main() -> None:
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
+    LOGGER.info("Loading frozen source manifests")
     storage_client = storage.Client(project=PROJECT_ID)
     clinvar_manifest = download_gcs_json(storage_client, CLINVAR_MANIFEST_URI)
     shgp_manifest = download_gcs_json(storage_client, SHGP_MANIFEST_URI)
@@ -1518,11 +1575,13 @@ def main() -> None:
 
     with tempfile.TemporaryDirectory(prefix="arab_acmg_t003_") as tmpdir:
         temp_dir = Path(tmpdir)
+        LOGGER.info("Preparing BRCA reference fasta")
         reference_fasta, reference_meta = download_reference_fasta(temp_dir)
         reference = load_reference_sequences(reference_fasta)
         rename_map = temp_dir / "clinvar_chr_map.txt"
         rename_map.write_text("13\tchr13\n17\tchr17\n", encoding="utf-8")
 
+        LOGGER.info("Normalizing ClinVar BRCA rows")
         clinvar_frame, clinvar_report, clinvar_raw_preview = normalize_public_vcf_source(
             temp_dir=temp_dir,
             source=clinvar_source,
@@ -1537,6 +1596,7 @@ def main() -> None:
 
         gnomad_genomes_frames: list[pd.DataFrame] = []
         gnomad_genomes_reports: list[dict[str, Any]] = []
+        LOGGER.info("Normalizing gnomAD genomes BRCA rows")
         for chrom_key in ["genomes_chr13", "genomes_chr17"]:
             chrom = "chr13" if chrom_key.endswith("chr13") else "chr17"
             gene = "BRCA2" if chrom == "chr13" else "BRCA1"
@@ -1548,7 +1608,7 @@ def main() -> None:
                 regions=[f"{chrom}:{BRCA_WINDOWS[gene]['start']}-{BRCA_WINDOWS[gene]['end']}"],
                 reference_fasta=reference_fasta,
                 query_format=QUERY_FORMATS["gnomad"],
-                query_columns=["CHROM", "POS", "ID", "REF", "ALT", "OLD_REC", "AC", "AN", "AF", "nhomalt", "AC_mid", "AN_mid", "AF_mid", "nhomalt_mid", "AC_afr", "AF_afr"],
+                query_columns=["CHROM", "POS", "ID", "REF", "ALT", "OLD_REC", "AC", "AN", "AF", "nhomalt", "AC_mid", "AN_mid", "AF_mid", "nhomalt_mid", "AC_afr", "AF_afr", "AC_nfe", "AN_nfe", "AC_fin", "AN_fin", "AC_asj", "AN_asj", "VarDP"],
                 parser=lambda raw, source_obj, cohort="genomes": parse_gnomad_frame(raw, source_obj, cohort=cohort),
             )
             gnomad_genomes_frames.append(frame)
@@ -1561,6 +1621,7 @@ def main() -> None:
 
         gnomad_exomes_frames: list[pd.DataFrame] = []
         gnomad_exomes_reports: list[dict[str, Any]] = []
+        LOGGER.info("Normalizing gnomAD exomes BRCA rows")
         for chrom_key in ["exomes_chr13", "exomes_chr17"]:
             chrom = "chr13" if chrom_key.endswith("chr13") else "chr17"
             gene = "BRCA2" if chrom == "chr13" else "BRCA1"
@@ -1572,7 +1633,7 @@ def main() -> None:
                 regions=[f"{chrom}:{BRCA_WINDOWS[gene]['start']}-{BRCA_WINDOWS[gene]['end']}"],
                 reference_fasta=reference_fasta,
                 query_format=QUERY_FORMATS["gnomad"],
-                query_columns=["CHROM", "POS", "ID", "REF", "ALT", "OLD_REC", "AC", "AN", "AF", "nhomalt", "AC_mid", "AN_mid", "AF_mid", "nhomalt_mid", "AC_afr", "AF_afr"],
+                query_columns=["CHROM", "POS", "ID", "REF", "ALT", "OLD_REC", "AC", "AN", "AF", "nhomalt", "AC_mid", "AN_mid", "AF_mid", "nhomalt_mid", "AC_afr", "AF_afr", "AC_nfe", "AN_nfe", "AC_fin", "AN_fin", "AC_asj", "AN_asj", "VarDP"],
                 parser=lambda raw, source_obj, cohort="exomes": parse_gnomad_frame(raw, source_obj, cohort=cohort),
             )
             gnomad_exomes_frames.append(frame)
@@ -1583,6 +1644,7 @@ def main() -> None:
                 gnomad_exomes_raw_preview = pd.concat([gnomad_exomes_raw_preview, raw_preview], ignore_index=True)
         gnomad_exomes_frame = pd.concat(gnomad_exomes_frames, ignore_index=True)
 
+        LOGGER.info("Normalizing SHGP BRCA rows")
         shgp_rows = build_shgp_rows()
         shgp_frame, shgp_report = normalize_table_source(
             temp_dir=temp_dir,
@@ -1601,6 +1663,7 @@ def main() -> None:
             parser=parse_shgp_frame,
         )
 
+        LOGGER.info("Normalizing GME BRCA rows")
         gme_rows = build_gme_rows()
         gme_frame, gme_report = normalize_table_source(
             temp_dir=temp_dir,
@@ -1685,12 +1748,14 @@ def main() -> None:
                 )
             )
 
+        LOGGER.info("Aggregating normalized source artifacts")
         clinvar_agg = aggregate_clinvar(clinvar_frame)
         gnomad_genomes_agg = aggregate_gnomad(gnomad_genomes_frame, prefix="genomes")
         gnomad_exomes_agg = aggregate_gnomad(gnomad_exomes_frame, prefix="exomes")
         shgp_agg = aggregate_shgp(shgp_frame)
         gme_agg = aggregate_gme(gme_frame)
 
+        LOGGER.info("Building Arab checkpoint tables")
         pre_gme_checkpoint = build_checkpoint(
             clinvar=clinvar_agg,
             gnomad_genomes=gnomad_genomes_agg,
@@ -1725,7 +1790,8 @@ def main() -> None:
             },
             "notes": [
                 "GNOMAD_ALL_AF and GNOMAD_MID_AF are derived metrics built from explicit genomes/exomes counts inside this project checkpoint; they are not copied from a single upstream field.",
-                "The final checkpoint intentionally carries only the Arab-relevant GME extras (AF, NWA, NEA, AP, SD).",
+                "Arab checkpoints preserve the legacy gnomAD extra columns first, then add Arab-specific SHGP fields and GME fields on top.",
+                "GME_ISRAEL, GME_TP, and GME_CA remain present only as context extras so the upstream regional table can still be audited without making them core Arab-study endpoints.",
                 "Reserved publication-facing fields remain NULL until a documented source is added rather than being guessed.",
             ],
         }
@@ -1743,6 +1809,7 @@ def main() -> None:
         save_csv(final_checkpoint, final_csv)
         json_dump(checkpoint_report_path, checkpoint_report)
 
+        LOGGER.info("Uploading checkpoint artifacts to GCS")
         pre_parquet_uri = upload_file(storage_client, pre_parquet, f"{pre_prefix}/{pre_key}.parquet", content_type="application/octet-stream")
         final_parquet_uri = upload_file(storage_client, final_parquet, f"{final_prefix}/{final_key}.parquet", content_type="application/octet-stream")
         final_csv_uri = upload_file(storage_client, final_csv, PUBLIC_FINAL_CSV_OBJECT, content_type="text/csv", make_public=True)
@@ -1777,7 +1844,7 @@ def main() -> None:
             local_parquet=pre_parquet,
             local_manifest=checkpoint_report_path,
             sample=pre_sample,
-            columns=required_and_extra_glossary(),
+            columns=required_and_extra_glossary(include_gme_context=False),
             summary="Arab-aware checkpoint before GME: normalized ClinVar + gnomAD + SHGP.",
             notes=[f"Checkpoint report: {checkpoint_report_uri}", f"Normalization report: {normalization_report_uri}"],
         )
@@ -1790,7 +1857,7 @@ def main() -> None:
             local_parquet=final_parquet,
             local_manifest=checkpoint_report_path,
             sample=final_sample,
-            columns=required_and_extra_glossary(),
+            columns=required_and_extra_glossary(include_gme_context=True),
             summary="Final Arab-aware checkpoint after adding the supporting GME layer.",
             notes=[f"Checkpoint report: {checkpoint_report_uri}", f"Normalization report: {normalization_report_uri}", f"Final CSV: {final_csv_uri}"],
         )
@@ -1838,6 +1905,7 @@ def main() -> None:
             ),
         ]
 
+        LOGGER.info("Refreshing frozen review bundle inputs")
         normalized_cards = [normalized_card(artifact=artifact) for artifact in normalized_workflow_artifacts]
         review_bundle = build_review_bundle(
             raw_cards=raw_cards,
@@ -1988,7 +2056,7 @@ def main() -> None:
                     "included_in_current_final": True,
                 },
                 notes=[
-                    "Only Arab-relevant GME subgroup fields are carried to the final checkpoint; context-only columns are left out deliberately.",
+                    "Arab-relevant GME subgroup fields are used as the main extension signal, while broader regional subgroup fields stay visible only as context extras for audit.",
                     f"Normalization report: {normalization_report_uri}",
                 ],
                 artifact_links=[
@@ -2099,7 +2167,9 @@ def main() -> None:
             },
         ]
         source_review = build_source_review_json(sources=source_entries, decision_summary=build_decision_summary(source_entries))
+        LOGGER.info("Writing refreshed UI files and bundle")
         write_ui_files(review_bundle, source_review)
+        LOGGER.info("Updating overview state and composing supervisor bundle")
         update_overview_state()
         subprocess.run(["python3", "scripts/refresh_supervisor_review_bundle.py"], check=True, cwd=ROOT)
 

@@ -478,6 +478,11 @@ h1 {
   line-height: 1.6;
 }
 
+.artifact-note {
+  margin-top: 12px;
+  color: var(--muted);
+}
+
 .truncate {
   overflow-wrap: anywhere;
 }

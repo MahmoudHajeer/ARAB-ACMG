@@ -1,12 +1,13 @@
 const DEFAULT_PAGE = "overview";
 const EXTRA_WORKFLOW_PAGES = [
   {
-    id: "access",
-    title: "Controlled Access",
-    summary: "Official access paths for large Arab datasets that still require provider approval.",
+    id: "standardization",
+    title: "Genome Build Conversion",
+    summary: "Frozen evidence for any source that needed explicit build conversion before BRCA work.",
+    afterId: "raw",
   },
 ];
-const KNOWN_PAGE_IDS = new Set(["overview", "raw", "harmonization", "pre-gme", "final", "arab-extension", "artifacts", "access"]);
+const KNOWN_PAGE_IDS = new Set(["overview", "raw", "standardization", "harmonization", "pre-gme", "final", "arab-extension", "artifacts", "access"]);
 const resourceCache = new Map();
 const inflightRequests = new Map();
 const renderedPages = new Set();
@@ -65,9 +66,20 @@ async function fetchResource(key, path) {
 }
 
 function workflowPages() {
-  const basePages = workflowPayload?.pages || [];
+  const basePages = [...(workflowPayload?.pages || [])];
   const seen = new Set(basePages.map((page) => page.id));
-  return [...basePages, ...EXTRA_WORKFLOW_PAGES.filter((page) => !seen.has(page.id))];
+  const extras = EXTRA_WORKFLOW_PAGES.filter((page) => !seen.has(page.id));
+
+  for (const extra of extras) {
+    const insertAfter = basePages.findIndex((page) => page.id === extra.afterId);
+    if (insertAfter === -1) {
+      basePages.push(extra);
+      continue;
+    }
+    basePages.splice(insertAfter + 1, 0, extra);
+  }
+
+  return basePages;
 }
 
 function currentPageId() {
@@ -109,7 +121,7 @@ function renderTraceSummary(trace) {
 
   return `
     <details class="details-card trace-card">
-      <summary>Trace</summary>
+      <summary>Evidence trail</summary>
       <div class="trace-grid">
         ${rows
           .map(
@@ -131,9 +143,9 @@ function renderWorkflowNav(pages) {
   const root = document.getElementById("workflow-nav");
   root.innerHTML = pages
     .map(
-      (page) => `
+      (page, index) => `
       <a class="workflow-link" data-page-link="${page.id}" href="#${page.id}">
-        <span class="workflow-link-step">${escapeHtml(page.id)}</span>
+        <span class="workflow-link-step">Step ${index + 1}</span>
         <span class="workflow-link-title">${escapeHtml(page.title)}</span>
         <span class="workflow-link-summary">${escapeHtml(page.summary)}</span>
       </a>
@@ -173,30 +185,6 @@ function renderLinkList(links) {
         .join("")}
     </div>
   `;
-}
-
-// [AI-Agent: Codex]: Review Stage A - explain the harmonization workflow as explicit scientific gates so the supervisor can audit each decision boundary.
-function renderWorkflowCategories(categories) {
-  const root = document.getElementById("workflow-categories");
-  root.innerHTML = categories
-    .map(
-      (category) => `
-      <article class="workflow-card scientific-card">
-        <div class="workflow-step">${escapeHtml(category.id)}</div>
-        <div class="workflow-title">${escapeHtml(category.title)}</div>
-        <p class="workflow-summary">${escapeHtml(category.purpose)}</p>
-        <details class="details-card">
-          <summary>Evidence used</summary>
-          ${renderNoteStack(category.evidence_types.map((item) => `Evidence: ${item}`))}
-        </details>
-        <details class="details-card">
-          <summary>Output of this stage</summary>
-          <div class="metric-sub">${escapeHtml(category.output)}</div>
-        </details>
-      </article>
-    `
-    )
-    .join("");
 }
 
 function renderStatusCards(counts) {
@@ -294,7 +282,7 @@ function renderScientificMetrics(metrics) {
 
   return `
     <details class="details-card">
-      <summary>Frozen scientific evidence (${escapeHtml(frozenAt)})</summary>
+      <summary>Scientific evidence (${escapeHtml(frozenAt)})</summary>
       <div class="note-stack">
         ${windows
           .map(
@@ -389,11 +377,11 @@ function renderSourceLiftoverMethod(source) {
       <summary>GRCh37 -> GRCh38 method</summary>
       <div class="metric-stack">
         <div class="metric-item">
-          <div class="metric-title">Why liftover was required</div>
+          <div class="metric-title">Why conversion was needed</div>
           <div class="metric-sub">${escapeHtml(method.why_needed)}</div>
         </div>
         <div class="metric-item">
-          <div class="metric-title">How the mapping was executed</div>
+          <div class="metric-title">How it was done</div>
           ${renderNoteStack(method.how_it_worked || [])}
         </div>
         <div class="metric-item">
@@ -407,11 +395,11 @@ function renderSourceLiftoverMethod(source) {
           ])}
         </div>
         <div class="metric-item">
-          <div class="metric-title">Method summary</div>
+          <div class="metric-title">Result</div>
           <div class="metric-sub">${escapeHtml(method.workflow_summary)}</div>
         </div>
         <div class="metric-item">
-          <div class="metric-title">Official mapping references</div>
+          <div class="metric-title">Official references</div>
           ${renderLinkList(officialLinks)}
         </div>
         ${
@@ -434,21 +422,21 @@ function renderSourceWorkflowPosition(source) {
   return `
     <div class="lineage-strip">
       <article class="lineage-step">
-        <div class="lineage-label">Raw</div>
+        <div class="lineage-label">Raw evidence</div>
         <div class="lineage-value">${escapeHtml(workflow.raw_stage || "Not recorded")}</div>
       </article>
       <article class="lineage-step">
-        <div class="lineage-label">BRCA</div>
+        <div class="lineage-label">BRCA step</div>
         <div class="lineage-value">${escapeHtml(workflow.brca_stage || "Not recorded")}</div>
       </article>
       <article class="lineage-step">
-        <div class="lineage-label">Final</div>
+        <div class="lineage-label">Final table</div>
         <div class="lineage-value">${escapeHtml(workflow.final_stage || "Not recorded")}</div>
         <div class="lineage-flag">${escapeHtml(inclusionLabel)}</div>
       </article>
     </div>
     <details class="details-card">
-      <summary>Exact workflow wording</summary>
+      <summary>Step wording</summary>
       <div class="trace-grid">
         <article class="trace-item">
           <div class="trace-label">Stage 1</div>
@@ -467,23 +455,57 @@ function renderSourceWorkflowPosition(source) {
   `;
 }
 
-function renderSourceDecisionSummary(payload) {
-  const root = document.getElementById("source-decision-summary");
-  if (!root) {
-    return;
-  }
-  const rows = payload.decision_summary || [];
-  root.innerHTML = rows
-    .map(
-      (entry) => `
-      <article class="workflow-card scientific-card">
-        <div class="workflow-step">${escapeHtml(entry.label.toUpperCase())}</div>
-        <div class="workflow-title">${escapeHtml(entry.summary)}</div>
-        <p class="workflow-summary">${Number(entry.count || 0).toLocaleString()} source(s)</p>
-        ${renderNoteStack((entry.members || []).map((member) => `Source: ${member}`))}
-      </article>
-    `
-    )
+function renderStandardizationPage(payload) {
+  const standardizationSources = payload.sources.filter(
+    (source) => source.liftover_method || String(source.source_build || "").includes("GRCh37")
+  );
+
+  document.getElementById("standardization-summary").innerHTML = `
+    <article class="metric-item">
+      <div class="metric-title">What this step does</div>
+      ${renderNoteStack([
+        "Find sources not already aligned to GRCh38.",
+        "Apply only documented conversion logic.",
+        "Freeze success and failure evidence before normalization.",
+      ])}
+    </article>
+  `;
+
+  document.getElementById("standardization-cards").innerHTML = standardizationSources
+    .map((source) => {
+      const method = source.liftover_method || {};
+      const counts = method.counts || {};
+      const how = method.how_it_worked || [];
+      const links = method.official_sources || [];
+      return `
+        <article class="explorer-card scientific-source-card">
+          <div class="card-head">
+            <div>
+              <div class="sample-title">${escapeHtml(source.display_name)}</div>
+              <div class="metric-sub">${escapeHtml(source.source_build)} -> GRCh38</div>
+            </div>
+            <div class="review-pill ${escapeHtml(source.review_status)}">${escapeHtml(String(source.review_status).toUpperCase())}</div>
+          </div>
+          <div class="scientific-matrix">
+            <div><strong>Why it was needed</strong><span>${escapeHtml(method.why_needed || source.liftover_decision || "Not recorded")}</span></div>
+            <div><strong>Rows parsed</strong><span>${Number(counts.parse_success_rows || counts.total_rows || 0).toLocaleString()}</span></div>
+            <div><strong>Rows converted</strong><span>${Number(counts.liftover_success_rows || 0).toLocaleString()}</span></div>
+            <div><strong>Rows failed</strong><span>${Number(counts.liftover_failure_rows || 0).toLocaleString()}</span></div>
+          </div>
+          ${renderTraceSummary(source.trace)}
+          ${how.length ? `<details class="details-card" open><summary>How it was converted</summary>${renderNoteStack(how)}</details>` : ""}
+          ${
+            source.sample
+              ? `<details class="details-card">
+                  <summary>Frozen converted sample (${Number((source.sample.rows || []).length).toLocaleString()} rows)</summary>
+                  ${renderInlineEvidenceTable(source.sample)}
+                </details>`
+              : ""
+          }
+          ${links.length ? `<details class="details-card"><summary>Official references</summary>${renderLinkList(links.map((url, index) => ({ label: `Source ${index + 1}`, url })))}</details>` : ""}
+        </article>
+      `;
+    })
     .join("");
 }
 
@@ -595,20 +617,20 @@ function renderSourceReviewGrid(payload) {
         ${renderSourceWorkflowPosition(source)}
         ${renderTraceSummary(source.trace)}
         <details class="details-card">
-          <summary>Why this source is kept or limited</summary>
+          <summary>Use decision</summary>
           <div class="metric-sub">${escapeHtml(source.project_fit_note)}</div>
         </details>
         ${renderSourceLiftoverMethod(source)}
         <details class="details-card">
-          <summary>Scientific rationale and evidence</summary>
+          <summary>Scientific notes</summary>
           ${renderSourceEvidenceList(source)}
         </details>
         <details class="details-card">
-          <summary>Frozen provenance artifacts</summary>
+          <summary>Frozen references</summary>
           ${renderSourceArtifactLinks(source)}
         </details>
         <details class="details-card">
-          <summary>Next exact action</summary>
+          <summary>Next action</summary>
           <div class="metric-sub">${escapeHtml(source.next_action)}</div>
         </details>
         ${
@@ -642,6 +664,35 @@ function renderSourceCounts(metrics) {
   `;
 }
 
+function renderSchemaLineageBlock(targetId, lineage) {
+  const root = document.getElementById(targetId);
+  if (!root) {
+    return;
+  }
+  if (!lineage) {
+    root.innerHTML = "";
+    return;
+  }
+
+  const addedColumns = lineage.added_columns || [];
+  const missingColumns = lineage.missing_columns || [];
+  root.innerHTML = `
+    <article class="metric-item">
+      <div class="metric-title">Column change review</div>
+      <div class="scientific-matrix">
+        <div><strong>Baseline columns</strong><span>${Number(lineage.baseline_column_count || 0).toLocaleString()}</span></div>
+        <div><strong>Current columns</strong><span>${Number(lineage.current_column_count || 0).toLocaleString()}</span></div>
+        <div><strong>Preserved baseline columns</strong><span>${Number(lineage.preserved_column_count || 0).toLocaleString()}</span></div>
+        <div><strong>Missing legacy columns</strong><span>${Number(missingColumns.length).toLocaleString()}</span></div>
+      </div>
+      ${renderNoteStack([
+        `${lineage.added_label || "Added columns"}: ${addedColumns.length ? addedColumns.join(", ") : "none"}`,
+        `Missing legacy columns: ${missingColumns.length ? missingColumns.join(", ") : "none"}`,
+      ])}
+    </article>
+  `;
+}
+
 // [AI-Agent: Codex]: Section 3 / Frozen evidence rendering - every preview must state that it comes from the approved static bundle, not from a live analytical query.
 function renderQueryResult(targetId, payload) {
   const root = document.getElementById(targetId);
@@ -666,13 +717,13 @@ function renderQueryResult(targetId, payload) {
 
   root.innerHTML = `
     <details class="details-card">
-      <summary>Frozen sample provenance</summary>
+      <summary>Frozen sample basis</summary>
       <div class="query-meta">
         <div class="note-stack">
           <div class="note-item">Mode: ${escapeHtml(payload.mode || "frozen bundle")}</div>
           <div class="note-item">Frozen at: ${escapeHtml(payload.frozen_at || "not recorded")}</div>
         </div>
-        <pre class="sql-box">${escapeHtml(payload.query_sql)}</pre>
+        ${payload.query_sql ? `<pre class="sql-box">${escapeHtml(payload.query_sql)}</pre>` : ""}
       </div>
     </details>
     <div class="sample-table-wrap">
@@ -720,9 +771,6 @@ function renderDatasetCollection({ targetId, payload, sampleAttr, samplePath }) 
       (entry) => {
         const primaryRef = entry.storage_ref || entry.table_ref;
         const historicalRef = entry.storage_ref ? entry.table_ref : null;
-        const downloadLink = entry.download_url
-          ? `<a class="action-button secondary-link" href="${entry.download_url}">Download static file</a>`
-          : "";
         return `
       <article class="explorer-card">
         <div class="card-head">
@@ -734,13 +782,12 @@ function renderDatasetCollection({ targetId, payload, sampleAttr, samplePath }) 
           </div>
           <div class="action-row compact-actions">
             <button type="button" class="action-button" data-${sampleAttr}="${entry.key}">Show frozen 10 rows</button>
-            ${downloadLink}
           </div>
         </div>
         <p class="card-summary">${escapeHtml(entry.simple_summary)}</p>
         ${renderTraceSummary(entry.trace)}
         <details class="details-card">
-          <summary>How this table is used</summary>
+          <summary>Role in workflow</summary>
           ${renderNoteStack(entry.notes)}
         </details>
         <details class="details-card">
@@ -794,7 +841,7 @@ function renderSupplementalRawSources(payload) {
           <div class="metric-sub">${escapeHtml(source.project_fit_note || "Not recorded")}</div>
         </details>
         <details class="details-card">
-          <summary>Frozen provenance artifacts</summary>
+          <summary>Frozen references</summary>
           ${renderSourceArtifactLinks(source)}
         </details>
         ${
@@ -828,7 +875,7 @@ function renderStepCards(targetId, steps, samplePath) {
         </div>
         ${renderTraceSummary(step.trace)}
         <details class="details-card">
-          <summary>Technical note</summary>
+          <summary>Method note</summary>
           <div class="metric-sub">${escapeHtml(step.technical)}</div>
         </details>
         <div id="step-sample-${step.id}" class="query-result"></div>
@@ -878,6 +925,11 @@ function renderArtifactCatalog(payload) {
                     <div class="metric-sub">rows: ${Number(entry.row_count || 0).toLocaleString()}</div>
                   </div>
                   <div class="action-row compact-actions">
+                    ${
+                      !(entry.downloads || []).length
+                        ? `<span class="column-kind context_extra">REFERENCE ONLY</span>`
+                        : ""
+                    }
                     ${(entry.downloads || [])
                       .map(
                         (download) =>
@@ -903,10 +955,7 @@ function renderArtifactCatalog(payload) {
                       </details>`
                     : ""
                 }
-                <details class="details-card">
-                  <summary>Download note</summary>
-                  <div class="metric-sub">${escapeHtml(entry.download_note || "No additional note recorded.")}</div>
-                </details>
+                ${entry.download_note ? `<div class="metric-sub artifact-note">${escapeHtml(entry.download_note)}</div>` : ""}
               </article>
             `
             )
@@ -922,11 +971,11 @@ function renderHarmonizationScience(payload) {
   const root = document.getElementById("harmonization-science");
   root.innerHTML = `
     <article class="metric-item">
-      <div class="metric-title">Scientific method for BRCA checkpoint extraction</div>
+      <div class="metric-title">What this step produces</div>
       <div class="metric-sub">${escapeHtml(payload.scope_note)}</div>
       ${renderNoteStack(payload.accuracy_notes)}
       <details class="details-card">
-        <summary>Scientific explanation</summary>
+        <summary>Scientific notes</summary>
         ${renderNoteStack(payload.scientific_notes)}
       </details>
       ${payload.scientific_metrics ? renderScientificMetrics(payload.scientific_metrics) : ""}
@@ -939,7 +988,7 @@ function renderArabExtensionSummary(legacyPayload, arabPayload) {
   const delta = Number(arabPayload.row_count || 0) - Number(legacyPayload.row_count || 0);
   root.innerHTML = `
     <article class="metric-item">
-      <div class="metric-title">What changed relative to the legacy baseline</div>
+      <div class="metric-title">What changed from the baseline</div>
       <div class="scientific-matrix">
         <div><strong>Legacy final rows</strong><span>${Number(legacyPayload.row_count || 0).toLocaleString()}</span></div>
         <div><strong>Arab final rows</strong><span>${Number(arabPayload.row_count || 0).toLocaleString()}</span></div>
@@ -947,8 +996,8 @@ function renderArabExtensionSummary(legacyPayload, arabPayload) {
         <div><strong>New Arab layers</strong><span>SHGP first, then GME as support</span></div>
       </div>
       ${renderNoteStack([
-        "Legacy final stays unchanged on its own page.",
-        "Arab extension is reviewed separately so the supervisor can decide whether to keep it or not.",
+        "The baseline pages stay unchanged.",
+        "This step preserves baseline columns, then appends Arab-source fields separately.",
       ])}
     </article>
   `;
@@ -959,14 +1008,15 @@ function renderPreGmeMeta(payload) {
   const root = document.getElementById("pre-gme-meta");
   root.innerHTML = `
     <article class="metric-item">
-      <div class="metric-title">${escapeHtml(payload.title)}</div>
+      <div class="metric-title">Stored artifact</div>
+      <div class="metric-sub">${escapeHtml(payload.title)}</div>
       <div class="metric-sub">${escapeHtml(payload.table_ref)}</div>
       <div class="metric-sub">frozen row count: ${payload.row_count === null ? "not built yet" : Number(payload.row_count).toLocaleString()}</div>
       <div class="metric-sub">${escapeHtml(payload.scope_note)}</div>
       ${renderTraceSummary(payload.trace)}
       ${renderNoteStack(payload.accuracy_notes)}
       <details class="details-card">
-        <summary>Why this checkpoint exists</summary>
+        <summary>Why this table exists</summary>
         ${renderNoteStack(payload.scientific_notes)}
       </details>
       ${payload.scientific_metrics ? renderSourceCounts(payload.scientific_metrics) : ""}
@@ -975,21 +1025,21 @@ function renderPreGmeMeta(payload) {
 
   document.getElementById("pre-gme-columns").innerHTML = renderGlossary(payload.columns);
   document.getElementById("pre-gme-build-sql").textContent = payload.build_sql;
-  document.getElementById("pre-gme-download-csv-link").setAttribute("href", payload.csv_download_url);
 }
 
 function renderFinalRegistryMeta(payload) {
   const root = document.getElementById("registry-meta");
   root.innerHTML = `
     <article class="metric-item">
-      <div class="metric-title">${escapeHtml(payload.title)}</div>
+      <div class="metric-title">Stored artifact</div>
+      <div class="metric-sub">${escapeHtml(payload.title)}</div>
       <div class="metric-sub">${escapeHtml(payload.table_ref)}</div>
       <div class="metric-sub">frozen row count: ${payload.row_count === null ? "not built yet" : Number(payload.row_count).toLocaleString()}</div>
       <div class="metric-sub">${escapeHtml(payload.scope_note)}</div>
       ${renderTraceSummary(payload.trace)}
       ${renderNoteStack(payload.accuracy_notes)}
       <details class="details-card">
-        <summary>Scientific explanation</summary>
+        <summary>Why this table exists</summary>
         ${renderNoteStack(payload.scientific_notes)}
       </details>
       ${payload.scientific_metrics ? renderScientificMetrics(payload.scientific_metrics) : ""}
@@ -998,44 +1048,67 @@ function renderFinalRegistryMeta(payload) {
 
   document.getElementById("registry-columns").innerHTML = renderGlossary(payload.columns);
   document.getElementById("registry-build-sql").textContent = payload.build_sql;
-  document.getElementById("registry-download-csv-link").setAttribute("href", payload.csv_download_url);
 }
 
 function renderArabPreGmeMeta(payload) {
   const root = document.getElementById("arab-pre-gme-meta");
   root.innerHTML = `
     <article class="metric-item">
-      <div class="metric-title">${escapeHtml(payload.title)}</div>
+      <div class="metric-title">Stored artifact</div>
+      <div class="metric-sub">${escapeHtml(payload.title)}</div>
       <div class="metric-sub">${escapeHtml(payload.table_ref)}</div>
       <div class="metric-sub">frozen row count: ${payload.row_count === null ? "not built yet" : Number(payload.row_count).toLocaleString()}</div>
       <div class="metric-sub">${escapeHtml(payload.scope_note)}</div>
       ${renderTraceSummary(payload.trace)}
       ${renderNoteStack(payload.accuracy_notes)}
+      ${
+        payload.scientific_notes
+          ? `<details class="details-card">
+              <summary>Why this table exists</summary>
+              ${renderNoteStack(payload.scientific_notes)}
+            </details>`
+          : ""
+      }
+      ${payload.scientific_metrics ? renderSourceCounts(payload.scientific_metrics) : ""}
     </article>
   `;
-  document.getElementById("arab-pre-gme-download-csv-link").setAttribute("href", payload.csv_download_url);
+  document.getElementById("arab-pre-gme-columns").innerHTML = renderGlossary(payload.columns || []);
 }
 
 function renderArabRegistryMeta(payload) {
   const root = document.getElementById("arab-registry-meta");
   root.innerHTML = `
     <article class="metric-item">
-      <div class="metric-title">${escapeHtml(payload.title)}</div>
+      <div class="metric-title">Stored artifact</div>
+      <div class="metric-sub">${escapeHtml(payload.title)}</div>
       <div class="metric-sub">${escapeHtml(payload.table_ref)}</div>
       <div class="metric-sub">frozen row count: ${payload.row_count === null ? "not built yet" : Number(payload.row_count).toLocaleString()}</div>
       <div class="metric-sub">${escapeHtml(payload.scope_note)}</div>
       ${renderTraceSummary(payload.trace)}
       ${renderNoteStack(payload.accuracy_notes)}
+      ${
+        payload.scientific_notes
+          ? `<details class="details-card">
+              <summary>Why this table exists</summary>
+              ${renderNoteStack(payload.scientific_notes)}
+            </details>`
+          : ""
+      }
+      ${payload.scientific_metrics ? renderSourceCounts(payload.scientific_metrics) : ""}
     </article>
   `;
-  document.getElementById("arab-registry-download-csv-link").setAttribute("href", payload.csv_download_url);
+  document.getElementById("arab-registry-columns").innerHTML = renderGlossary(payload.columns || []);
 }
 
 function renderOverviewHeader(payload) {
   document.getElementById("generated-at").textContent = `Supervisor state refreshed: ${payload.generated_at}`;
-  document.getElementById("last-successful-step").textContent = payload.last_successful_step
-    ? `Latest confirmed checkpoint: ${payload.last_successful_step}`
-    : "Latest confirmed checkpoint: not recorded yet.";
+  const stepText = payload.last_successful_step || "";
+  const compactMatch = stepText.match(/T\d{3}\s+step\s+[\d.]+/i);
+  document.getElementById("last-successful-step").textContent = compactMatch
+    ? `Latest confirmed checkpoint: ${compactMatch[0]}`
+    : stepText
+      ? `Latest confirmed checkpoint: ${stepText.slice(0, 120)}${stepText.length > 120 ? "..." : ""}`
+      : "Latest confirmed checkpoint: not recorded yet.";
 }
 
 function renderOverviewPage() {
@@ -1070,7 +1143,7 @@ function wireGlobalButtons() {
 
   preGmeButton.addEventListener("click", async () => {
     const target = "pre-gme-sample";
-    setLoading(target, "Loading frozen pre-GME sample...");
+    setLoading(target, "Loading frozen sample...");
     await runButtonAction(preGmeButton, "Loading sample...", async () => {
       try {
         const payload = await fetchJson("/api/pre-gme/sample");
@@ -1083,7 +1156,7 @@ function wireGlobalButtons() {
 
   registryButton.addEventListener("click", async () => {
     const target = "registry-sample";
-    setLoading(target, "Loading frozen final-registry sample...");
+    setLoading(target, "Loading frozen sample...");
     await runButtonAction(registryButton, "Loading sample...", async () => {
       try {
         const payload = await fetchJson("/api/registry/sample");
@@ -1096,7 +1169,7 @@ function wireGlobalButtons() {
 
   arabPreGmeButton.addEventListener("click", async () => {
     const target = "arab-pre-gme-sample";
-    setLoading(target, "Loading frozen Arab pre-GME sample...");
+    setLoading(target, "Loading frozen sample...");
     await runButtonAction(arabPreGmeButton, "Loading sample...", async () => {
       try {
         const payload = await fetchJson("/api/arab/pre-gme/sample");
@@ -1109,7 +1182,7 @@ function wireGlobalButtons() {
 
   arabRegistryButton.addEventListener("click", async () => {
     const target = "arab-registry-sample";
-    setLoading(target, "Loading frozen Arab-final sample...");
+    setLoading(target, "Loading frozen sample...");
     await runButtonAction(arabRegistryButton, "Loading sample...", async () => {
       try {
         const payload = await fetchJson("/api/arab/registry/sample");
@@ -1154,8 +1227,6 @@ async function loadHarmonizationPage() {
     return;
   }
 
-  setLoading("workflow-categories", "Loading workflow categories...");
-  setLoading("source-decision-summary", "Loading source decisions...");
   setLoading("source-review-grid", "Loading scientific source review...");
   setLoading("harmonization-science", "Loading frozen scientific checkpoint evidence...");
   setLoading("harmonized-dataset-explorer", "Loading frozen checkpoint tables...");
@@ -1167,9 +1238,10 @@ async function loadHarmonizationPage() {
     fetchResource("source-review", "/api/source-review"),
   ]);
 
-  renderWorkflowCategories(sourceReviewPayload.workflow_categories);
-  renderSourceDecisionSummary(sourceReviewPayload);
-  renderSourceReviewGrid(sourceReviewPayload);
+  renderSourceReviewGrid({
+    ...sourceReviewPayload,
+    sources: sourceReviewPayload.sources.filter((source) => ["adopted_100", "adopted_secondary"].includes(source.project_fit)),
+  });
   renderHarmonizationScience(registryPayload);
   renderDatasetCollection({
     targetId: "harmonized-dataset-explorer",
@@ -1179,6 +1251,18 @@ async function loadHarmonizationPage() {
   });
   renderStepCards("harmonization-steps", workflowPayload.harmonization_steps, "/api/arab/steps");
   renderedPages.add("harmonization");
+}
+
+async function loadStandardizationPage() {
+  if (renderedPages.has("standardization")) {
+    return;
+  }
+
+  setLoading("standardization-summary", "Loading build-standardization summary...");
+  setLoading("standardization-cards", "Loading GRCh37 to GRCh38 evidence...");
+  const payload = await fetchResource("source-review", "/api/source-review");
+  renderStandardizationPage(payload);
+  renderedPages.add("standardization");
 }
 
 async function loadAccessPage() {
@@ -1233,6 +1317,7 @@ async function loadArabExtensionPage() {
   setLoading("arab-extension-summary", "Loading Arab extension summary...");
   setLoading("arab-pre-gme-meta", "Loading Arab pre-GME metadata...");
   setLoading("arab-registry-meta", "Loading Arab final metadata...");
+  setLoading("arab-schema-review", "Loading schema review...");
   setLoading("arab-extension-steps", "Loading Arab-extension evidence...");
 
   const [legacyRegistryPayload, arabPreGmePayload, arabRegistryPayload] = await Promise.all([
@@ -1244,6 +1329,7 @@ async function loadArabExtensionPage() {
   renderArabExtensionSummary(legacyRegistryPayload, arabRegistryPayload);
   renderArabPreGmeMeta(arabPreGmePayload);
   renderArabRegistryMeta(arabRegistryPayload);
+  renderSchemaLineageBlock("arab-schema-review", arabRegistryPayload.schema_lineage);
   renderStepCards("arab-extension-steps", workflowPayload.arab_extension_steps || [], "/api/arab/steps");
   renderedPages.add("arab-extension");
 }
@@ -1267,6 +1353,10 @@ async function loadActivePage(pageId) {
     }
     if (pageId === "raw") {
       await loadRawPage();
+      return;
+    }
+    if (pageId === "standardization") {
+      await loadStandardizationPage();
       return;
     }
     if (pageId === "harmonization") {
@@ -1294,8 +1384,11 @@ async function loadActivePage(pageId) {
     }
   } catch (error) {
     if (pageId === "raw") setError("raw-dataset-explorer", error);
+    if (pageId === "standardization") {
+      setError("standardization-summary", error);
+      setError("standardization-cards", error);
+    }
     if (pageId === "harmonization") {
-      setError("workflow-categories", error);
       setError("source-review-grid", error);
       setError("harmonization-science", error);
       setError("harmonized-dataset-explorer", error);
@@ -1315,6 +1408,7 @@ async function loadActivePage(pageId) {
       setError("arab-extension-summary", error);
       setError("arab-pre-gme-meta", error);
       setError("arab-registry-meta", error);
+      setError("arab-schema-review", error);
       setError("arab-extension-steps", error);
     }
     if (pageId === "artifacts") {

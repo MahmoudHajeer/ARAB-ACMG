@@ -46,6 +46,7 @@ REQUIRED_COLUMNS: Final[tuple[tuple[str, str], ...]] = (
 )
 
 PRE_GME_EXTRA_COLUMNS: Final[tuple[tuple[str, str], ...]] = (
+    ("VARIANT_KEY", "Explicit canonical key kept as a pipeline extra for joins and audits."),
     ("CLNREVSTAT", "ClinVar review-status label preserved as a pipeline extra."),
     ("GNOMAD_GENOMES_AC", "gnomAD genomes allele count."),
     ("GNOMAD_GENOMES_AN", "gnomAD genomes allele number."),
@@ -61,6 +62,14 @@ PRE_GME_EXTRA_COLUMNS: Final[tuple[tuple[str, str], ...]] = (
     ("GNOMAD_EXOMES_AF_EUR_PROXY", "gnomAD exomes Europe-proxy AF built from NFE + FIN + ASJ."),
     ("GNOMAD_GENOMES_DEPTH", "gnomAD genomes depth tag when present in raw INFO."),
     ("GNOMAD_EXOMES_DEPTH", "gnomAD exomes depth tag when present in raw INFO."),
+    ("SHGP_AC", "Saudi frequency-table alternate allele count."),
+    ("SHGP_AN", "Saudi frequency-table total allele count."),
+    ("SHGP_AF", "Saudi frequency-table allele frequency."),
+    ("PRESENT_IN_CLINVAR", "1 when the canonical allele is present in ClinVar."),
+    ("PRESENT_IN_GNOMAD_GENOMES", "1 when the canonical allele is present in the normalized gnomAD genomes cohort."),
+    ("PRESENT_IN_GNOMAD_EXOMES", "1 when the canonical allele is present in the normalized gnomAD exomes cohort."),
+    ("PRESENT_IN_SHGP", "1 when the canonical allele is present in SHGP."),
+    ("PRESENT_IN_GME", "1 when the canonical allele is present in GME."),
     ("SOURCE_COUNT", "How many non-GME source streams support the allele."),
     ("PIPELINE_STAGE", "Checkpoint label for the current exported table."),
 )

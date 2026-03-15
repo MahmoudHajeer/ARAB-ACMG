@@ -105,6 +105,22 @@ def normalize_review_entry(entry: dict[str, Any], *, table_label: str, scope_not
     return normalized
 
 
+def schema_lineage_summary(*, baseline_entry: dict[str, Any], current_entry: dict[str, Any], added_label: str) -> dict[str, object]:
+    baseline_columns = [column["name"] for column in baseline_entry.get("columns", [])]
+    current_columns = [column["name"] for column in current_entry.get("columns", [])]
+    preserved = [name for name in baseline_columns if name in current_columns]
+    added = [name for name in current_columns if name not in baseline_columns]
+    missing = [name for name in baseline_columns if name not in current_columns]
+    return {
+        "baseline_column_count": len(baseline_columns),
+        "current_column_count": len(current_columns),
+        "preserved_column_count": len(preserved),
+        "missing_columns": missing,
+        "added_columns": added,
+        "added_label": added_label,
+    }
+
+
 def raw_source_catalog_entries(raw_payload: dict[str, Any], source_review: dict[str, Any]) -> list[dict[str, Any]]:
     source_lookup = {
         source["source_key"]: source
@@ -124,13 +140,13 @@ def raw_source_catalog_entries(raw_payload: dict[str, Any], source_review: dict[
                 "key": dataset["key"],
                 "title": dataset["title"],
                 "group": "raw_public_sources",
-                "stage": "Raw source-of-truth",
+                "stage": "Raw source reference",
                 "overview": dataset["simple_summary"],
                 "row_count": dataset["row_count"],
                 "downloads": [],
                 "links": links,
                 "references": [dataset["table_ref"], *dataset.get("notes", [])[:1]],
-                "download_note": "No UI export is generated for raw sources. Review the frozen sample here, then use the official raw source link or the raw-vault reference.",
+                "download_note": "",
             }
         )
     return entries
@@ -157,7 +173,7 @@ def derived_catalog_entry(
         "downloads": [{"label": "Download CSV", "url": csv_public_url}],
         "links": [],
         "references": [table_ref],
-        "download_note": "This CSV is frozen from the approved checkpoint artifact. Opening the dashboard does not rebuild it.",
+        "download_note": "",
     }
 
 
@@ -174,34 +190,34 @@ def build_artifact_catalog(
     groups = [
         {
             "id": "raw_public_sources",
-            "title": "Raw source-of-truth references",
-            "summary": "These sources stay raw. The dashboard shows only frozen 10-row samples plus the official source links or raw-vault references.",
+            "title": "Raw source references",
+            "summary": "Untouched source-of-truth packages. Use the official source or raw-vault reference.",
             "entries": raw_source_catalog_entries(raw_datasets, source_review),
         },
         {
             "id": "normalized_artifacts",
-            "title": "Normalized per-source artifacts",
-            "summary": "These are the BRCA-normalized per-source outputs used to build the Arab extension checkpoint.",
+            "title": "Normalized source artifacts",
+            "summary": "Per-source BRCA artifacts frozen after normalization.",
             "entries": [
                 {
                     "key": entry["key"],
                     "title": entry["title"],
                     "group": "normalized_artifacts",
-                    "stage": "Normalized artifact",
+                    "stage": "Normalized table",
                     "overview": entry["simple_summary"],
                     "row_count": entry["row_count"],
                     "downloads": [{"label": "Download CSV", "url": entry["download_url"]}],
                     "links": [],
                     "references": [entry["table_ref"]],
-                    "download_note": "Frozen normalized CSV exported from the approved Parquet artifact.",
+                    "download_note": "",
                 }
                 for entry in normalized_datasets
             ],
         },
         {
             "id": "legacy_checkpoint_artifacts",
-            "title": "Legacy BRCA checkpoint surfaces",
-            "summary": "These are the pre-Arab checkpoints that the supervisor already reviewed earlier. They stay visible as the stable baseline.",
+            "title": "Baseline tables",
+            "summary": "Historical baseline tables kept unchanged for comparison.",
             "entries": [
                 derived_catalog_entry(
                     key="legacy_pre_gme",
@@ -211,7 +227,7 @@ def build_artifact_catalog(
                     row_count=legacy_pre_gme["row_count"],
                     table_ref=legacy_pre_gme["table_ref"],
                     csv_public_url=legacy_pre_gme["csv_download_url"],
-                    review_label="Legacy baseline pre-GME",
+                    review_label="Baseline draft table",
                 ),
                 derived_catalog_entry(
                     key="legacy_registry",
@@ -221,14 +237,14 @@ def build_artifact_catalog(
                     row_count=legacy_registry["row_count"],
                     table_ref=legacy_registry["table_ref"],
                     csv_public_url=legacy_registry["csv_download_url"],
-                    review_label="Legacy baseline final",
+                    review_label="Baseline final table",
                 ),
             ],
         },
         {
             "id": "arab_extension_artifacts",
             "title": "Arab extension artifacts",
-            "summary": "These are the new T003 checkpoints that extend the legacy baseline with SHGP first, then GME as a supporting layer.",
+            "summary": "New Arab-source tables layered on top of the unchanged baseline.",
             "entries": [
                 derived_catalog_entry(
                     key="arab_pre_gme",
@@ -238,7 +254,7 @@ def build_artifact_catalog(
                     row_count=arab_pre_gme["row_count"],
                     table_ref=arab_pre_gme["table_ref"],
                     csv_public_url=arab_pre_gme["csv_download_url"],
-                    review_label="Arab extension before GME",
+                    review_label="Arab draft table",
                 ),
                 derived_catalog_entry(
                     key="arab_registry",
@@ -248,7 +264,7 @@ def build_artifact_catalog(
                     row_count=arab_registry["row_count"],
                     table_ref=arab_registry["table_ref"],
                     csv_public_url=arab_registry["csv_download_url"],
-                    review_label="Arab extension final",
+                    review_label="Arab final table",
                 ),
             ],
         },
@@ -272,19 +288,22 @@ def refresh_bundle() -> dict[str, Any]:
     for dataset in current_bundle["datasets"]["datasets"]:
         dataset["download_url"] = ensure_public_csv(storage_client, dataset["table_ref"])["public_url"]
 
+    current_arab_pre = current_bundle.get("arab_pre_gme", current_bundle["pre_gme"])
+    current_arab_final = current_bundle.get("arab_registry", current_bundle["registry"])
+
     arab_pre_gme = normalize_review_entry(
-        current_bundle["pre_gme"],
+        current_arab_pre,
         table_label="Arab extension before GME",
         scope_note="Arab-aware checkpoint from normalized ClinVar + gnomAD + SHGP before GME is added.",
     )
     arab_pre_gme["csv_download_url"] = ensure_public_csv(storage_client, arab_pre_gme["table_ref"])["public_url"]
 
     arab_registry = normalize_review_entry(
-        current_bundle["registry"],
+        current_arab_final,
         table_label="Arab extension final",
         scope_note="Arab-aware checkpoint after GME is added as a supporting Arab/MENA layer.",
     )
-    arab_registry["csv_download_url"] = current_bundle["registry"]["csv_download_url"]
+    arab_registry["csv_download_url"] = current_arab_final.get("csv_download_url") or ensure_public_csv(storage_client, arab_registry["table_ref"])["public_url"]
 
     legacy_pre_gme = normalize_review_entry(
         legacy_bundle["pre_gme"],
@@ -299,17 +318,27 @@ def refresh_bundle() -> dict[str, Any]:
         scope_note="Historical final BRCA checkpoint frozen before adding the new Arab frequency datasets.",
     )
     legacy_registry["csv_download_url"] = legacy_bundle["registry"]["csv_download_url"]
+    arab_pre_gme["schema_lineage"] = schema_lineage_summary(
+        baseline_entry=legacy_pre_gme,
+        current_entry=arab_pre_gme,
+        added_label="New Arab pre-GME additions",
+    )
+    arab_registry["schema_lineage"] = schema_lineage_summary(
+        baseline_entry=legacy_registry,
+        current_entry=arab_registry,
+        added_label="New Arab-final additions",
+    )
 
     # [AI-Agent: Codex]: Stage 3 / Reframe the bundle so the legacy baseline stays under the original final-table routes and Arab work moves to its own page.
     LOGGER.info("Composing updated review bundle structure")
     bundle = deepcopy(current_bundle)
     bundle["workflow"]["pages"] = [
         {"id": "overview", "title": "Overview", "summary": "Track progress and the current scientific workflow."},
-        {"id": "raw", "title": "Raw Sources", "summary": "Frozen untouched source packages and BRCA-window raw previews before any normalization."},
-        {"id": "harmonization", "title": "Normalization", "summary": "Per-source BRCA normalization artifacts with explicit provenance and no live queries."},
-        {"id": "pre-gme", "title": "Legacy Pre-GME", "summary": "Historical baseline checkpoint before the Arab extension work began."},
-        {"id": "final", "title": "Legacy Final", "summary": "Historical final BRCA checkpoint preserved as the baseline review surface."},
-        {"id": "arab-extension", "title": "Arab Extension", "summary": "New Arab-aware checkpoints built from normalized ClinVar, gnomAD, SHGP, and then GME."},
+        {"id": "raw", "title": "Raw Evidence", "summary": "Untouched source records before any build conversion or BRCA processing."},
+        {"id": "harmonization", "title": "BRCA Normalization", "summary": "Active BRCA-ready sources, the rule used on each one, and the frozen outputs."},
+        {"id": "pre-gme", "title": "Baseline Draft Table", "summary": "Frozen draft table built from ClinVar and gnomAD only."},
+        {"id": "final", "title": "Baseline Final Table", "summary": "Frozen baseline final table after GME is added."},
+        {"id": "arab-extension", "title": "Arab Extension Tables", "summary": "New Arab-source tables kept separate from the unchanged baseline."},
         {"id": "artifacts", "title": "Data Downloads", "summary": "Structured download center for all frozen derived artifacts shown in the dashboard."},
         {"id": "access", "title": "Controlled Access", "summary": "Official acquisition paths for restricted Arab datasets still outside the active workflow."},
     ]

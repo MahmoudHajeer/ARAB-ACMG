@@ -124,51 +124,51 @@ USE_TIER_META: Final[dict[str, dict[str, str]]] = {
 
 WORKFLOW_POSITION_RULES: Final[dict[str, dict[str, object]]] = {
     "clinvar": {
-        "raw_stage": "Frozen raw BigQuery sample already visible on the Raw page.",
+        "raw_stage": "Frozen raw sample is shown on the Raw Evidence page.",
         "brca_stage": "Direct BRCA1/BRCA2 extraction from GRCh38 VCF rows.",
-        "final_stage": "Included in the current final BRCA checkpoint.",
+        "final_stage": "Included in the baseline tables and in the Arab extension tables.",
         "included_in_current_final": True,
     },
     "gnomad_genomes": {
-        "raw_stage": "Frozen raw BigQuery samples already visible on the Raw page for chr13 and chr17 genomes.",
+        "raw_stage": "Frozen raw chr13 and chr17 genome samples are shown on the Raw Evidence page.",
         "brca_stage": "Direct BRCA1/BRCA2 extraction with INFO parsing from GRCh38 genome VCF rows.",
-        "final_stage": "Included in the current final BRCA checkpoint.",
+        "final_stage": "Included in the baseline tables and in the Arab extension tables.",
         "included_in_current_final": True,
     },
     "gnomad_exomes": {
-        "raw_stage": "Frozen raw BigQuery samples already visible on the Raw page for chr13 and chr17 exomes.",
+        "raw_stage": "Frozen raw chr13 and chr17 exome samples are shown on the Raw Evidence page.",
         "brca_stage": "Direct BRCA1/BRCA2 extraction with INFO parsing from GRCh38 exome VCF rows.",
-        "final_stage": "Included in the current final BRCA checkpoint.",
+        "final_stage": "Included in the baseline tables and in the Arab extension tables.",
         "included_in_current_final": True,
     },
     "gme_hg38": {
-        "raw_stage": "Frozen raw summary-table sample visible on the Harmonization page.",
-        "brca_stage": "BRCA1/BRCA2 rows are usable after canonical-key handling from chrom/start/end/ref/alt.",
-        "final_stage": "Included in the current final BRCA checkpoint as the GME add-on layer.",
+        "raw_stage": "Frozen raw summary-table sample is shown on the Raw Evidence page.",
+        "brca_stage": "Converted to canonical BRCA rows after handling chrom/start/end/ref/alt.",
+        "final_stage": "Included only in the baseline final table and the Arab final table.",
         "included_in_current_final": True,
     },
     "shgp_saudi_af": {
-        "raw_stage": "Frozen raw Saudi frequency sample visible on the Harmonization page.",
-        "brca_stage": "Ready for the next BRCA normalization pass with direct CHROM/POS/REF/ALT parsing.",
-        "final_stage": "Not yet in the current final checkpoint; it needs the next Arab-extended checkpoint after Phase 3 normalization.",
-        "included_in_current_final": False,
+        "raw_stage": "Frozen raw Saudi frequency sample is shown on the Raw Evidence page.",
+        "brca_stage": "Converted to canonical BRCA rows with direct CHROM/POS/REF/ALT parsing.",
+        "final_stage": "Included in the Arab draft table and the Arab final table.",
+        "included_in_current_final": True,
     },
     "avdb_uae": {
-        "raw_stage": "Frozen raw workbook plus a frozen lifted GRCh38 sample are visible on the Harmonization page.",
+        "raw_stage": "Frozen workbook and lifted sample are shown on the build-conversion page.",
         "brca_stage": "Liftover completed, but the current release has zero BRCA rows and remains reference-only.",
-        "final_stage": "Excluded from the current final BRCA checkpoint.",
+        "final_stage": "Excluded from the current baseline and Arab extension tables.",
         "included_in_current_final": False,
     },
     "saudi_breast_cancer_pmc10474689": {
-        "raw_stage": "Frozen de-identified workbook extract sample visible on the Harmonization page.",
+        "raw_stage": "Frozen de-identified workbook extract is shown on the Raw Evidence page.",
         "brca_stage": "Blocked before BRCA normalization because genomic coordinates are still missing.",
-        "final_stage": "Excluded from the current final BRCA checkpoint.",
+        "final_stage": "Excluded from the current baseline and Arab extension tables.",
         "included_in_current_final": False,
     },
     "uae_brca_pmc12011969": {
-        "raw_stage": "Frozen de-identified BRCA cohort sample visible on the Harmonization page.",
+        "raw_stage": "Frozen de-identified BRCA cohort sample is shown on the Raw Evidence page.",
         "brca_stage": "Awaiting row-level coordinate parsing before any BRCA normalization decision.",
-        "final_stage": "Excluded from the current final BRCA checkpoint; may enter a later Arab-specific checkpoint if parsing succeeds.",
+        "final_stage": "Excluded from the current baseline and Arab extension tables; may enter a later Arab-specific table if parsing succeeds.",
         "included_in_current_final": False,
     },
 }
@@ -191,7 +191,7 @@ SCIENTIFIC_RULES: Final[dict[str, dict[str, object]]] = {
         "project_fit": "adopted_100",
         "project_fit_note": "Primary clinical truth source. Keep as a mandatory anchor for downstream BRCA interpretation.",
         "next_action": "Carry ClinVar rows directly into BRCA filtering and allele normalization.",
-        "sample_keys": ["clinvar_raw_vcf"],
+        "sample_keys": ["clinvar_raw_brca_window"],
     },
     "gnomad_genomes": {
         "display_name": "gnomAD v4.1 genomes (chr13 + chr17)",
@@ -210,7 +210,7 @@ SCIENTIFIC_RULES: Final[dict[str, dict[str, object]]] = {
         "project_fit": "adopted_100",
         "project_fit_note": "Primary global population baseline. Keep as a mandatory comparator for allele-frequency interpretation.",
         "next_action": "Normalize chr13 and chr17 genome rows after BRCA window filtering.",
-        "sample_keys": ["gnomad_v4_1_genomes_chr13_raw", "gnomad_v4_1_genomes_chr17_raw"],
+        "sample_keys": ["gnomad_genomes_raw_brca_window"],
     },
     "gnomad_exomes": {
         "display_name": "gnomAD v4.1 exomes (chr13 + chr17)",
@@ -229,7 +229,7 @@ SCIENTIFIC_RULES: Final[dict[str, dict[str, object]]] = {
         "project_fit": "adopted_100",
         "project_fit_note": "Primary global exome baseline. Keep alongside genomes so exome-specific frequency signals remain visible.",
         "next_action": "Normalize chr13 and chr17 exome rows after BRCA window filtering.",
-        "sample_keys": ["gnomad_v4_1_exomes_chr13_raw", "gnomad_v4_1_exomes_chr17_raw"],
+        "sample_keys": ["gnomad_exomes_raw_brca_window"],
     },
     "gme_hg38": {
         "display_name": "GME hg38 summary table",
@@ -250,8 +250,8 @@ SCIENTIFIC_RULES: Final[dict[str, dict[str, object]]] = {
             "Keep as a secondary Arab/MENA frequency layer. It is usable and relevant, "
             "but it is a summary table and not the strongest primary population baseline."
         ),
-        "next_action": "Validate how `start`/`end` map onto the canonical key and then normalize as a summary-frequency input.",
-        "sample_keys": ["gme_hg38_raw"],
+        "next_action": "Keep as the supporting Arab/MENA layer that is added only after the draft table is frozen.",
+        "sample_keys": ["gme_raw_brca_window"],
     },
     "shgp_saudi_af": {
         "display_name": "SHGP Saudi allele-frequency table",
@@ -271,7 +271,7 @@ SCIENTIFIC_RULES: Final[dict[str, dict[str, object]]] = {
         "project_fit_note": (
             "Use as a primary Arab frequency source. It is large, genome-wide, GRCh38, and directly relevant to BRCA windows."
         ),
-        "next_action": "Carry SHGP directly into Phase 3 normalization and canonical-key generation.",
+        "next_action": "Keep in the active Arab extension workflow and carry it forward into downstream master-dataset work.",
         "sample_mode": "shgp_raw",
     },
     "avdb_uae": {

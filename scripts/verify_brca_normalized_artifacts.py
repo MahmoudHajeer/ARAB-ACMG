@@ -161,6 +161,28 @@ def validate_canonical_keys(
     }
 
 
+def require_superset_columns(
+    superset_frame: pd.DataFrame,
+    baseline_frame: pd.DataFrame,
+    *,
+    superset_label: str,
+    baseline_label: str,
+) -> dict[str, int]:
+    baseline_columns = set(baseline_frame.columns)
+    superset_columns = set(superset_frame.columns)
+    missing_columns = sorted(baseline_columns - superset_columns)
+    require(
+        not missing_columns,
+        f"{superset_label}: missing baseline columns from {baseline_label}: {missing_columns}",
+    )
+    added_columns = sorted(superset_columns - baseline_columns)
+    return {
+        "baseline_column_count": len(baseline_columns),
+        "superset_column_count": len(superset_columns),
+        "added_columns": len(added_columns),
+    }
+
+
 def main() -> None:
     bundle = json.loads((UI_DIR / "review_bundle.json").read_text(encoding="utf-8"))
     source_review = json.loads((UI_DIR / "source_review.json").read_text(encoding="utf-8"))
@@ -240,6 +262,26 @@ def main() -> None:
             require_unique_keys=True,
         )
 
+    legacy_pre_frame = download_parquet_frame(storage_client, bundle["pre_gme"]["table_ref"])
+    legacy_final_frame = download_parquet_frame(storage_client, bundle["registry"]["table_ref"])
+    arab_pre_frame = download_parquet_frame(storage_client, bundle["arab_pre_gme"]["table_ref"])
+    arab_final_frame = download_parquet_frame(storage_client, bundle["arab_registry"]["table_ref"])
+
+    schema_summary = {
+        "arab_pre_gme": require_superset_columns(
+            arab_pre_frame,
+            legacy_pre_frame,
+            superset_label="Arab pre-GME checkpoint",
+            baseline_label="Legacy pre-GME checkpoint",
+        ),
+        "arab_final": require_superset_columns(
+            arab_final_frame,
+            legacy_final_frame,
+            superset_label="Arab final checkpoint",
+            baseline_label="Legacy final checkpoint",
+        ),
+    }
+
     print(
         json.dumps(
             {
@@ -250,6 +292,7 @@ def main() -> None:
                 "verified_gcs_artifacts": len(gcs_uris),
                 "validated_public_urls": len(public_urls),
                 "canonical_key_validation": validation_summary,
+                "schema_superset_validation": schema_summary,
             },
             indent=2,
         )

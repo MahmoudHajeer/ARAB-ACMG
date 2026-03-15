@@ -27,6 +27,7 @@ def test_pre_gme_catalog_payload_exposes_required_header_and_kind_metadata():
     assert payload["export_header_columns"][0] == "CHROM"
     assert payload["columns"][0]["kind"] == "required"
     assert any(column["kind"] == "extra" for column in payload["columns"])
+    assert any(column["name"] == "SHGP_AF" and column["kind"] == "extra" for column in payload["columns"])
 
 
 def test_registry_catalog_payload_exposes_required_and_extra_columns():
@@ -38,3 +39,4 @@ def test_registry_catalog_payload_exposes_required_and_extra_columns():
     assert any(column["name"] == "CHROM" for column in payload["columns"])
     assert any(column["name"] == "GME_AF" and column["kind"] == "extra" for column in payload["columns"])
     assert any(column["name"] == "GME_ISRAEL" and column["kind"] == "context_extra" for column in payload["columns"])
+    assert any(column["name"] == "VARIANT_KEY" and column["kind"] == "extra" for column in payload["columns"])

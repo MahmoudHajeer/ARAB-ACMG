@@ -68,7 +68,7 @@ def _arab_pre_gme_trace(payload: dict[str, Any], frozen_at: str, bundle_uri: str
 def _arab_registry_trace(payload: dict[str, Any], frozen_at: str, bundle_uri: str) -> dict[str, str]:
     return _trace_card(
         input_surface="Pre-GME Arab checkpoint + normalized GME",
-        operation="Preserve the pre-GME checkpoint, then add GME-derived Arab frequency extras without reordering the required header floor.",
+        operation="Preserve the baseline-compatible checkpoint surface, then add SHGP/GME-derived Arab extras without dropping earlier legacy review columns.",
         count_basis=f"Frozen Arab final-checkpoint row count captured on {frozen_at}.",
         display_basis=f"Displayed from {bundle_uri}; preview rows come from the frozen Arab final checkpoint sample and the downloadable CSV is served from GCS.",
     )

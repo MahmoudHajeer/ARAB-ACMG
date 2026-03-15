@@ -86,6 +86,8 @@ def test_build_checkpoint_combines_gnomad_counts_without_hiding_inputs():
                 "genomes_hom_mid": 0,
                 "genomes_ac_afr": 0,
                 "genomes_af_afr": 0.0,
+                "genomes_af_eur_proxy": 0.07,
+                "genomes_depth": 33.0,
             }
         ]
     )
@@ -110,6 +112,8 @@ def test_build_checkpoint_combines_gnomad_counts_without_hiding_inputs():
                 "exomes_hom_mid": 1,
                 "exomes_ac_afr": 1,
                 "exomes_af_afr": 0.01,
+                "exomes_af_eur_proxy": 0.08,
+                "exomes_depth": 41.0,
             }
         ]
     )
@@ -146,6 +150,63 @@ def test_build_checkpoint_combines_gnomad_counts_without_hiding_inputs():
     assert row["GNOMAD_MID_AF"] == 3 / 30
     assert row["gnomAD_mid_Hom"] == 1
     assert row["SHGP_AF"] == 0.02
+    assert row["GNOMAD_GENOMES_AF_AFR"] == 0.0
+    assert row["GNOMAD_GENOMES_AF_EUR_PROXY"] == 0.07
+    assert row["GNOMAD_EXOMES_AF_AFR"] == 0.01
+    assert row["GNOMAD_EXOMES_AF_EUR_PROXY"] == 0.08
+    assert row["GNOMAD_GENOMES_DEPTH"] == 33.0
+    assert row["GNOMAD_EXOMES_DEPTH"] == 41.0
     assert row["PRESENT_IN_CLINVAR"] == 1
     assert row["PRESENT_IN_SHGP"] == 1
     assert row["SOURCE_COUNT"] == 4
+
+
+def test_build_checkpoint_keeps_gme_context_columns_for_audit():
+    checkpoint = build_checkpoint(
+        clinvar=pd.DataFrame(
+            [
+                {
+                    "variant_key": "chr17:20:C:T",
+                    "chrom38": "chr17",
+                    "pos38": 20,
+                    "end38": 20,
+                    "ref_norm": "C",
+                    "alt_norm": "T",
+                    "gene": "BRCA1",
+                    "vartype": "SNV",
+                }
+            ]
+        ),
+        gnomad_genomes=pd.DataFrame(),
+        gnomad_exomes=pd.DataFrame(),
+        shgp=pd.DataFrame(),
+        gme=pd.DataFrame(
+            [
+                {
+                    "variant_key": "chr17:20:C:T",
+                    "chrom38": "chr17",
+                    "pos38": 20,
+                    "end38": 20,
+                    "ref_norm": "C",
+                    "alt_norm": "T",
+                    "gene": "BRCA1",
+                    "vartype": "SNV",
+                    "gme_af": 0.2,
+                    "gme_nwa": 0.1,
+                    "gme_nea": 0.2,
+                    "gme_ap": 0.3,
+                    "gme_israel": 0.4,
+                    "gme_sd": 0.5,
+                    "gme_tp": 0.6,
+                    "gme_ca": 0.7,
+                }
+            ]
+        ),
+        stage_label="final_arab_checkpoint",
+    )
+
+    row = checkpoint.iloc[0]
+    assert row["GME_AF"] == 0.2
+    assert row["GME_ISRAEL"] == 0.4
+    assert row["GME_TP"] == 0.6
+    assert row["GME_CA"] == 0.7

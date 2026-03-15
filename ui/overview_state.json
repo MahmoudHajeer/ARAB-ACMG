@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-14T19:52:13.304879+00:00",
+  "generated_at": "2026-03-15T15:12:14.851321+00:00",
   "tracks": [
     {
       "track_id": "T001",
@@ -62,10 +62,10 @@
     "T003": {
       "total_tasks": 14,
       "done_tasks": 12,
-      "in_progress_tasks": 0,
-      "todo_tasks": 2,
+      "in_progress_tasks": 1,
+      "todo_tasks": 1,
       "done_pct": 85.7,
-      "progress_pct": 85.7
+      "progress_pct": 89.3
     },
     "T004": {
       "total_tasks": 11,
@@ -99,5 +99,5 @@
       "status": "pass"
     }
   ],
-  "last_successful_step": "T003 step 4.3 finalized on 2026-03-14: canonical-key validation now runs against the frozen normalized/checkpoint Parquet artifacts, the supervisor UI preserves the legacy BRCA baseline separately from the Arab-extension checkpoints, and every derived review artifact now has a static GCS CSV download. T003 step 5.1 Great Expectations suites/checkpoints for harmonized artifacts are next."
+  "last_successful_step": "T003 step 4.3 finalized on 2026-03-14: canonical-key validation now runs against the frozen normalized/checkpoint Parquet artifacts, the supervisor UI preserves the legacy BRCA baseline separately from the Arab-extension checkpoints, and every derived review artifact now has a static GCS CSV download. T003 step 5.1 remains in progress after the 2026-03-15 scientific/UI hardening checkpoint: AVDB GRCh37->GRCh38 evidence is now visible, baseline versus Arab tables are re-split correctly, and downloads live only in the artifact center. Next exact action: build GE suites/checkpoints for the frozen normalized artifacts."
 }
