@@ -244,3 +244,23 @@ Do not rewrite previous entries.
 - Files changed: `scripts/build_brca_normalized_artifacts.py`, `scripts/update_source_review_state.py`, `scripts/refresh_supervisor_review_bundle.py`, `tests/test_build_brca_normalized_artifacts.py`, `tests/test_refresh_supervisor_review_bundle.py`, `tests/test_source_review_state.py`, `tests/test_ui_catalog.py`, `ui/index.html`, `ui/app.js`, `ui/styles.css`, `ui/source_review.json`, `ui/review_bundle.json`, `ui/traceability.py`, `conductor/checkpoints/2026-03-15-t003-scientific-review-ui-hardening.md`, `conductor/tracks/T003-DataHarmonization/index.md`
 - Verification run + result: `python3 scripts/build_brca_normalized_artifacts.py (pass)`, `python3 scripts/update_source_review_state.py (pass)`, `python3 scripts/refresh_supervisor_review_bundle.py (pass)`, `python3 scripts/verify_brca_normalized_artifacts.py (pass)`, `python3 -m pytest -q tests (85 passed)`, `node --check ui/app.js (pass)`, `local Playwright review on overview/standardization/final/arab-extension/artifacts (pass)`
 - Next exact action: Implement the actual GE suites/checkpoints for the frozen normalized artifacts and checkpoint tables, then publish the validation outputs in the same static supervisor surface.
+
+### Entry 25
+- Timestamp: `2026-03-16T10:20:00+03:00`
+- Agent: `Codex`
+- Task ID: `5.1`
+- Status: `Started`
+- Summary: Starting a live reliability pass on the supervisor UI after deploy. The focus is to verify every download button against the real public GCS objects, remove any broken/private artifact links, and reshape the page sections so each one reads as a single workflow stage with a simple visual pipeline structure for the scientific supervisor.
+- Files changed: `conductor/tracks/T003-DataHarmonization/index.md`
+- Verification run + result: `state update only before implementation`
+- Next exact action: Audit live artifact URLs and GCS public access, patch any broken download/public-object wiring, then simplify the page structure into stage-by-stage workflow cards and redeploy.
+
+### Entry 26
+- Timestamp: `2026-03-16T14:45:00+03:00`
+- Agent: `Codex`
+- Task ID: `5.1`
+- Status: `Completed`
+- Summary: Hardened the static supervisor download surface without reopening BigQuery usage. The `GCS Download Center` now exposes the actual frozen GCS files per workflow stage with `gs://` paths plus manifest/report companions, all surfaced objects now resolve publicly with attachment headers, and the supervisor pages now show compact `Input -> Operation -> Output` workflow strips. The raw/source review layer was also corrected so `GME` no longer presents a local `file://` path as if it were a real upstream URL.
+- Files changed: `scripts/refresh_supervisor_review_bundle.py`, `scripts/update_source_review_state.py`, `tests/test_refresh_supervisor_review_bundle.py`, `ui/index.html`, `ui/app.js`, `ui/styles.css`, `ui/review_bundle.json`, `ui/source_review.json`, `conductor/setup_state.json`, `conductor/tracks/T003-DataHarmonization/index.md`
+- Verification run + result: `python3 -m py_compile scripts/refresh_supervisor_review_bundle.py scripts/update_source_review_state.py (pass)`, `python3 scripts/update_source_review_state.py (pass)`, `python3 scripts/refresh_supervisor_review_bundle.py (pass: artifact_groups=7)`, `python3 -m pytest -q tests/test_refresh_supervisor_review_bundle.py tests/test_ui_service.py tests/test_traceability.py (25 passed)`, `python3 -m pytest -q tests (85 passed)`, `node --check ui/app.js (pass)`, `artifact URL audit over ui/review_bundle.json (pass: checked=70, status=ok)`, `artifact header audit (pass: content_disposition=ok)`, `local Playwright check on http://127.0.0.1:8099/#artifacts (pass: click starts download event for clinvar.vcf.gz)`, `gcloud run deploy supervisor-ui --source ui --region europe-west1 --project genome-services-platform --allow-unauthenticated --quiet (pass: revision supervisor-ui-00032-kp2)`, `live Playwright check on https://supervisor-ui-142306018756.europe-west1.run.app/#artifacts (pass: click starts download event for clinvar.vcf.gz)`, `curl -s https://supervisor-ui-142306018756.europe-west1.run.app/api/health (pass: {\"status\":\"ok\"})`
+- Next exact action: Keep `5.1` open for the actual GE implementation; build GE suites/checkpoints for the frozen normalized artifacts and publish the validation outputs into the same static supervisor surface.

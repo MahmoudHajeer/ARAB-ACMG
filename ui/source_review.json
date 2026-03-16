@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-15T15:02:38.097374+00:00",
+  "generated_at": "2026-03-16T14:25:30.953281+00:00",
   "workflow_categories": [
     {
       "id": "raw_freeze",
@@ -145,11 +145,11 @@
         },
         {
           "label": "Raw vault prefix",
-          "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/clinvar/lastmod-20260302/snapshot_date=2026-03-03/"
+          "url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/clinvar/lastmod-20260302/snapshot_date=2026-03-03/"
         },
         {
           "label": "Raw manifest",
-          "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/clinvar/lastmod-20260302/snapshot_date=2026-03-03/manifest.json"
+          "url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/clinvar/lastmod-20260302/snapshot_date=2026-03-03/manifest.json"
         }
       ],
       "workflow_position": {
@@ -285,15 +285,15 @@
       "artifact_links": [
         {
           "label": "Upstream source",
-          "url": "https://storage.cloud.google.com/gcp-public-data--gnomad/release/4.1/vcf/genomes/gnomad.genomes.v4.1.sites.chr13.vcf.bgz"
+          "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/genomes/gnomad.genomes.v4.1.sites.chr13.vcf.bgz"
         },
         {
           "label": "Raw vault prefix",
-          "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr13/snapshot_date=2026-03-03/"
+          "url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr13/snapshot_date=2026-03-03/"
         },
         {
           "label": "Raw manifest",
-          "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr13/snapshot_date=2026-03-03/manifest.json"
+          "url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr13/snapshot_date=2026-03-03/manifest.json"
         }
       ],
       "workflow_position": {
@@ -334,15 +334,15 @@
       "artifact_links": [
         {
           "label": "Upstream source",
-          "url": "https://storage.cloud.google.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr13.vcf.bgz"
+          "url": "https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr13.vcf.bgz"
         },
         {
           "label": "Raw vault prefix",
-          "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr13/snapshot_date=2026-03-03/"
+          "url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr13/snapshot_date=2026-03-03/"
         },
         {
           "label": "Raw manifest",
-          "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr13/snapshot_date=2026-03-03/manifest.json"
+          "url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr13/snapshot_date=2026-03-03/manifest.json"
         }
       ],
       "workflow_position": {
@@ -371,27 +371,24 @@
       "use_tier_summary": "Used as supporting evidence",
       "snapshot_date": "2026-03-08",
       "source_version": "20161025-hg38",
-      "upstream_url": "file:///Users/macbookpro/Desktop/storage/raw/gme/hg38_gme.txt.gz",
+      "upstream_url": null,
       "raw_vault_prefix": "gs://mahmoud-arab-acmg-research-data/raw/sources/gme/release=20161025-hg38/build=hg38/snapshot_date=2026-03-08/",
       "raw_manifest_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gme/release=20161025-hg38/build=hg38/snapshot_date=2026-03-08/manifest.json",
       "row_count": 699496,
       "notes": [
         "The frozen source is explicitly labeled hg38.",
         "The raw table includes chrom/start/end/ref/alt plus GME subgroup frequencies rather than a native VCF INFO structure.",
+        "No public upstream download URL was recorded for this source; the frozen GCS raw package is the access point used in review.",
         "local raw file supplied by user; archive_last_modified=Tue, 25 Oct 2016 03:27:34 +0000; workspace file covers chr1-22 and chrX only (699,496 rows), with no chrY/MT rows observed; public documentation describes the hg38 form as a liftover-style summary resource rather than a native raw GRCh38 VCF"
       ],
       "artifact_links": [
         {
-          "label": "Upstream source",
-          "url": "file:///Users/macbookpro/Desktop/storage/raw/gme/hg38_gme.txt.gz"
-        },
-        {
           "label": "Raw vault prefix",
-          "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/gme/release=20161025-hg38/build=hg38/snapshot_date=2026-03-08/"
+          "url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gme/release=20161025-hg38/build=hg38/snapshot_date=2026-03-08/"
         },
         {
           "label": "Raw manifest",
-          "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/gme/release=20161025-hg38/build=hg38/snapshot_date=2026-03-08/manifest.json"
+          "url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gme/release=20161025-hg38/build=hg38/snapshot_date=2026-03-08/manifest.json"
         }
       ],
       "workflow_position": {
@@ -598,11 +595,11 @@
         },
         {
           "label": "Raw vault prefix",
-          "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/shgp_saudi_af/version=figshare-28059686-v1/snapshot_date=2026-03-13/"
+          "url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/shgp_saudi_af/version=figshare-28059686-v1/snapshot_date=2026-03-13/"
         },
         {
           "label": "Raw manifest",
-          "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/shgp_saudi_af/version=figshare-28059686-v1/snapshot_date=2026-03-13/manifest.json"
+          "url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/shgp_saudi_af/version=figshare-28059686-v1/snapshot_date=2026-03-13/manifest.json"
         }
       ],
       "workflow_position": {
@@ -742,19 +739,19 @@
         },
         {
           "label": "Raw vault prefix",
-          "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/avdb_uae/version=workbook-created-2025-06-27/build=GRCh37/snapshot_date=2026-03-13/"
+          "url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/avdb_uae/version=workbook-created-2025-06-27/build=GRCh37/snapshot_date=2026-03-13/"
         },
         {
           "label": "Raw manifest",
-          "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/avdb_uae/version=workbook-created-2025-06-27/build=GRCh37/snapshot_date=2026-03-13/manifest.json"
+          "url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/avdb_uae/version=workbook-created-2025-06-27/build=GRCh37/snapshot_date=2026-03-13/manifest.json"
         },
         {
           "label": "Liftover report",
-          "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/frozen/harmonized/source=avdb_uae/version=workbook-created-2025-06-27/stage=liftover/build=GRCh37_to_GRCh38/snapshot_date=2026-03-13/avdb_uae_liftover_report.json"
+          "url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/source=avdb_uae/version=workbook-created-2025-06-27/stage=liftover/build=GRCh37_to_GRCh38/snapshot_date=2026-03-13/avdb_uae_liftover_report.json"
         },
         {
           "label": "Lifted Parquet",
-          "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/frozen/harmonized/source=avdb_uae/version=workbook-created-2025-06-27/stage=liftover/build=GRCh37_to_GRCh38/snapshot_date=2026-03-13/avdb_uae_liftover.parquet"
+          "url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/source=avdb_uae/version=workbook-created-2025-06-27/stage=liftover/build=GRCh37_to_GRCh38/snapshot_date=2026-03-13/avdb_uae_liftover.parquet"
         }
       ],
       "workflow_position": {
@@ -970,11 +967,11 @@
         },
         {
           "label": "Raw vault prefix",
-          "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/"
+          "url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/"
         },
         {
           "label": "Raw manifest",
-          "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/manifest.json"
+          "url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/manifest.json"
         }
       ],
       "workflow_position": {
@@ -1144,11 +1141,11 @@
         },
         {
           "label": "Raw vault prefix",
-          "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/"
+          "url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/"
         },
         {
           "label": "Raw manifest",
-          "url": "https://storage.cloud.google.com/mahmoud-arab-acmg-research-data/raw/sources/uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/manifest.json"
+          "url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/manifest.json"
         }
       ],
       "workflow_position": {

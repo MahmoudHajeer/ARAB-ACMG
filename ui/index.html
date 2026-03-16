@@ -26,6 +26,7 @@
 
     <section class="panel page-panel" data-page="overview">
       <h2>Overview</h2>
+      <div class="page-pipeline" data-page-pipeline="overview"></div>
       <div id="status-cards" class="status-cards"></div>
       <div id="track-grid" class="track-grid"></div>
       <div id="runtime-results" class="runtime-results compact"></div>
@@ -34,9 +35,10 @@
     </section>
 
     <section class="panel page-panel" data-page="raw">
-      <h2>Raw Evidence</h2>
+      <h2>Step 1: Raw Source Freeze</h2>
+      <div class="page-pipeline" data-page-pipeline="raw"></div>
       <p class="panel-note">
-        Untouched source records before any build conversion or BRCA processing.
+        Exact upstream files and manifests before any build conversion or BRCA normalization.
       </p>
       <div id="raw-dataset-explorer" class="explorer-stack"></div>
       <h3 class="subheading">Additional frozen source packages</h3>
@@ -44,16 +46,18 @@
     </section>
 
     <section class="panel page-panel" data-page="standardization">
-      <h2>Genome Build Conversion</h2>
+      <h2>Step 2: Genome Build Conversion</h2>
+      <div class="page-pipeline" data-page-pipeline="standardization"></div>
       <p class="panel-note">
-        Only sources that needed explicit build handling appear here, with frozen GRCh37 to GRCh38 evidence.
+        Only sources that needed explicit GRCh37 to GRCh38 handling appear here.
       </p>
       <div id="standardization-summary" class="registry-meta"></div>
       <div id="standardization-cards" class="explorer-stack"></div>
     </section>
 
     <section class="panel page-panel" data-page="harmonization">
-      <h2>BRCA Normalization</h2>
+      <h2>Step 3: BRCA Normalization</h2>
+      <div class="page-pipeline" data-page-pipeline="harmonization"></div>
       <p class="panel-note">
         Active BRCA-ready sources, the rule used on each one, and the frozen outputs produced from them.
       </p>
@@ -68,6 +72,7 @@
 
     <section class="panel page-panel" data-page="access">
       <h2>Controlled Access</h2>
+      <div class="page-pipeline" data-page-pipeline="access"></div>
       <p class="panel-note">
         This page tracks the large Arab datasets that still require DAC or provider approval. It explains what each source contains, why it matters to this project, and the official registration path verified from the provider pages.
       </p>
@@ -81,9 +86,10 @@
     </section>
 
     <section class="panel page-panel" data-page="pre-gme">
-      <h2>Baseline Draft Table</h2>
+      <h2>Step 4: Baseline Draft Integration</h2>
+      <div class="page-pipeline" data-page-pipeline="pre-gme"></div>
       <p class="panel-note">
-        Frozen draft table built from ClinVar and gnomAD only. This page is review-only.
+        Frozen draft table built from ClinVar and gnomAD only. Review-only.
       </p>
       <div id="pre-gme-meta" class="registry-meta"></div>
       <div class="action-row">
@@ -101,7 +107,8 @@
     </section>
 
     <section class="panel page-panel" data-page="final">
-      <h2>Baseline Final Table</h2>
+      <h2>Step 5: Baseline Final Integration</h2>
+      <div class="page-pipeline" data-page-pipeline="final"></div>
       <p class="panel-note">
         Frozen baseline final table after GME is added. Use this page as the comparison reference.
       </p>
@@ -121,7 +128,8 @@
     </section>
 
     <section class="panel page-panel" data-page="arab-extension">
-      <h2>Arab Extension Tables</h2>
+      <h2>Step 6: Arab Source Extension</h2>
+      <div class="page-pipeline" data-page-pipeline="arab-extension"></div>
       <p class="panel-note">
         This page shows only the new Arab-source work. The baseline pages above stay unchanged.
       </p>
@@ -158,9 +166,10 @@
     </section>
 
     <section class="panel page-panel" data-page="artifacts">
-      <h2>Data Downloads</h2>
+      <h2>Step 7: GCS Download Center</h2>
+      <div class="page-pipeline" data-page-pipeline="artifacts"></div>
       <p class="panel-note">
-        Download frozen derived artifacts from here only. Workflow pages above stay review-only; raw sources keep their official link or raw-vault reference instead of a dashboard export.
+        All downloadable GCS files and documents are grouped here by workflow stage and dataset. The workflow pages above stay review-only.
       </p>
       <div id="artifact-catalog" class="explorer-stack"></div>
     </section>

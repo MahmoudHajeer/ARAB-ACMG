@@ -2,12 +2,77 @@ const DEFAULT_PAGE = "overview";
 const EXTRA_WORKFLOW_PAGES = [
   {
     id: "standardization",
-    title: "Genome Build Conversion",
-    summary: "Frozen evidence for any source that needed explicit build conversion before BRCA work.",
+    title: "Build Conversion",
+    summary: "Frozen GRCh37 to GRCh38 evidence for sources that needed it before BRCA normalization.",
     afterId: "raw",
   },
 ];
 const KNOWN_PAGE_IDS = new Set(["overview", "raw", "standardization", "harmonization", "pre-gme", "final", "arab-extension", "artifacts", "access"]);
+const PAGE_PIPELINES = {
+  overview: {
+    nodes: [
+      { label: "Input", text: "Conductor state + frozen review bundle" },
+      { label: "Operation", text: "Summarize track progress and workflow order" },
+      { label: "Output", text: "Supervisor map of the active scientific pipeline" },
+    ],
+  },
+  raw: {
+    nodes: [
+      { label: "Input", text: "Exact upstream source files" },
+      { label: "Operation", text: "Freeze bytes and write manifest" },
+      { label: "Output", text: "Raw GCS package + 10-row review sample" },
+    ],
+  },
+  standardization: {
+    nodes: [
+      { label: "Input", text: "Non-GRCh38 source" },
+      { label: "Operation", text: "Lift coordinates to GRCh38 with tracked evidence" },
+      { label: "Output", text: "Converted artifact + liftover report" },
+    ],
+  },
+  harmonization: {
+    nodes: [
+      { label: "Input", text: "BRCA-ready raw or converted source" },
+      { label: "Operation", text: "Normalize to canonical BRCA variant records" },
+      { label: "Output", text: "Per-source normalized artifacts" },
+    ],
+  },
+  access: {
+    nodes: [
+      { label: "Input", text: "High-value restricted Arab cohorts" },
+      { label: "Operation", text: "Review official registration and DAC path" },
+      { label: "Output", text: "Acquisition roadmap when approvals are needed" },
+    ],
+  },
+  "pre-gme": {
+    nodes: [
+      { label: "Input", text: "ClinVar + gnomAD normalized artifacts" },
+      { label: "Operation", text: "Build baseline draft table" },
+      { label: "Output", text: "Frozen baseline draft for review" },
+    ],
+  },
+  final: {
+    nodes: [
+      { label: "Input", text: "Baseline draft + GME support layer" },
+      { label: "Operation", text: "Finalize unchanged baseline checkpoint" },
+      { label: "Output", text: "Frozen baseline final table" },
+    ],
+  },
+  "arab-extension": {
+    nodes: [
+      { label: "Input", text: "Baseline final + Arab frequency layers" },
+      { label: "Operation", text: "Extend baseline without overwriting it" },
+      { label: "Output", text: "Arab draft and Arab final checkpoints" },
+    ],
+  },
+  artifacts: {
+    nodes: [
+      { label: "Input", text: "Frozen GCS files from every workflow stage" },
+      { label: "Operation", text: "Group by stage, dataset, and file type" },
+      { label: "Output", text: "Single download center with path + manifest" },
+    ],
+  },
+};
 const resourceCache = new Map();
 const inflightRequests = new Map();
 const renderedPages = new Set();
@@ -166,9 +231,36 @@ function renderWorkflowMap(pages) {
         <p class="workflow-summary">${escapeHtml(page.summary)}</p>
         <a class="workflow-jump" href="#${page.id}">Open page</a>
       </article>
+      ${index < pages.length - 1 ? `<div class="workflow-arrow" aria-hidden="true">→</div>` : ""}
     `
     )
     .join("");
+}
+
+function renderPagePipelines() {
+  document.querySelectorAll("[data-page-pipeline]").forEach((node) => {
+    const config = PAGE_PIPELINES[node.dataset.pagePipeline];
+    if (!config) {
+      node.innerHTML = "";
+      return;
+    }
+
+    node.innerHTML = `
+      <div class="pipeline-strip">
+        ${config.nodes
+          .map(
+            (item, index) => `
+            <article class="pipeline-node">
+              <div class="pipeline-label">${escapeHtml(item.label)}</div>
+              <div class="pipeline-text">${escapeHtml(item.text)}</div>
+            </article>
+            ${index < config.nodes.length - 1 ? `<div class="pipeline-arrow" aria-hidden="true">→</div>` : ""}
+          `
+          )
+          .join("")}
+      </div>
+    `;
+  });
 }
 
 function renderLinkList(links) {
@@ -926,19 +1018,45 @@ function renderArtifactCatalog(payload) {
                   </div>
                   <div class="action-row compact-actions">
                     ${
-                      !(entry.downloads || []).length
+                      !(entry.files || []).length
                         ? `<span class="column-kind context_extra">REFERENCE ONLY</span>`
-                        : ""
+                        : `<span class="column-kind required">${Number((entry.files || []).length).toLocaleString()} FILES</span>`
                     }
-                    ${(entry.downloads || [])
-                      .map(
-                        (download) =>
-                          `<a class="action-button secondary-link" href="${escapeHtml(download.url)}" target="_blank" rel="noreferrer">${escapeHtml(download.label)}</a>`
-                      )
-                      .join("")}
                   </div>
                 </div>
                 <p class="card-summary">${escapeHtml(entry.overview)}</p>
+                ${
+                  (entry.files || []).length
+                    ? `
+                    <div class="sample-table-wrap artifact-file-wrap">
+                      <table class="sample-table compact-table artifact-table">
+                        <thead>
+                          <tr>
+                            <th>Type</th>
+                            <th>File</th>
+                            <th>GCS Path</th>
+                            <th>Access</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          ${(entry.files || [])
+                            .map(
+                              (file) => `
+                              <tr>
+                                <td><span class="column-kind ${escapeHtml(file.kind)}">${escapeHtml(file.kind_label)}</span></td>
+                                <td>${escapeHtml(file.label)}</td>
+                                <td><code class="truncate">${escapeHtml(file.gs_uri || file.public_url)}</code></td>
+                                <td><a class="action-button secondary-link compact-link" href="${escapeHtml(file.public_url)}" target="_blank" rel="noreferrer">${escapeHtml(file.kind === "manifest" || file.kind === "report" || file.kind === "bundle" ? "Open file" : "Download")}</a></td>
+                              </tr>
+                            `
+                            )
+                            .join("")}
+                        </tbody>
+                      </table>
+                    </div>
+                  `
+                    : ""
+                }
                 ${
                   (entry.links || []).length
                     ? `<details class="details-card">
@@ -1430,6 +1548,7 @@ async function main() {
   const generatedAtNode = document.getElementById("generated-at");
   try {
     await loadShellData();
+    renderPagePipelines();
     wireGlobalButtons();
     await navigate();
   } catch (error) {

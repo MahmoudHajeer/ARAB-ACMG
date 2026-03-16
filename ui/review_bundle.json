@@ -7,37 +7,37 @@
       {
         "id": "overview",
         "title": "Overview",
-        "summary": "Track progress and the current scientific workflow."
+        "summary": "Track progress and move through the scientific workflow stage by stage."
       },
       {
         "id": "raw",
-        "title": "Raw Evidence",
-        "summary": "Untouched source records before any build conversion or BRCA processing."
+        "title": "Raw Freeze",
+        "summary": "Exact upstream files and manifests preserved before any processing."
       },
       {
         "id": "harmonization",
         "title": "BRCA Normalization",
-        "summary": "Active BRCA-ready sources, the rule used on each one, and the frozen outputs."
+        "summary": "Per-source BRCA artifacts after canonical coordinate normalization."
       },
       {
         "id": "pre-gme",
-        "title": "Baseline Draft Table",
-        "summary": "Frozen draft table built from ClinVar and gnomAD only."
+        "title": "Baseline Draft Integration",
+        "summary": "ClinVar plus gnomAD combined before the GME support layer."
       },
       {
         "id": "final",
-        "title": "Baseline Final Table",
-        "summary": "Frozen baseline final table after GME is added."
+        "title": "Baseline Final Integration",
+        "summary": "Baseline final table after GME is added as support."
       },
       {
         "id": "arab-extension",
-        "title": "Arab Extension Tables",
-        "summary": "New Arab-source tables kept separate from the unchanged baseline."
+        "title": "Arab Extension",
+        "summary": "New Arab-source checkpoints kept separate from the unchanged baseline."
       },
       {
         "id": "artifacts",
-        "title": "Data Downloads",
-        "summary": "Structured download center for all frozen derived artifacts shown in the dashboard."
+        "title": "GCS Download Center",
+        "summary": "Public frozen files grouped by workflow stage and dataset."
       },
       {
         "id": "access",
@@ -11595,17 +11595,42 @@
     "groups": [
       {
         "id": "raw_public_sources",
-        "title": "Raw source references",
-        "summary": "Untouched source-of-truth packages. Use the official source or raw-vault reference.",
+        "title": "Stage 1 outputs: raw source freezes",
+        "summary": "Exact upstream source packages stored in GCS before any liftover, filtering, or BRCA normalization.",
         "entries": [
           {
             "key": "clinvar_raw_brca_window",
             "title": "ClinVar raw BRCA-window preview",
             "group": "raw_public_sources",
-            "stage": "Raw source reference",
+            "stage": "Raw source freeze",
             "overview": "Untouched ClinVar evidence constrained to the BRCA windows before normalization-derived checkpoint aggregation.",
             "row_count": 36253,
-            "downloads": [],
+            "files": [
+              {
+                "label": "Raw VCF",
+                "kind": "source_data",
+                "kind_label": "SOURCE",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/clinvar/lastmod-20260302/snapshot_date=2026-03-03/clinvar.vcf.gz",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/clinvar/lastmod-20260302/snapshot_date=2026-03-03/clinvar.vcf.gz",
+                "filename": "clinvar.vcf.gz"
+              },
+              {
+                "label": "Index",
+                "kind": "index",
+                "kind_label": "INDEX",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/clinvar/lastmod-20260302/snapshot_date=2026-03-03/clinvar.vcf.gz.tbi",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/clinvar/lastmod-20260302/snapshot_date=2026-03-03/clinvar.vcf.gz.tbi",
+                "filename": "clinvar.vcf.gz.tbi"
+              },
+              {
+                "label": "Manifest",
+                "kind": "manifest",
+                "kind_label": "MANIFEST",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/clinvar/lastmod-20260302/snapshot_date=2026-03-03/manifest.json",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/clinvar/lastmod-20260302/snapshot_date=2026-03-03/manifest.json",
+                "filename": "manifest.json"
+              }
+            ],
             "links": [
               {
                 "label": "Official source",
@@ -11613,19 +11638,67 @@
               }
             ],
             "references": [
-              "gs://mahmoud-arab-acmg-research-data/raw/clinvar/lastmod-20260302/snapshot_date=2026-03-03/clinvar_raw.vcf.gz",
               "Preview rows are sourced from the untouched ClinVar BRCA-window extraction before chromosome renaming or allele normalization."
             ],
-            "download_note": ""
+            "download_note": "Displayed rows are the frozen BRCA-window preview. The file list below is the full frozen source package used to build that preview."
           },
           {
             "key": "gnomad_genomes_raw_brca_window",
             "title": "gnomAD genomes raw BRCA-window preview",
             "group": "raw_public_sources",
-            "stage": "Raw source reference",
+            "stage": "Raw source freeze",
             "overview": "Untouched gnomAD genomes evidence constrained to the BRCA windows before checkpoint aggregation.",
             "row_count": 54331,
-            "downloads": [],
+            "files": [
+              {
+                "label": "chr13 VCF.BGZ",
+                "kind": "source_data",
+                "kind_label": "SOURCE",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr13/snapshot_date=2026-03-03/gnomad.genomes.v4.1.sites.chr13.vcf.bgz",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr13/snapshot_date=2026-03-03/gnomad.genomes.v4.1.sites.chr13.vcf.bgz",
+                "filename": "gnomad.genomes.v4.1.sites.chr13.vcf.bgz"
+              },
+              {
+                "label": "chr13 index",
+                "kind": "index",
+                "kind_label": "INDEX",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr13/snapshot_date=2026-03-03/gnomad.genomes.v4.1.sites.chr13.vcf.bgz.tbi",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr13/snapshot_date=2026-03-03/gnomad.genomes.v4.1.sites.chr13.vcf.bgz.tbi",
+                "filename": "gnomad.genomes.v4.1.sites.chr13.vcf.bgz.tbi"
+              },
+              {
+                "label": "chr13 manifest",
+                "kind": "manifest",
+                "kind_label": "MANIFEST",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr13/snapshot_date=2026-03-03/manifest.json",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr13/snapshot_date=2026-03-03/manifest.json",
+                "filename": "manifest.json"
+              },
+              {
+                "label": "chr17 VCF.BGZ",
+                "kind": "source_data",
+                "kind_label": "SOURCE",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr17/snapshot_date=2026-03-03/gnomad.genomes.v4.1.sites.chr17.vcf.bgz",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr17/snapshot_date=2026-03-03/gnomad.genomes.v4.1.sites.chr17.vcf.bgz",
+                "filename": "gnomad.genomes.v4.1.sites.chr17.vcf.bgz"
+              },
+              {
+                "label": "chr17 index",
+                "kind": "index",
+                "kind_label": "INDEX",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr17/snapshot_date=2026-03-03/gnomad.genomes.v4.1.sites.chr17.vcf.bgz.tbi",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr17/snapshot_date=2026-03-03/gnomad.genomes.v4.1.sites.chr17.vcf.bgz.tbi",
+                "filename": "gnomad.genomes.v4.1.sites.chr17.vcf.bgz.tbi"
+              },
+              {
+                "label": "chr17 manifest",
+                "kind": "manifest",
+                "kind_label": "MANIFEST",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr17/snapshot_date=2026-03-03/manifest.json",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr17/snapshot_date=2026-03-03/manifest.json",
+                "filename": "manifest.json"
+              }
+            ],
             "links": [
               {
                 "label": "Official source",
@@ -11633,19 +11706,67 @@
               }
             ],
             "references": [
-              "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr13/snapshot_date=2026-03-03/gnomad.genomes.v4.1.sites.chr13.vcf.bgz",
               "The source remains logically split across chr13 and chr17, but the preview is unified for review."
             ],
-            "download_note": ""
+            "download_note": "Displayed rows are the frozen BRCA-window preview. The file list below is the full frozen source package used to build that preview."
           },
           {
             "key": "gnomad_exomes_raw_brca_window",
             "title": "gnomAD exomes raw BRCA-window preview",
             "group": "raw_public_sources",
-            "stage": "Raw source reference",
+            "stage": "Raw source freeze",
             "overview": "Untouched gnomAD exomes evidence constrained to the BRCA windows before checkpoint aggregation.",
             "row_count": 45340,
-            "downloads": [],
+            "files": [
+              {
+                "label": "chr13 VCF.BGZ",
+                "kind": "source_data",
+                "kind_label": "SOURCE",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr13/snapshot_date=2026-03-03/gnomad.exomes.v4.1.sites.chr13.vcf.bgz",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr13/snapshot_date=2026-03-03/gnomad.exomes.v4.1.sites.chr13.vcf.bgz",
+                "filename": "gnomad.exomes.v4.1.sites.chr13.vcf.bgz"
+              },
+              {
+                "label": "chr13 index",
+                "kind": "index",
+                "kind_label": "INDEX",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr13/snapshot_date=2026-03-03/gnomad.exomes.v4.1.sites.chr13.vcf.bgz.tbi",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr13/snapshot_date=2026-03-03/gnomad.exomes.v4.1.sites.chr13.vcf.bgz.tbi",
+                "filename": "gnomad.exomes.v4.1.sites.chr13.vcf.bgz.tbi"
+              },
+              {
+                "label": "chr13 manifest",
+                "kind": "manifest",
+                "kind_label": "MANIFEST",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr13/snapshot_date=2026-03-03/manifest.json",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr13/snapshot_date=2026-03-03/manifest.json",
+                "filename": "manifest.json"
+              },
+              {
+                "label": "chr17 VCF.BGZ",
+                "kind": "source_data",
+                "kind_label": "SOURCE",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr17/snapshot_date=2026-03-03/gnomad.exomes.v4.1.sites.chr17.vcf.bgz",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr17/snapshot_date=2026-03-03/gnomad.exomes.v4.1.sites.chr17.vcf.bgz",
+                "filename": "gnomad.exomes.v4.1.sites.chr17.vcf.bgz"
+              },
+              {
+                "label": "chr17 index",
+                "kind": "index",
+                "kind_label": "INDEX",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr17/snapshot_date=2026-03-03/gnomad.exomes.v4.1.sites.chr17.vcf.bgz.tbi",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr17/snapshot_date=2026-03-03/gnomad.exomes.v4.1.sites.chr17.vcf.bgz.tbi",
+                "filename": "gnomad.exomes.v4.1.sites.chr17.vcf.bgz.tbi"
+              },
+              {
+                "label": "chr17 manifest",
+                "kind": "manifest",
+                "kind_label": "MANIFEST",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr17/snapshot_date=2026-03-03/manifest.json",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr17/snapshot_date=2026-03-03/manifest.json",
+                "filename": "manifest.json"
+              }
+            ],
             "links": [
               {
                 "label": "Official source",
@@ -11653,19 +11774,35 @@
               }
             ],
             "references": [
-              "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr13/snapshot_date=2026-03-03/gnomad.exomes.v4.1.sites.chr13.vcf.bgz",
               "The source remains logically split across chr13 and chr17, but the preview is unified for review."
             ],
-            "download_note": ""
+            "download_note": "Displayed rows are the frozen BRCA-window preview. The file list below is the full frozen source package used to build that preview."
           },
           {
             "key": "shgp_raw_brca_window",
             "title": "SHGP raw BRCA-window preview",
             "group": "raw_public_sources",
-            "stage": "Raw source reference",
+            "stage": "Raw source freeze",
             "overview": "Untouched SHGP rows inside the BRCA windows before table-to-VCF conversion.",
             "row_count": 25488989,
-            "downloads": [],
+            "files": [
+              {
+                "label": "Raw frequency table",
+                "kind": "source_data",
+                "kind_label": "SOURCE",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/shgp_saudi_af/version=figshare-28059686-v1/snapshot_date=2026-03-13/Saudi_Arabian_Allele_Frequencies.txt",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/shgp_saudi_af/version=figshare-28059686-v1/snapshot_date=2026-03-13/Saudi_Arabian_Allele_Frequencies.txt",
+                "filename": "Saudi_Arabian_Allele_Frequencies.txt"
+              },
+              {
+                "label": "Manifest",
+                "kind": "manifest",
+                "kind_label": "MANIFEST",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/shgp_saudi_af/version=figshare-28059686-v1/snapshot_date=2026-03-13/manifest.json",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/shgp_saudi_af/version=figshare-28059686-v1/snapshot_date=2026-03-13/manifest.json",
+                "filename": "manifest.json"
+              }
+            ],
             "links": [
               {
                 "label": "Official source",
@@ -11673,28 +11810,97 @@
               }
             ],
             "references": [
-              "gs://mahmoud-arab-acmg-research-data/raw/sources/shgp_saudi_af/version=figshare-28059686-v1/snapshot_date=2026-03-13/Saudi_Arabian_Allele_Frequencies.txt",
               "This is the first primary Arab frequency source now carried into the checkpoint workflow."
             ],
-            "download_note": ""
+            "download_note": "Displayed rows are the frozen BRCA-window preview. The file list below is the full frozen source package used to build that preview."
           },
           {
             "key": "gme_raw_brca_window",
             "title": "GME raw BRCA-window preview",
             "group": "raw_public_sources",
-            "stage": "Raw source reference",
+            "stage": "Raw source freeze",
             "overview": "Untouched GME rows inside the BRCA windows before table-to-VCF conversion.",
             "row_count": 699496,
-            "downloads": [],
+            "files": [
+              {
+                "label": "Raw summary table",
+                "kind": "source_data",
+                "kind_label": "SOURCE",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gme/release=20161025-hg38/build=hg38/snapshot_date=2026-03-08/hg38_gme.txt.gz",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gme/release=20161025-hg38/build=hg38/snapshot_date=2026-03-08/hg38_gme.txt.gz",
+                "filename": "hg38_gme.txt.gz"
+              },
+              {
+                "label": "Manifest",
+                "kind": "manifest",
+                "kind_label": "MANIFEST",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gme/release=20161025-hg38/build=hg38/snapshot_date=2026-03-08/manifest.json",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gme/release=20161025-hg38/build=hg38/snapshot_date=2026-03-08/manifest.json",
+                "filename": "manifest.json"
+              }
+            ],
+            "links": [],
+            "references": [
+              "GME remains a supporting source and is added only after the Arab pre-GME checkpoint is already reviewable."
+            ],
+            "download_note": "Displayed rows are the frozen BRCA-window preview. The file list below is the full frozen source package used to build that preview."
+          }
+        ]
+      },
+      {
+        "id": "standardization_artifacts",
+        "title": "Stage 2 outputs: build conversion evidence",
+        "summary": "Files produced only for sources that needed explicit GRCh37 to GRCh38 handling.",
+        "entries": [
+          {
+            "key": "avdb_grch37_to_grch38",
+            "title": "AVDB UAE build-conversion package",
+            "group": "standardization_artifacts",
+            "stage": "Build conversion package",
+            "overview": "Raw AVDB workbook plus the frozen liftover parquet/report that document the GRCh37 to GRCh38 conversion.",
+            "row_count": 801,
+            "files": [
+              {
+                "label": "Raw workbook",
+                "kind": "workbook",
+                "kind_label": "WORKBOOK",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/avdb_uae/version=workbook-created-2025-06-27/build=GRCh37/snapshot_date=2026-03-13/avdb_uae.xlsx",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/avdb_uae/version=workbook-created-2025-06-27/build=GRCh37/snapshot_date=2026-03-13/avdb_uae.xlsx",
+                "filename": "avdb_uae.xlsx"
+              },
+              {
+                "label": "Raw manifest",
+                "kind": "manifest",
+                "kind_label": "MANIFEST",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/avdb_uae/version=workbook-created-2025-06-27/build=GRCh37/snapshot_date=2026-03-13/manifest.json",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/avdb_uae/version=workbook-created-2025-06-27/build=GRCh37/snapshot_date=2026-03-13/manifest.json",
+                "filename": "manifest.json"
+              },
+              {
+                "label": "Lifted parquet",
+                "kind": "parquet",
+                "kind_label": "PARQUET",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/source=avdb_uae/version=workbook-created-2025-06-27/stage=liftover/build=GRCh37_to_GRCh38/snapshot_date=2026-03-13/avdb_uae_liftover.parquet",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/source=avdb_uae/version=workbook-created-2025-06-27/stage=liftover/build=GRCh37_to_GRCh38/snapshot_date=2026-03-13/avdb_uae_liftover.parquet",
+                "filename": "avdb_uae_liftover.parquet"
+              },
+              {
+                "label": "Liftover report",
+                "kind": "report",
+                "kind_label": "REPORT",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/source=avdb_uae/version=workbook-created-2025-06-27/stage=liftover/build=GRCh37_to_GRCh38/snapshot_date=2026-03-13/avdb_uae_liftover_report.json",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/source=avdb_uae/version=workbook-created-2025-06-27/stage=liftover/build=GRCh37_to_GRCh38/snapshot_date=2026-03-13/avdb_uae_liftover_report.json",
+                "filename": "avdb_uae_liftover_report.json"
+              }
+            ],
             "links": [
               {
                 "label": "Official source",
-                "url": "file:///Users/macbookpro/Desktop/storage/raw/gme/hg38_gme.txt.gz"
+                "url": "https://avdb-arabgenome.ae/downloads"
               }
             ],
             "references": [
-              "gs://mahmoud-arab-acmg-research-data/raw/sources/gme/release=20161025-hg38/build=hg38/snapshot_date=2026-03-08/hg38_gme.txt.gz",
-              "GME remains a supporting source and is added only after the Arab pre-GME checkpoint is already reviewable."
+              "Reference-only source: valid build conversion, but no BRCA rows in the frozen release."
             ],
             "download_note": ""
           }
@@ -11702,110 +11908,240 @@
       },
       {
         "id": "normalized_artifacts",
-        "title": "Normalized source artifacts",
-        "summary": "Per-source BRCA artifacts frozen after normalization.",
+        "title": "Stage 3 outputs: BRCA-normalized source artifacts",
+        "summary": "Per-source BRCA artifacts after canonical coordinate normalization, each with CSV, parquet, manifest, and report.",
         "entries": [
           {
             "key": "clinvar_normalized_brca",
             "title": "Normalized BRCA ClinVar artifact",
             "group": "normalized_artifacts",
-            "stage": "Normalized table",
+            "stage": "Normalized artifact",
             "overview": "Normalize the ClinVar BRCA window with explicit raw-record lineage.",
             "row_count": 36253,
-            "downloads": [
+            "files": [
               {
-                "label": "Download CSV",
-                "url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=clinvar_normalized_brca_v1/snapshot_date=2026-03-15/clinvar_normalized_brca_v1.csv"
+                "label": "CSV export",
+                "kind": "csv",
+                "kind_label": "CSV",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=clinvar_normalized_brca_v1/snapshot_date=2026-03-15/clinvar_normalized_brca_v1.csv",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=clinvar_normalized_brca_v1/snapshot_date=2026-03-15/clinvar_normalized_brca_v1.csv",
+                "filename": "clinvar_normalized_brca_v1.csv"
+              },
+              {
+                "label": "Parquet artifact",
+                "kind": "parquet",
+                "kind_label": "PARQUET",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=clinvar_normalized_brca_v1/snapshot_date=2026-03-15/clinvar_normalized_brca_v1.parquet",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=clinvar_normalized_brca_v1/snapshot_date=2026-03-15/clinvar_normalized_brca_v1.parquet",
+                "filename": "clinvar_normalized_brca_v1.parquet"
+              },
+              {
+                "label": "Artifact manifest",
+                "kind": "manifest",
+                "kind_label": "MANIFEST",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=clinvar_normalized_brca_v1/snapshot_date=2026-03-15/clinvar_normalized_brca_v1_manifest.json",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=clinvar_normalized_brca_v1/snapshot_date=2026-03-15/clinvar_normalized_brca_v1_manifest.json",
+                "filename": "clinvar_normalized_brca_v1_manifest.json"
+              },
+              {
+                "label": "Artifact report",
+                "kind": "report",
+                "kind_label": "REPORT",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=clinvar_normalized_brca_v1/snapshot_date=2026-03-15/clinvar_normalized_brca_v1_report.json",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=clinvar_normalized_brca_v1/snapshot_date=2026-03-15/clinvar_normalized_brca_v1_report.json",
+                "filename": "clinvar_normalized_brca_v1_report.json"
               }
             ],
             "links": [],
-            "references": [
-              "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=clinvar_normalized_brca_v1/snapshot_date=2026-03-15/clinvar_normalized_brca_v1.parquet"
-            ],
+            "references": [],
             "download_note": ""
           },
           {
             "key": "gnomad_genomes_normalized_brca",
             "title": "Normalized BRCA gnomAD genomes artifact",
             "group": "normalized_artifacts",
-            "stage": "Normalized table",
+            "stage": "Normalized artifact",
             "overview": "Normalize the gnomAD genomes BRCA windows and keep genomes separate from exomes.",
             "row_count": 54331,
-            "downloads": [
+            "files": [
               {
-                "label": "Download CSV",
-                "url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_genomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_genomes_normalized_brca_v1.csv"
+                "label": "CSV export",
+                "kind": "csv",
+                "kind_label": "CSV",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_genomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_genomes_normalized_brca_v1.csv",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_genomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_genomes_normalized_brca_v1.csv",
+                "filename": "gnomad_genomes_normalized_brca_v1.csv"
+              },
+              {
+                "label": "Parquet artifact",
+                "kind": "parquet",
+                "kind_label": "PARQUET",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_genomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_genomes_normalized_brca_v1.parquet",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_genomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_genomes_normalized_brca_v1.parquet",
+                "filename": "gnomad_genomes_normalized_brca_v1.parquet"
+              },
+              {
+                "label": "Artifact manifest",
+                "kind": "manifest",
+                "kind_label": "MANIFEST",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_genomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_genomes_normalized_brca_v1_manifest.json",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_genomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_genomes_normalized_brca_v1_manifest.json",
+                "filename": "gnomad_genomes_normalized_brca_v1_manifest.json"
+              },
+              {
+                "label": "Artifact report",
+                "kind": "report",
+                "kind_label": "REPORT",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_genomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_genomes_normalized_brca_v1_report.json",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_genomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_genomes_normalized_brca_v1_report.json",
+                "filename": "gnomad_genomes_normalized_brca_v1_report.json"
               }
             ],
             "links": [],
-            "references": [
-              "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_genomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_genomes_normalized_brca_v1.parquet"
-            ],
+            "references": [],
             "download_note": ""
           },
           {
             "key": "gnomad_exomes_normalized_brca",
             "title": "Normalized BRCA gnomAD exomes artifact",
             "group": "normalized_artifacts",
-            "stage": "Normalized table",
+            "stage": "Normalized artifact",
             "overview": "Normalize the gnomAD exomes BRCA windows and keep exomes separate from genomes.",
             "row_count": 45340,
-            "downloads": [
+            "files": [
               {
-                "label": "Download CSV",
-                "url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_exomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_exomes_normalized_brca_v1.csv"
+                "label": "CSV export",
+                "kind": "csv",
+                "kind_label": "CSV",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_exomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_exomes_normalized_brca_v1.csv",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_exomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_exomes_normalized_brca_v1.csv",
+                "filename": "gnomad_exomes_normalized_brca_v1.csv"
+              },
+              {
+                "label": "Parquet artifact",
+                "kind": "parquet",
+                "kind_label": "PARQUET",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_exomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_exomes_normalized_brca_v1.parquet",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_exomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_exomes_normalized_brca_v1.parquet",
+                "filename": "gnomad_exomes_normalized_brca_v1.parquet"
+              },
+              {
+                "label": "Artifact manifest",
+                "kind": "manifest",
+                "kind_label": "MANIFEST",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_exomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_exomes_normalized_brca_v1_manifest.json",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_exomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_exomes_normalized_brca_v1_manifest.json",
+                "filename": "gnomad_exomes_normalized_brca_v1_manifest.json"
+              },
+              {
+                "label": "Artifact report",
+                "kind": "report",
+                "kind_label": "REPORT",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_exomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_exomes_normalized_brca_v1_report.json",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_exomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_exomes_normalized_brca_v1_report.json",
+                "filename": "gnomad_exomes_normalized_brca_v1_report.json"
               }
             ],
             "links": [],
-            "references": [
-              "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_exomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_exomes_normalized_brca_v1.parquet"
-            ],
+            "references": [],
             "download_note": ""
           },
           {
             "key": "shgp_normalized_brca",
             "title": "Normalized BRCA SHGP artifact",
             "group": "normalized_artifacts",
-            "stage": "Normalized table",
+            "stage": "Normalized artifact",
             "overview": "Normalize the Saudi BRCA rows after explicit table-to-VCF conversion.",
             "row_count": 1607,
-            "downloads": [
+            "files": [
               {
-                "label": "Download CSV",
-                "url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=shgp_normalized_brca_v1/snapshot_date=2026-03-15/shgp_normalized_brca_v1.csv"
+                "label": "CSV export",
+                "kind": "csv",
+                "kind_label": "CSV",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=shgp_normalized_brca_v1/snapshot_date=2026-03-15/shgp_normalized_brca_v1.csv",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=shgp_normalized_brca_v1/snapshot_date=2026-03-15/shgp_normalized_brca_v1.csv",
+                "filename": "shgp_normalized_brca_v1.csv"
+              },
+              {
+                "label": "Parquet artifact",
+                "kind": "parquet",
+                "kind_label": "PARQUET",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=shgp_normalized_brca_v1/snapshot_date=2026-03-15/shgp_normalized_brca_v1.parquet",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=shgp_normalized_brca_v1/snapshot_date=2026-03-15/shgp_normalized_brca_v1.parquet",
+                "filename": "shgp_normalized_brca_v1.parquet"
+              },
+              {
+                "label": "Artifact manifest",
+                "kind": "manifest",
+                "kind_label": "MANIFEST",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=shgp_normalized_brca_v1/snapshot_date=2026-03-15/shgp_normalized_brca_v1_manifest.json",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=shgp_normalized_brca_v1/snapshot_date=2026-03-15/shgp_normalized_brca_v1_manifest.json",
+                "filename": "shgp_normalized_brca_v1_manifest.json"
+              },
+              {
+                "label": "Artifact report",
+                "kind": "report",
+                "kind_label": "REPORT",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=shgp_normalized_brca_v1/snapshot_date=2026-03-15/shgp_normalized_brca_v1_report.json",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=shgp_normalized_brca_v1/snapshot_date=2026-03-15/shgp_normalized_brca_v1_report.json",
+                "filename": "shgp_normalized_brca_v1_report.json"
               }
             ],
             "links": [],
-            "references": [
-              "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=shgp_normalized_brca_v1/snapshot_date=2026-03-15/shgp_normalized_brca_v1.parquet"
-            ],
+            "references": [],
             "download_note": ""
           },
           {
             "key": "gme_normalized_brca",
             "title": "Normalized BRCA GME artifact",
             "group": "normalized_artifacts",
-            "stage": "Normalized table",
+            "stage": "Normalized artifact",
             "overview": "Normalize the GME BRCA rows after explicit table-to-VCF conversion.",
             "row_count": 218,
-            "downloads": [
+            "files": [
               {
-                "label": "Download CSV",
-                "url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gme_normalized_brca_v1/snapshot_date=2026-03-15/gme_normalized_brca_v1.csv"
+                "label": "CSV export",
+                "kind": "csv",
+                "kind_label": "CSV",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gme_normalized_brca_v1/snapshot_date=2026-03-15/gme_normalized_brca_v1.csv",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gme_normalized_brca_v1/snapshot_date=2026-03-15/gme_normalized_brca_v1.csv",
+                "filename": "gme_normalized_brca_v1.csv"
+              },
+              {
+                "label": "Parquet artifact",
+                "kind": "parquet",
+                "kind_label": "PARQUET",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gme_normalized_brca_v1/snapshot_date=2026-03-15/gme_normalized_brca_v1.parquet",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gme_normalized_brca_v1/snapshot_date=2026-03-15/gme_normalized_brca_v1.parquet",
+                "filename": "gme_normalized_brca_v1.parquet"
+              },
+              {
+                "label": "Artifact manifest",
+                "kind": "manifest",
+                "kind_label": "MANIFEST",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gme_normalized_brca_v1/snapshot_date=2026-03-15/gme_normalized_brca_v1_manifest.json",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gme_normalized_brca_v1/snapshot_date=2026-03-15/gme_normalized_brca_v1_manifest.json",
+                "filename": "gme_normalized_brca_v1_manifest.json"
+              },
+              {
+                "label": "Artifact report",
+                "kind": "report",
+                "kind_label": "REPORT",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gme_normalized_brca_v1/snapshot_date=2026-03-15/gme_normalized_brca_v1_report.json",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gme_normalized_brca_v1/snapshot_date=2026-03-15/gme_normalized_brca_v1_report.json",
+                "filename": "gme_normalized_brca_v1_report.json"
               }
             ],
             "links": [],
-            "references": [
-              "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gme_normalized_brca_v1/snapshot_date=2026-03-15/gme_normalized_brca_v1.parquet"
-            ],
+            "references": [],
             "download_note": ""
           }
         ]
       },
       {
         "id": "legacy_checkpoint_artifacts",
-        "title": "Baseline tables",
-        "summary": "Historical baseline tables kept unchanged for comparison.",
+        "title": "Stage 4-5 outputs: baseline draft and final tables",
+        "summary": "Historical baseline tables kept unchanged. These remain the comparison reference for the Arab extension.",
         "entries": [
           {
             "key": "legacy_pre_gme",
@@ -11814,15 +12150,35 @@
             "stage": "Baseline draft table",
             "overview": "Historical checkpoint frozen before the Arab extension work began.",
             "row_count": 116067,
-            "downloads": [
+            "files": [
               {
-                "label": "Download CSV",
-                "url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/pre_gme/supervisor_variant_registry_brca_pre_gme_v1.csv"
+                "label": "CSV export",
+                "kind": "csv",
+                "kind_label": "CSV",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/pre_gme/supervisor_variant_registry_brca_pre_gme_v1.csv",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/pre_gme/supervisor_variant_registry_brca_pre_gme_v1.csv",
+                "filename": "supervisor_variant_registry_brca_pre_gme_v1.csv"
+              },
+              {
+                "label": "Parquet artifact",
+                "kind": "parquet",
+                "kind_label": "PARQUET",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/pre_gme/supervisor_variant_registry_brca_pre_gme_v1.parquet",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/pre_gme/supervisor_variant_registry_brca_pre_gme_v1.parquet",
+                "filename": "supervisor_variant_registry_brca_pre_gme_v1.parquet"
+              },
+              {
+                "label": "Review workbook",
+                "kind": "workbook",
+                "kind_label": "WORKBOOK",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/pre_gme/supervisor_variant_registry_brca_pre_gme_v1.xlsx",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/pre_gme/supervisor_variant_registry_brca_pre_gme_v1.xlsx",
+                "filename": "supervisor_variant_registry_brca_pre_gme_v1.xlsx"
               }
             ],
             "links": [],
             "references": [
-              "gs://mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/pre_gme/supervisor_variant_registry_brca_pre_gme_v1.parquet"
+              "This table stays frozen exactly as the historical baseline checkpoint."
             ],
             "download_note": ""
           },
@@ -11833,15 +12189,27 @@
             "stage": "Baseline final table",
             "overview": "Historical final BRCA checkpoint frozen before adding the new Arab frequency datasets.",
             "row_count": 116087,
-            "downloads": [
+            "files": [
               {
-                "label": "Download CSV",
-                "url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/final/supervisor_variant_registry_brca_v1.csv"
+                "label": "CSV export",
+                "kind": "csv",
+                "kind_label": "CSV",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/final/supervisor_variant_registry_brca_v1.csv",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/final/supervisor_variant_registry_brca_v1.csv",
+                "filename": "supervisor_variant_registry_brca_v1.csv"
+              },
+              {
+                "label": "Parquet artifact",
+                "kind": "parquet",
+                "kind_label": "PARQUET",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/final/supervisor_variant_registry_brca_v1.parquet",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/final/supervisor_variant_registry_brca_v1.parquet",
+                "filename": "supervisor_variant_registry_brca_v1.parquet"
               }
             ],
             "links": [],
             "references": [
-              "gs://mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/final/supervisor_variant_registry_brca_v1.parquet"
+              "Use this frozen final table as the baseline comparison point."
             ],
             "download_note": ""
           }
@@ -11849,8 +12217,8 @@
       },
       {
         "id": "arab_extension_artifacts",
-        "title": "Arab extension artifacts",
-        "summary": "New Arab-source tables layered on top of the unchanged baseline.",
+        "title": "Stage 6 outputs: Arab extension tables",
+        "summary": "Arab-source checkpoints kept separate from the unchanged baseline so the scientific delta stays explicit.",
         "entries": [
           {
             "key": "arab_pre_gme",
@@ -11859,15 +12227,27 @@
             "stage": "Arab draft table",
             "overview": "Arab-aware checkpoint from normalized ClinVar + gnomAD + SHGP before GME is added.",
             "row_count": 116398,
-            "downloads": [
+            "files": [
               {
-                "label": "Download CSV",
-                "url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=supervisor_variant_registry_brca_arab_pre_gme_v2/snapshot_date=2026-03-15/supervisor_variant_registry_brca_arab_pre_gme_v2.csv"
+                "label": "CSV export",
+                "kind": "csv",
+                "kind_label": "CSV",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=supervisor_variant_registry_brca_arab_pre_gme_v2/snapshot_date=2026-03-15/supervisor_variant_registry_brca_arab_pre_gme_v2.csv",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=supervisor_variant_registry_brca_arab_pre_gme_v2/snapshot_date=2026-03-15/supervisor_variant_registry_brca_arab_pre_gme_v2.csv",
+                "filename": "supervisor_variant_registry_brca_arab_pre_gme_v2.csv"
+              },
+              {
+                "label": "Parquet artifact",
+                "kind": "parquet",
+                "kind_label": "PARQUET",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=supervisor_variant_registry_brca_arab_pre_gme_v2/snapshot_date=2026-03-15/supervisor_variant_registry_brca_arab_pre_gme_v2.parquet",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=supervisor_variant_registry_brca_arab_pre_gme_v2/snapshot_date=2026-03-15/supervisor_variant_registry_brca_arab_pre_gme_v2.parquet",
+                "filename": "supervisor_variant_registry_brca_arab_pre_gme_v2.parquet"
               }
             ],
             "links": [],
             "references": [
-              "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=supervisor_variant_registry_brca_arab_pre_gme_v2/snapshot_date=2026-03-15/supervisor_variant_registry_brca_arab_pre_gme_v2.parquet"
+              "SHGP enters here before GME is added as a supporting layer."
             ],
             "download_note": ""
           },
@@ -11878,16 +12258,235 @@
             "stage": "Arab final table",
             "overview": "Arab-aware checkpoint after GME is added as a supporting Arab/MENA layer.",
             "row_count": 116413,
-            "downloads": [
+            "files": [
               {
-                "label": "Download CSV",
-                "url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/results/checkpoint=supervisor_variant_registry_brca_arab_v2/snapshot_date=2026-03-15/supervisor_variant_registry_brca_arab_v2.csv"
+                "label": "CSV export",
+                "kind": "csv",
+                "kind_label": "CSV",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/results/checkpoint=supervisor_variant_registry_brca_arab_v2/snapshot_date=2026-03-15/supervisor_variant_registry_brca_arab_v2.csv",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/results/checkpoint=supervisor_variant_registry_brca_arab_v2/snapshot_date=2026-03-15/supervisor_variant_registry_brca_arab_v2.csv",
+                "filename": "supervisor_variant_registry_brca_arab_v2.csv"
+              },
+              {
+                "label": "Parquet artifact",
+                "kind": "parquet",
+                "kind_label": "PARQUET",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=supervisor_variant_registry_brca_arab_v2/snapshot_date=2026-03-15/supervisor_variant_registry_brca_arab_v2.parquet",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=supervisor_variant_registry_brca_arab_v2/snapshot_date=2026-03-15/supervisor_variant_registry_brca_arab_v2.parquet",
+                "filename": "supervisor_variant_registry_brca_arab_v2.parquet"
+              },
+              {
+                "label": "Artifact report",
+                "kind": "report",
+                "kind_label": "REPORT",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=supervisor_variant_registry_brca_arab_v2/snapshot_date=2026-03-15/supervisor_variant_registry_brca_arab_v2_report.json",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=supervisor_variant_registry_brca_arab_v2/snapshot_date=2026-03-15/supervisor_variant_registry_brca_arab_v2_report.json",
+                "filename": "supervisor_variant_registry_brca_arab_v2_report.json"
               }
             ],
             "links": [],
             "references": [
-              "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=supervisor_variant_registry_brca_arab_v2/snapshot_date=2026-03-15/supervisor_variant_registry_brca_arab_v2.parquet"
+              "This is the current Arab-aware final table, separate from the unchanged baseline."
             ],
+            "download_note": ""
+          }
+        ]
+      },
+      {
+        "id": "reference_study_artifacts",
+        "title": "Reference study packages",
+        "summary": "Reference-only workbook sources and their frozen extracts kept for audit and scientific review, not active frequency aggregation.",
+        "entries": [
+          {
+            "key": "uae_brca_reference",
+            "title": "UAE BRCA study review package",
+            "group": "reference_study_artifacts",
+            "stage": "Reference-only study package",
+            "overview": "Frozen workbook and de-identified extract files used to review the UAE BRCA study as supporting evidence only.",
+            "row_count": 83,
+            "files": [
+              {
+                "label": "Raw workbook",
+                "kind": "workbook",
+                "kind_label": "WORKBOOK",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/uae_brca_pmc12011969_moesm1.xlsx",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/uae_brca_pmc12011969_moesm1.xlsx",
+                "filename": "uae_brca_pmc12011969_moesm1.xlsx"
+              },
+              {
+                "label": "Raw manifest",
+                "kind": "manifest",
+                "kind_label": "MANIFEST",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/manifest.json",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/manifest.json",
+                "filename": "manifest.json"
+              },
+              {
+                "label": "Family-screening CSV",
+                "kind": "csv",
+                "kind_label": "CSV",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/family_screening_variant_rows.csv",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/family_screening_variant_rows.csv",
+                "filename": "family_screening_variant_rows.csv"
+              },
+              {
+                "label": "Family-screening parquet",
+                "kind": "parquet",
+                "kind_label": "PARQUET",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/family_screening_variant_rows.parquet",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/family_screening_variant_rows.parquet",
+                "filename": "family_screening_variant_rows.parquet"
+              },
+              {
+                "label": "Family-screening manifest",
+                "kind": "manifest",
+                "kind_label": "MANIFEST",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/family_screening_variant_rows.manifest.json",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/family_screening_variant_rows.manifest.json",
+                "filename": "family_screening_variant_rows.manifest.json"
+              },
+              {
+                "label": "Cancer-cohort CSV",
+                "kind": "csv",
+                "kind_label": "CSV",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/cancer_cohort_variant_rows.csv",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/cancer_cohort_variant_rows.csv",
+                "filename": "cancer_cohort_variant_rows.csv"
+              },
+              {
+                "label": "Cancer-cohort parquet",
+                "kind": "parquet",
+                "kind_label": "PARQUET",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/cancer_cohort_variant_rows.parquet",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/cancer_cohort_variant_rows.parquet",
+                "filename": "cancer_cohort_variant_rows.parquet"
+              },
+              {
+                "label": "Cancer-cohort manifest",
+                "kind": "manifest",
+                "kind_label": "MANIFEST",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/cancer_cohort_variant_rows.manifest.json",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/cancer_cohort_variant_rows.manifest.json",
+                "filename": "cancer_cohort_variant_rows.manifest.json"
+              }
+            ],
+            "links": [
+              {
+                "label": "Publication",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/instance/12572518/bin/432_2025_6188_MOESM1_ESM.xlsx"
+              }
+            ],
+            "references": [],
+            "download_note": ""
+          },
+          {
+            "key": "saudi_brca_reference",
+            "title": "Saudi breast-cancer study review package",
+            "group": "reference_study_artifacts",
+            "stage": "Blocked study package",
+            "overview": "Frozen workbook and de-identified extract files used to review the Saudi BRCA study. This source stays blocked for normalization.",
+            "row_count": 38,
+            "files": [
+              {
+                "label": "Raw workbook",
+                "kind": "workbook",
+                "kind_label": "WORKBOOK",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/saudi_breast_cancer_pmc10474689_moesm1.xls",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/saudi_breast_cancer_pmc10474689_moesm1.xls",
+                "filename": "saudi_breast_cancer_pmc10474689_moesm1.xls"
+              },
+              {
+                "label": "Raw manifest",
+                "kind": "manifest",
+                "kind_label": "MANIFEST",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/manifest.json",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/manifest.json",
+                "filename": "manifest.json"
+              },
+              {
+                "label": "De-identified CSV",
+                "kind": "csv",
+                "kind_label": "CSV",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/variant_carriers.csv",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/variant_carriers.csv",
+                "filename": "variant_carriers.csv"
+              },
+              {
+                "label": "De-identified parquet",
+                "kind": "parquet",
+                "kind_label": "PARQUET",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/variant_carriers.parquet",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/variant_carriers.parquet",
+                "filename": "variant_carriers.parquet"
+              },
+              {
+                "label": "Extract manifest",
+                "kind": "manifest",
+                "kind_label": "MANIFEST",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/variant_carriers.manifest.json",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/variant_carriers.manifest.json",
+                "filename": "variant_carriers.manifest.json"
+              }
+            ],
+            "links": [
+              {
+                "label": "Publication",
+                "url": "https://pmc.ncbi.nlm.nih.gov/articles/instance/10474689/bin/13073_2023_1220_MOESM1_ESM.xls"
+              }
+            ],
+            "references": [],
+            "download_note": ""
+          }
+        ]
+      },
+      {
+        "id": "review_documents",
+        "title": "Workflow documents and reports",
+        "summary": "Supervisor-facing documents that describe the frozen review state, normalization outputs, and intake decisions.",
+        "entries": [
+          {
+            "key": "workflow_documents",
+            "title": "Review bundle and workflow reports",
+            "group": "review_documents",
+            "stage": "Workflow documents",
+            "overview": "Top-level bundle/report files that document the current static review surface.",
+            "row_count": 0,
+            "files": [
+              {
+                "label": "Supervisor review bundle",
+                "kind": "bundle",
+                "kind_label": "BUNDLE",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/review_bundle.json",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/review_bundle.json",
+                "filename": "review_bundle.json"
+              },
+              {
+                "label": "Supervisor review manifest",
+                "kind": "manifest",
+                "kind_label": "MANIFEST",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/manifest.json",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/manifest.json",
+                "filename": "manifest.json"
+              },
+              {
+                "label": "Normalization report",
+                "kind": "report",
+                "kind_label": "REPORT",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/normalization_report/snapshot_date=2026-03-15/brca_normalization_report.json",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/normalization_report/snapshot_date=2026-03-15/brca_normalization_report.json",
+                "filename": "brca_normalization_report.json"
+              },
+              {
+                "label": "Arab intake report",
+                "kind": "report",
+                "kind_label": "REPORT",
+                "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/snapshot_date=2026-03-12/intake_report.json",
+                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/snapshot_date=2026-03-12/intake_report.json",
+                "filename": "intake_report.json"
+              }
+            ],
+            "links": [],
+            "references": [],
             "download_note": ""
           }
         ]

@@ -9,6 +9,7 @@ def test_csv_object_from_parquet_uri_swaps_extension():
 
 def test_build_artifact_catalog_groups_raw_and_derived_entries():
     catalog = build_artifact_catalog(
+        storage_client=None,
         legacy_pre_gme={
             "title": "legacy_pre",
             "scope_note": "legacy pre scope",
@@ -43,7 +44,7 @@ def test_build_artifact_catalog_groups_raw_and_derived_entries():
                 "title": "ClinVar normalized",
                 "simple_summary": "normalized artifact",
                 "row_count": 100,
-                "download_url": "https://storage.googleapis.com/example/clinvar.csv",
+                "download_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/test/clinvar.csv",
                 "table_ref": "gs://bucket/clinvar.parquet",
             }
         ],
@@ -70,14 +71,17 @@ def test_build_artifact_catalog_groups_raw_and_derived_entries():
     )
 
     groups = {group["id"]: group for group in catalog["groups"]}
-    assert set(groups) == {
+    assert {
         "raw_public_sources",
+        "standardization_artifacts",
         "normalized_artifacts",
         "legacy_checkpoint_artifacts",
         "arab_extension_artifacts",
-    }
-    assert groups["raw_public_sources"]["entries"][0]["downloads"] == []
-    assert groups["normalized_artifacts"]["entries"][0]["downloads"][0]["url"].endswith("clinvar.csv")
+        "reference_study_artifacts",
+        "review_documents",
+    }.issubset(set(groups))
+    assert groups["raw_public_sources"]["entries"][0]["files"][0]["gs_uri"].endswith("clinvar.vcf.gz")
+    assert groups["normalized_artifacts"]["entries"][0]["files"][0]["public_url"].endswith("clinvar.csv")
     assert groups["legacy_checkpoint_artifacts"]["entries"][0]["title"] == "legacy_pre"
     assert groups["arab_extension_artifacts"]["entries"][1]["title"] == "arab_final"
 

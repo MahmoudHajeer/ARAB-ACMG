@@ -45,6 +45,84 @@ RAW_SOURCE_LINK_MAP: Final[dict[str, str]] = {
     "gme_raw_brca_window": "gme_hg38",
 }
 
+RAW_SOURCE_FILES: Final[dict[str, list[dict[str, str]]]] = {
+    "clinvar_raw_brca_window": [
+        {"label": "Raw VCF", "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/clinvar/lastmod-20260302/snapshot_date=2026-03-03/clinvar.vcf.gz", "kind": "source_data"},
+        {"label": "Index", "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/clinvar/lastmod-20260302/snapshot_date=2026-03-03/clinvar.vcf.gz.tbi", "kind": "index"},
+        {"label": "Manifest", "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/clinvar/lastmod-20260302/snapshot_date=2026-03-03/manifest.json", "kind": "manifest"},
+    ],
+    "gnomad_genomes_raw_brca_window": [
+        {"label": "chr13 VCF.BGZ", "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr13/snapshot_date=2026-03-03/gnomad.genomes.v4.1.sites.chr13.vcf.bgz", "kind": "source_data"},
+        {"label": "chr13 index", "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr13/snapshot_date=2026-03-03/gnomad.genomes.v4.1.sites.chr13.vcf.bgz.tbi", "kind": "index"},
+        {"label": "chr13 manifest", "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr13/snapshot_date=2026-03-03/manifest.json", "kind": "manifest"},
+        {"label": "chr17 VCF.BGZ", "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr17/snapshot_date=2026-03-03/gnomad.genomes.v4.1.sites.chr17.vcf.bgz", "kind": "source_data"},
+        {"label": "chr17 index", "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr17/snapshot_date=2026-03-03/gnomad.genomes.v4.1.sites.chr17.vcf.bgz.tbi", "kind": "index"},
+        {"label": "chr17 manifest", "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr17/snapshot_date=2026-03-03/manifest.json", "kind": "manifest"},
+    ],
+    "gnomad_exomes_raw_brca_window": [
+        {"label": "chr13 VCF.BGZ", "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr13/snapshot_date=2026-03-03/gnomad.exomes.v4.1.sites.chr13.vcf.bgz", "kind": "source_data"},
+        {"label": "chr13 index", "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr13/snapshot_date=2026-03-03/gnomad.exomes.v4.1.sites.chr13.vcf.bgz.tbi", "kind": "index"},
+        {"label": "chr13 manifest", "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr13/snapshot_date=2026-03-03/manifest.json", "kind": "manifest"},
+        {"label": "chr17 VCF.BGZ", "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr17/snapshot_date=2026-03-03/gnomad.exomes.v4.1.sites.chr17.vcf.bgz", "kind": "source_data"},
+        {"label": "chr17 index", "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr17/snapshot_date=2026-03-03/gnomad.exomes.v4.1.sites.chr17.vcf.bgz.tbi", "kind": "index"},
+        {"label": "chr17 manifest", "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr17/snapshot_date=2026-03-03/manifest.json", "kind": "manifest"},
+    ],
+    "shgp_raw_brca_window": [
+        {"label": "Raw frequency table", "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/shgp_saudi_af/version=figshare-28059686-v1/snapshot_date=2026-03-13/Saudi_Arabian_Allele_Frequencies.txt", "kind": "source_data"},
+        {"label": "Manifest", "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/shgp_saudi_af/version=figshare-28059686-v1/snapshot_date=2026-03-13/manifest.json", "kind": "manifest"},
+    ],
+    "gme_raw_brca_window": [
+        {"label": "Raw summary table", "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gme/release=20161025-hg38/build=hg38/snapshot_date=2026-03-08/hg38_gme.txt.gz", "kind": "source_data"},
+        {"label": "Manifest", "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gme/release=20161025-hg38/build=hg38/snapshot_date=2026-03-08/manifest.json", "kind": "manifest"},
+    ],
+}
+
+AVDB_STANDARDIZATION_FILES: Final[list[dict[str, str]]] = [
+    {"label": "Raw workbook", "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/avdb_uae/version=workbook-created-2025-06-27/build=GRCh37/snapshot_date=2026-03-13/avdb_uae.xlsx", "kind": "workbook"},
+    {"label": "Raw manifest", "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/avdb_uae/version=workbook-created-2025-06-27/build=GRCh37/snapshot_date=2026-03-13/manifest.json", "kind": "manifest"},
+    {"label": "Lifted parquet", "uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/source=avdb_uae/version=workbook-created-2025-06-27/stage=liftover/build=GRCh37_to_GRCh38/snapshot_date=2026-03-13/avdb_uae_liftover.parquet", "kind": "parquet"},
+    {"label": "Liftover report", "uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/source=avdb_uae/version=workbook-created-2025-06-27/stage=liftover/build=GRCh37_to_GRCh38/snapshot_date=2026-03-13/avdb_uae_liftover_report.json", "kind": "report"},
+]
+
+REFERENCE_STUDY_FILES: Final[dict[str, list[dict[str, str]]]] = {
+    "saudi_breast_cancer_pmc10474689": [
+        {"label": "Raw workbook", "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/saudi_breast_cancer_pmc10474689_moesm1.xls", "kind": "workbook"},
+        {"label": "Raw manifest", "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/manifest.json", "kind": "manifest"},
+        {"label": "De-identified CSV", "uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/variant_carriers.csv", "kind": "csv"},
+        {"label": "De-identified parquet", "uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/variant_carriers.parquet", "kind": "parquet"},
+        {"label": "Extract manifest", "uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/variant_carriers.manifest.json", "kind": "manifest"},
+    ],
+    "uae_brca_pmc12011969": [
+        {"label": "Raw workbook", "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/uae_brca_pmc12011969_moesm1.xlsx", "kind": "workbook"},
+        {"label": "Raw manifest", "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/manifest.json", "kind": "manifest"},
+        {"label": "Family-screening CSV", "uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/family_screening_variant_rows.csv", "kind": "csv"},
+        {"label": "Family-screening parquet", "uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/family_screening_variant_rows.parquet", "kind": "parquet"},
+        {"label": "Family-screening manifest", "uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/family_screening_variant_rows.manifest.json", "kind": "manifest"},
+        {"label": "Cancer-cohort CSV", "uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/cancer_cohort_variant_rows.csv", "kind": "csv"},
+        {"label": "Cancer-cohort parquet", "uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/cancer_cohort_variant_rows.parquet", "kind": "parquet"},
+        {"label": "Cancer-cohort manifest", "uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/cancer_cohort_variant_rows.manifest.json", "kind": "manifest"},
+    ],
+}
+
+REVIEW_DOCUMENT_FILES: Final[list[dict[str, str]]] = [
+    {"label": "Supervisor review bundle", "uri": "gs://mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/review_bundle.json", "kind": "bundle"},
+    {"label": "Supervisor review manifest", "uri": "gs://mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/manifest.json", "kind": "manifest"},
+    {"label": "Normalization report", "uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/normalization_report/snapshot_date=2026-03-15/brca_normalization_report.json", "kind": "report"},
+    {"label": "Arab intake report", "uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/snapshot_date=2026-03-12/intake_report.json", "kind": "report"},
+]
+
+FILE_KIND_LABELS: Final[dict[str, str]] = {
+    "source_data": "SOURCE",
+    "index": "INDEX",
+    "manifest": "MANIFEST",
+    "parquet": "PARQUET",
+    "csv": "CSV",
+    "workbook": "WORKBOOK",
+    "report": "REPORT",
+    "bundle": "BUNDLE",
+    "document": "DOC",
+}
+
 
 def parse_gs_uri(uri: str) -> tuple[str, str]:
     if not uri.startswith("gs://"):
@@ -59,6 +137,10 @@ def json_dump(path: Path, payload: dict[str, Any]) -> None:
 
 def public_object_url(object_name: str) -> str:
     return f"https://storage.googleapis.com/{BUCKET_NAME}/{object_name}"
+
+
+def object_public_url(bucket_name: str, object_name: str) -> str:
+    return f"https://storage.googleapis.com/{bucket_name}/{object_name}"
 
 
 def download_json_from_gcs(storage_client: storage.Client, uri: str) -> dict[str, Any]:
@@ -80,6 +162,8 @@ def upload_public_csv(storage_client: storage.Client, frame: pd.DataFrame, objec
         frame.to_csv(csv_path, index=False)
         blob = storage_client.bucket(BUCKET_NAME).blob(object_name)
         blob.upload_from_filename(str(csv_path), content_type="text/csv")
+        blob.content_disposition = f'attachment; filename="{csv_path.name}"'
+        blob.patch()
         blob.make_public()
     return {"gs_uri": f"gs://{BUCKET_NAME}/{object_name}", "public_url": public_object_url(object_name)}
 
@@ -96,6 +180,95 @@ def csv_object_from_parquet_uri(parquet_uri: str) -> str:
 def ensure_public_csv(storage_client: storage.Client, parquet_uri: str) -> dict[str, str]:
     frame = download_parquet_frame(storage_client, parquet_uri)
     return upload_public_csv(storage_client, frame, csv_object_from_parquet_uri(parquet_uri))
+
+
+def infer_file_kind(uri: str) -> str:
+    name = Path(uri).name.lower()
+    if name.endswith(".manifest.json") or name == "manifest.json":
+        return "manifest"
+    if name.endswith("_report.json") or name.endswith("report.json"):
+        return "report"
+    if name.endswith("review_bundle.json"):
+        return "bundle"
+    if name.endswith(".parquet"):
+        return "parquet"
+    if name.endswith(".csv"):
+        return "csv"
+    if name.endswith(".xlsx") or name.endswith(".xls"):
+        return "workbook"
+    if name.endswith(".tbi"):
+        return "index"
+    if any(name.endswith(suffix) for suffix in (".vcf.gz", ".vcf.bgz", ".txt", ".txt.gz")):
+        return "source_data"
+    return "document"
+
+
+def public_gs_uri(storage_client: storage.Client | None, uri: str) -> str:
+    bucket_name, object_name = parse_gs_uri(uri)
+    public_url = object_public_url(bucket_name, object_name)
+    if storage_client is None or bucket_name != BUCKET_NAME:
+        return public_url
+    blob = storage_client.bucket(bucket_name).blob(object_name)
+    if not blob.exists():
+        LOGGER.warning("Missing GCS object in artifact catalog: %s", uri)
+        return public_url
+    attachment = f'attachment; filename="{Path(object_name).name}"'
+    blob.reload()
+    changed = False
+    if blob.content_disposition != attachment:
+        blob.content_disposition = attachment
+        changed = True
+    if changed:
+        blob.patch()
+    blob.make_public()
+    return public_url
+
+
+def storage_file(label: str, uri: str, *, kind: str | None = None) -> dict[str, str]:
+    return {"label": label, "uri": uri, "kind": kind or infer_file_kind(uri)}
+
+
+def publish_storage_files(storage_client: storage.Client | None, files: list[dict[str, str]]) -> list[dict[str, str]]:
+    published: list[dict[str, str]] = []
+    for file_item in files:
+        uri = file_item["uri"]
+        if uri.startswith("gs://"):
+            published.append(
+                {
+                    "label": file_item["label"],
+                    "kind": file_item["kind"],
+                    "kind_label": FILE_KIND_LABELS.get(file_item["kind"], file_item["kind"].upper()),
+                    "gs_uri": uri,
+                    "public_url": public_gs_uri(storage_client, uri),
+                    "filename": Path(uri).name,
+                }
+            )
+            continue
+        published.append(
+            {
+                "label": file_item["label"],
+                "kind": file_item["kind"],
+                "kind_label": FILE_KIND_LABELS.get(file_item["kind"], file_item["kind"].upper()),
+                "gs_uri": "",
+                "public_url": uri,
+                "filename": Path(uri).name or uri,
+            }
+        )
+    return published
+
+
+def gs_uri_from_public_url(url: str) -> str | None:
+    prefix = f"https://storage.googleapis.com/{BUCKET_NAME}/"
+    if not url.startswith(prefix):
+        return None
+    return f"gs://{BUCKET_NAME}/{url.removeprefix(prefix)}"
+
+
+def sibling_uri(parquet_uri: str, suffix: str) -> str:
+    bucket_name, object_name = parse_gs_uri(parquet_uri)
+    if not object_name.endswith(".parquet"):
+        raise ValueError(f"Expected parquet URI, got: {parquet_uri}")
+    return f"gs://{bucket_name}/{object_name[:-8]}{suffix}"
 
 
 def normalize_review_entry(entry: dict[str, Any], *, table_label: str, scope_note: str) -> dict[str, Any]:
@@ -121,7 +294,11 @@ def schema_lineage_summary(*, baseline_entry: dict[str, Any], current_entry: dic
     }
 
 
-def raw_source_catalog_entries(raw_payload: dict[str, Any], source_review: dict[str, Any]) -> list[dict[str, Any]]:
+def raw_source_catalog_entries(
+    storage_client: storage.Client,
+    raw_payload: dict[str, Any],
+    source_review: dict[str, Any],
+) -> list[dict[str, Any]]:
     source_lookup = {
         source["source_key"]: source
         for source in source_review.get("sources", [])
@@ -133,35 +310,59 @@ def raw_source_catalog_entries(raw_payload: dict[str, Any], source_review: dict[
         source_key = RAW_SOURCE_LINK_MAP.get(str(dataset["key"]))
         source = source_lookup.get(source_key or "", {})
         links = []
-        if source.get("upstream_url"):
+        if source.get("upstream_url") and not str(source["upstream_url"]).startswith("file://"):
             links.append({"label": "Official source", "url": source["upstream_url"]})
+        files = publish_storage_files(storage_client, RAW_SOURCE_FILES.get(str(dataset["key"]), []))
         entries.append(
             {
                 "key": dataset["key"],
                 "title": dataset["title"],
                 "group": "raw_public_sources",
-                "stage": "Raw source reference",
+                "stage": "Raw source freeze",
                 "overview": dataset["simple_summary"],
                 "row_count": dataset["row_count"],
-                "downloads": [],
+                "files": files,
                 "links": links,
-                "references": [dataset["table_ref"], *dataset.get("notes", [])[:1]],
-                "download_note": "",
+                "references": [*dataset.get("notes", [])[:1]],
+                "download_note": "Displayed rows are the frozen BRCA-window preview. The file list below is the full frozen source package used to build that preview.",
             }
         )
     return entries
 
 
+def derived_storage_files(
+    *,
+    parquet_uri: str,
+    csv_public_url: str | None = None,
+    include_manifest: bool,
+    include_report: bool,
+    extra_files: list[dict[str, str]] | None = None,
+) -> list[dict[str, str]]:
+    files = [storage_file("Parquet artifact", parquet_uri, kind="parquet")]
+    csv_uri = gs_uri_from_public_url(csv_public_url) if csv_public_url else None
+    if csv_uri:
+        files.insert(0, storage_file("CSV export", csv_uri, kind="csv"))
+    if include_manifest:
+        files.append(storage_file("Artifact manifest", sibling_uri(parquet_uri, "_manifest.json"), kind="manifest"))
+    if include_report:
+        files.append(storage_file("Artifact report", sibling_uri(parquet_uri, "_report.json"), kind="report"))
+    if extra_files:
+        files.extend(extra_files)
+    return files
+
+
 def derived_catalog_entry(
     *,
+    storage_client: storage.Client,
     key: str,
     title: str,
     stage: str,
     overview: str,
     row_count: int,
-    table_ref: str,
-    csv_public_url: str,
+    files: list[dict[str, str]],
     review_label: str,
+    links: list[dict[str, str]] | None = None,
+    references: list[str] | None = None,
 ) -> dict[str, Any]:
     return {
         "key": key,
@@ -170,15 +371,16 @@ def derived_catalog_entry(
         "stage": review_label,
         "overview": overview,
         "row_count": row_count,
-        "downloads": [{"label": "Download CSV", "url": csv_public_url}],
-        "links": [],
-        "references": [table_ref],
+        "files": publish_storage_files(storage_client, files),
+        "links": links or [],
+        "references": references or [],
         "download_note": "",
     }
 
 
 def build_artifact_catalog(
     *,
+    storage_client: storage.Client,
     legacy_pre_gme: dict[str, Any],
     legacy_registry: dict[str, Any],
     arab_pre_gme: dict[str, Any],
@@ -187,85 +389,195 @@ def build_artifact_catalog(
     raw_datasets: dict[str, Any],
     source_review: dict[str, Any],
 ) -> dict[str, Any]:
+    source_lookup = {
+        source["source_key"]: source
+        for source in source_review.get("sources", [])
+        if source.get("source_key")
+    }
+    avdb_source = source_lookup.get("avdb_uae", {})
+    uae_source = source_lookup.get("uae_brca_pmc12011969", {})
+    saudi_source = source_lookup.get("saudi_breast_cancer_pmc10474689", {})
+
+    normalized_entries = []
+    for entry in normalized_datasets:
+        normalized_entries.append(
+            {
+                "key": entry["key"],
+                "title": entry["title"],
+                "group": "normalized_artifacts",
+                "stage": "Normalized artifact",
+                "overview": entry["simple_summary"],
+                "row_count": entry["row_count"],
+                "files": publish_storage_files(
+                    storage_client,
+                    derived_storage_files(
+                        parquet_uri=entry["table_ref"],
+                        csv_public_url=entry.get("download_url"),
+                        include_manifest=True,
+                        include_report=True,
+                    ),
+                ),
+                "links": [],
+                "references": [],
+                "download_note": "",
+            }
+        )
+
     groups = [
         {
             "id": "raw_public_sources",
-            "title": "Raw source references",
-            "summary": "Untouched source-of-truth packages. Use the official source or raw-vault reference.",
-            "entries": raw_source_catalog_entries(raw_datasets, source_review),
+            "title": "Stage 1 outputs: raw source freezes",
+            "summary": "Exact upstream source packages stored in GCS before any liftover, filtering, or BRCA normalization.",
+            "entries": raw_source_catalog_entries(storage_client, raw_datasets, source_review),
         },
         {
-            "id": "normalized_artifacts",
-            "title": "Normalized source artifacts",
-            "summary": "Per-source BRCA artifacts frozen after normalization.",
+            "id": "standardization_artifacts",
+            "title": "Stage 2 outputs: build conversion evidence",
+            "summary": "Files produced only for sources that needed explicit GRCh37 to GRCh38 handling.",
             "entries": [
-                {
-                    "key": entry["key"],
-                    "title": entry["title"],
-                    "group": "normalized_artifacts",
-                    "stage": "Normalized table",
-                    "overview": entry["simple_summary"],
-                    "row_count": entry["row_count"],
-                    "downloads": [{"label": "Download CSV", "url": entry["download_url"]}],
-                    "links": [],
-                    "references": [entry["table_ref"]],
-                    "download_note": "",
-                }
-                for entry in normalized_datasets
+                derived_catalog_entry(
+                    storage_client=storage_client,
+                    key="avdb_grch37_to_grch38",
+                    title="AVDB UAE build-conversion package",
+                    stage="standardization_artifacts",
+                    overview="Raw AVDB workbook plus the frozen liftover parquet/report that document the GRCh37 to GRCh38 conversion.",
+                    row_count=int(avdb_source.get("row_count", 0)),
+                    files=AVDB_STANDARDIZATION_FILES,
+                    review_label="Build conversion package",
+                    links=([{"label": "Official source", "url": avdb_source["upstream_url"]}] if avdb_source.get("upstream_url") else []),
+                    references=["Reference-only source: valid build conversion, but no BRCA rows in the frozen release."],
+                )
             ],
         },
         {
+            "id": "normalized_artifacts",
+            "title": "Stage 3 outputs: BRCA-normalized source artifacts",
+            "summary": "Per-source BRCA artifacts after canonical coordinate normalization, each with CSV, parquet, manifest, and report.",
+            "entries": normalized_entries,
+        },
+        {
             "id": "legacy_checkpoint_artifacts",
-            "title": "Baseline tables",
-            "summary": "Historical baseline tables kept unchanged for comparison.",
+            "title": "Stage 4-5 outputs: baseline draft and final tables",
+            "summary": "Historical baseline tables kept unchanged. These remain the comparison reference for the Arab extension.",
             "entries": [
                 derived_catalog_entry(
+                    storage_client=storage_client,
                     key="legacy_pre_gme",
                     title=legacy_pre_gme["title"],
                     stage="legacy_checkpoint_artifacts",
                     overview=legacy_pre_gme["scope_note"],
                     row_count=legacy_pre_gme["row_count"],
-                    table_ref=legacy_pre_gme["table_ref"],
-                    csv_public_url=legacy_pre_gme["csv_download_url"],
+                    files=derived_storage_files(
+                        parquet_uri=legacy_pre_gme["table_ref"],
+                        csv_public_url=legacy_pre_gme["csv_download_url"],
+                        include_manifest=False,
+                        include_report=False,
+                        extra_files=[storage_file("Review workbook", legacy_pre_gme["table_ref"].replace(".parquet", ".xlsx"), kind="workbook")],
+                    ),
                     review_label="Baseline draft table",
+                    references=["This table stays frozen exactly as the historical baseline checkpoint."],
                 ),
                 derived_catalog_entry(
+                    storage_client=storage_client,
                     key="legacy_registry",
                     title=legacy_registry["title"],
                     stage="legacy_checkpoint_artifacts",
                     overview=legacy_registry["scope_note"],
                     row_count=legacy_registry["row_count"],
-                    table_ref=legacy_registry["table_ref"],
-                    csv_public_url=legacy_registry["csv_download_url"],
+                    files=derived_storage_files(
+                        parquet_uri=legacy_registry["table_ref"],
+                        csv_public_url=legacy_registry["csv_download_url"],
+                        include_manifest=False,
+                        include_report=False,
+                    ),
                     review_label="Baseline final table",
+                    references=["Use this frozen final table as the baseline comparison point."],
                 ),
             ],
         },
         {
             "id": "arab_extension_artifacts",
-            "title": "Arab extension artifacts",
-            "summary": "New Arab-source tables layered on top of the unchanged baseline.",
+            "title": "Stage 6 outputs: Arab extension tables",
+            "summary": "Arab-source checkpoints kept separate from the unchanged baseline so the scientific delta stays explicit.",
             "entries": [
                 derived_catalog_entry(
+                    storage_client=storage_client,
                     key="arab_pre_gme",
                     title=arab_pre_gme["title"],
                     stage="arab_extension_artifacts",
                     overview=arab_pre_gme["scope_note"],
                     row_count=arab_pre_gme["row_count"],
-                    table_ref=arab_pre_gme["table_ref"],
-                    csv_public_url=arab_pre_gme["csv_download_url"],
+                    files=derived_storage_files(
+                        parquet_uri=arab_pre_gme["table_ref"],
+                        csv_public_url=arab_pre_gme["csv_download_url"],
+                        include_manifest=False,
+                        include_report=False,
+                    ),
                     review_label="Arab draft table",
+                    references=["SHGP enters here before GME is added as a supporting layer."],
                 ),
                 derived_catalog_entry(
+                    storage_client=storage_client,
                     key="arab_registry",
                     title=arab_registry["title"],
                     stage="arab_extension_artifacts",
                     overview=arab_registry["scope_note"],
                     row_count=arab_registry["row_count"],
-                    table_ref=arab_registry["table_ref"],
-                    csv_public_url=arab_registry["csv_download_url"],
+                    files=derived_storage_files(
+                        parquet_uri=arab_registry["table_ref"],
+                        csv_public_url=arab_registry["csv_download_url"],
+                        include_manifest=False,
+                        include_report=True,
+                    ),
                     review_label="Arab final table",
+                    references=["This is the current Arab-aware final table, separate from the unchanged baseline."],
                 ),
+            ],
+        },
+        {
+            "id": "reference_study_artifacts",
+            "title": "Reference study packages",
+            "summary": "Reference-only workbook sources and their frozen extracts kept for audit and scientific review, not active frequency aggregation.",
+            "entries": [
+                derived_catalog_entry(
+                    storage_client=storage_client,
+                    key="uae_brca_reference",
+                    title="UAE BRCA study review package",
+                    stage="reference_study_artifacts",
+                    overview="Frozen workbook and de-identified extract files used to review the UAE BRCA study as supporting evidence only.",
+                    row_count=int(uae_source.get("row_count", 0)),
+                    files=REFERENCE_STUDY_FILES["uae_brca_pmc12011969"],
+                    review_label="Reference-only study package",
+                    links=([{"label": "Publication", "url": uae_source["upstream_url"]}] if uae_source.get("upstream_url") else []),
+                ),
+                derived_catalog_entry(
+                    storage_client=storage_client,
+                    key="saudi_brca_reference",
+                    title="Saudi breast-cancer study review package",
+                    stage="reference_study_artifacts",
+                    overview="Frozen workbook and de-identified extract files used to review the Saudi BRCA study. This source stays blocked for normalization.",
+                    row_count=int(saudi_source.get("row_count", 0)),
+                    files=REFERENCE_STUDY_FILES["saudi_breast_cancer_pmc10474689"],
+                    review_label="Blocked study package",
+                    links=([{"label": "Publication", "url": saudi_source["upstream_url"]}] if saudi_source.get("upstream_url") else []),
+                ),
+            ],
+        },
+        {
+            "id": "review_documents",
+            "title": "Workflow documents and reports",
+            "summary": "Supervisor-facing documents that describe the frozen review state, normalization outputs, and intake decisions.",
+            "entries": [
+                derived_catalog_entry(
+                    storage_client=storage_client,
+                    key="workflow_documents",
+                    title="Review bundle and workflow reports",
+                    stage="review_documents",
+                    overview="Top-level bundle/report files that document the current static review surface.",
+                    row_count=0,
+                    files=REVIEW_DOCUMENT_FILES,
+                    review_label="Workflow documents",
+                )
             ],
         },
     ]
@@ -333,13 +645,13 @@ def refresh_bundle() -> dict[str, Any]:
     LOGGER.info("Composing updated review bundle structure")
     bundle = deepcopy(current_bundle)
     bundle["workflow"]["pages"] = [
-        {"id": "overview", "title": "Overview", "summary": "Track progress and the current scientific workflow."},
-        {"id": "raw", "title": "Raw Evidence", "summary": "Untouched source records before any build conversion or BRCA processing."},
-        {"id": "harmonization", "title": "BRCA Normalization", "summary": "Active BRCA-ready sources, the rule used on each one, and the frozen outputs."},
-        {"id": "pre-gme", "title": "Baseline Draft Table", "summary": "Frozen draft table built from ClinVar and gnomAD only."},
-        {"id": "final", "title": "Baseline Final Table", "summary": "Frozen baseline final table after GME is added."},
-        {"id": "arab-extension", "title": "Arab Extension Tables", "summary": "New Arab-source tables kept separate from the unchanged baseline."},
-        {"id": "artifacts", "title": "Data Downloads", "summary": "Structured download center for all frozen derived artifacts shown in the dashboard."},
+        {"id": "overview", "title": "Overview", "summary": "Track progress and move through the scientific workflow stage by stage."},
+        {"id": "raw", "title": "Raw Freeze", "summary": "Exact upstream files and manifests preserved before any processing."},
+        {"id": "harmonization", "title": "BRCA Normalization", "summary": "Per-source BRCA artifacts after canonical coordinate normalization."},
+        {"id": "pre-gme", "title": "Baseline Draft Integration", "summary": "ClinVar plus gnomAD combined before the GME support layer."},
+        {"id": "final", "title": "Baseline Final Integration", "summary": "Baseline final table after GME is added as support."},
+        {"id": "arab-extension", "title": "Arab Extension", "summary": "New Arab-source checkpoints kept separate from the unchanged baseline."},
+        {"id": "artifacts", "title": "GCS Download Center", "summary": "Public frozen files grouped by workflow stage and dataset."},
         {"id": "access", "title": "Controlled Access", "summary": "Official acquisition paths for restricted Arab datasets still outside the active workflow."},
     ]
     bundle["workflow"]["legacy_final_steps"] = legacy_bundle["workflow"]["final_steps"]
@@ -351,6 +663,7 @@ def refresh_bundle() -> dict[str, Any]:
     bundle["arab_pre_gme"] = arab_pre_gme
     bundle["arab_registry"] = arab_registry
     bundle["artifact_catalog"] = build_artifact_catalog(
+        storage_client=storage_client,
         legacy_pre_gme=legacy_pre_gme,
         legacy_registry=legacy_registry,
         arab_pre_gme=arab_pre_gme,
@@ -369,6 +682,9 @@ def refresh_bundle() -> dict[str, Any]:
     json_dump(CURRENT_BUNDLE_PATH, bundle)
     upload_blob = storage_client.bucket(BUCKET_NAME).blob(REVIEW_BUNDLE_OBJECT)
     upload_blob.upload_from_string(json.dumps(bundle, indent=2), content_type="application/json")
+    upload_blob.content_disposition = f'attachment; filename="{Path(REVIEW_BUNDLE_OBJECT).name}"'
+    upload_blob.patch()
+    upload_blob.make_public()
 
     return bundle
 

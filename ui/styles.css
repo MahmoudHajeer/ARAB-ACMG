@@ -212,6 +212,10 @@ h1 {
   margin-top: 18px;
 }
 
+.page-pipeline {
+  margin: 0 0 14px;
+}
+
 .status-cards {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -274,6 +278,48 @@ h1 {
 
 .workflow-map {
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.pipeline-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.pipeline-node {
+  flex: 1 1 220px;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 12px 14px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 1), rgba(31, 167, 173, 0.05));
+}
+
+.pipeline-label {
+  color: var(--red);
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.pipeline-text {
+  margin-top: 6px;
+  color: var(--text);
+  line-height: 1.55;
+}
+
+.pipeline-arrow,
+.workflow-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--teal-deep);
+  font-family: var(--mono);
+  font-size: 1.05rem;
+  font-weight: 700;
 }
 
 .lineage-strip {
@@ -635,6 +681,27 @@ h1 {
   color: var(--teal-deep);
 }
 
+.column-kind.source_data,
+.column-kind.csv,
+.column-kind.workbook {
+  background: rgba(31, 167, 173, 0.14);
+  color: var(--teal-deep);
+}
+
+.column-kind.manifest,
+.column-kind.report,
+.column-kind.bundle,
+.column-kind.document {
+  background: rgba(143, 106, 31, 0.12);
+  color: #8f6a1f;
+}
+
+.column-kind.parquet,
+.column-kind.index {
+  background: rgba(214, 44, 44, 0.12);
+  color: var(--red);
+}
+
 .column-kind.extra {
   background: rgba(214, 44, 44, 0.12);
   color: var(--red);
@@ -793,6 +860,10 @@ h1 {
   color: var(--text);
   white-space: pre-wrap;
   word-break: break-word;
+}
+
+.artifact-file-wrap .sample-table {
+  min-width: 760px;
 }
 
 .loading-state,

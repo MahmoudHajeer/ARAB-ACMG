@@ -500,9 +500,9 @@ def storage_console_url(uri: str) -> str:
         return uri
     bucket_and_path = uri.removeprefix("gs://")
     if "/" not in bucket_and_path:
-        return f"https://storage.cloud.google.com/{bucket_and_path}"
+        return f"https://storage.googleapis.com/{bucket_and_path}"
     bucket_name, object_name = bucket_and_path.split("/", 1)
-    return f"https://storage.cloud.google.com/{bucket_name}/{object_name}"
+    return f"https://storage.googleapis.com/{bucket_name}/{object_name}"
 
 
 def build_source_decision_summary(entries: list[dict[str, object]]) -> list[dict[str, object]]:
@@ -609,7 +609,7 @@ def build_source_entry(
         sample = extract_payload["sample"]
 
     manifest_uri = build_raw_manifest_uri(snapshot_entry)
-    if snapshot_entry and snapshot_entry.get("upstream_url"):
+    if snapshot_entry and snapshot_entry.get("upstream_url") and not str(snapshot_entry["upstream_url"]).startswith("file://"):
         extra_links.append({"label": "Upstream source", "url": storage_console_url(snapshot_entry["upstream_url"])})
     if snapshot_entry and snapshot_entry.get("raw_vault_prefix"):
         extra_links.append({"label": "Raw vault prefix", "url": storage_console_url(snapshot_entry["raw_vault_prefix"])})
@@ -641,11 +641,28 @@ def build_source_entry(
         "use_tier_summary": tier_meta["summary"],
         "snapshot_date": snapshot_entry["snapshot_date"] if snapshot_entry else None,
         "source_version": snapshot_entry["source_version"] if snapshot_entry else None,
-        "upstream_url": snapshot_entry["upstream_url"] if snapshot_entry else None,
+        "upstream_url": (
+            snapshot_entry["upstream_url"]
+            if snapshot_entry and not str(snapshot_entry["upstream_url"]).startswith("file://")
+            else None
+        ),
         "raw_vault_prefix": snapshot_entry["raw_vault_prefix"] if snapshot_entry else None,
         "raw_manifest_uri": manifest_uri,
         "row_count": row_count,
-        "notes": [*rule["evidence"], *extra_notes, snapshot_entry["notes"]] if snapshot_entry else [*rule["evidence"], *extra_notes],
+        "notes": (
+            [
+                *rule["evidence"],
+                *extra_notes,
+                *(
+                    ["No public upstream download URL was recorded for this source; the frozen GCS raw package is the access point used in review."]
+                    if snapshot_entry and str(snapshot_entry.get("upstream_url", "")).startswith("file://")
+                    else []
+                ),
+                snapshot_entry["notes"],
+            ]
+            if snapshot_entry
+            else [*rule["evidence"], *extra_notes]
+        ),
         "artifact_links": extra_links,
         "workflow_position": workflow_position,
         "next_action": rule["next_action"],
