@@ -6,7 +6,6 @@ data/
 *.vcf.bgz.tbi
 *.csv
 *.tsv
-*.xlsx
 
 # Python
 __pycache__/
@@ -54,7 +53,6 @@ venv.bak/
 .coverage
 htmlcov/
 .pytest_cache/
-logs/
 output/
 
 # Conductor / Temporary

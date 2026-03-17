@@ -1,0 +1,534 @@
+{
+  "status": "ok",
+  "count": 66,
+  "results": [
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/snapshot_date=2026-03-12/intake_report.json",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/snapshot_date=2026-03-12/intake_report.json",
+      "filename": "intake_report.json",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "5248",
+      "content_disposition": "attachment; filename=\"intake_report.json\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/variant_carriers.csv",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/variant_carriers.csv",
+      "filename": "variant_carriers.csv",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "5461",
+      "content_disposition": "attachment; filename=\"variant_carriers.csv\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/variant_carriers.manifest.json",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/variant_carriers.manifest.json",
+      "filename": "variant_carriers.manifest.json",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "1201",
+      "content_disposition": "attachment; filename=\"variant_carriers.manifest.json\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/variant_carriers.parquet",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/variant_carriers.parquet",
+      "filename": "variant_carriers.parquet",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "8102",
+      "content_disposition": "attachment; filename=\"variant_carriers.parquet\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/cancer_cohort_variant_rows.csv",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/cancer_cohort_variant_rows.csv",
+      "filename": "cancer_cohort_variant_rows.csv",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "29263",
+      "content_disposition": "attachment; filename=\"cancer_cohort_variant_rows.csv\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/cancer_cohort_variant_rows.manifest.json",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/cancer_cohort_variant_rows.manifest.json",
+      "filename": "cancer_cohort_variant_rows.manifest.json",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "1429",
+      "content_disposition": "attachment; filename=\"cancer_cohort_variant_rows.manifest.json\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/cancer_cohort_variant_rows.parquet",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/cancer_cohort_variant_rows.parquet",
+      "filename": "cancer_cohort_variant_rows.parquet",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "23923",
+      "content_disposition": "attachment; filename=\"cancer_cohort_variant_rows.parquet\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/family_screening_variant_rows.csv",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/family_screening_variant_rows.csv",
+      "filename": "family_screening_variant_rows.csv",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "5436",
+      "content_disposition": "attachment; filename=\"family_screening_variant_rows.csv\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/family_screening_variant_rows.manifest.json",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/family_screening_variant_rows.manifest.json",
+      "filename": "family_screening_variant_rows.manifest.json",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "1441",
+      "content_disposition": "attachment; filename=\"family_screening_variant_rows.manifest.json\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/family_screening_variant_rows.parquet",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/family_screening_variant_rows.parquet",
+      "filename": "family_screening_variant_rows.parquet",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "15285",
+      "content_disposition": "attachment; filename=\"family_screening_variant_rows.parquet\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=clinvar_normalized_brca_v1/snapshot_date=2026-03-15/clinvar_normalized_brca_v1.csv",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=clinvar_normalized_brca_v1/snapshot_date=2026-03-15/clinvar_normalized_brca_v1.csv",
+      "filename": "clinvar_normalized_brca_v1.csv",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "32966416",
+      "content_disposition": "attachment; filename=\"clinvar_normalized_brca_v1.csv\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=clinvar_normalized_brca_v1/snapshot_date=2026-03-15/clinvar_normalized_brca_v1.parquet",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=clinvar_normalized_brca_v1/snapshot_date=2026-03-15/clinvar_normalized_brca_v1.parquet",
+      "filename": "clinvar_normalized_brca_v1.parquet",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "2146055",
+      "content_disposition": "attachment; filename=\"clinvar_normalized_brca_v1.parquet\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=clinvar_normalized_brca_v1/snapshot_date=2026-03-15/clinvar_normalized_brca_v1_manifest.json",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=clinvar_normalized_brca_v1/snapshot_date=2026-03-15/clinvar_normalized_brca_v1_manifest.json",
+      "filename": "clinvar_normalized_brca_v1_manifest.json",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "9592",
+      "content_disposition": "attachment; filename=\"clinvar_normalized_brca_v1_manifest.json\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=clinvar_normalized_brca_v1/snapshot_date=2026-03-15/clinvar_normalized_brca_v1_report.json",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=clinvar_normalized_brca_v1/snapshot_date=2026-03-15/clinvar_normalized_brca_v1_report.json",
+      "filename": "clinvar_normalized_brca_v1_report.json",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "992",
+      "content_disposition": "attachment; filename=\"clinvar_normalized_brca_v1_report.json\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gme_normalized_brca_v1/snapshot_date=2026-03-15/gme_normalized_brca_v1.csv",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gme_normalized_brca_v1/snapshot_date=2026-03-15/gme_normalized_brca_v1.csv",
+      "filename": "gme_normalized_brca_v1.csv",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "112669",
+      "content_disposition": "attachment; filename=\"gme_normalized_brca_v1.csv\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gme_normalized_brca_v1/snapshot_date=2026-03-15/gme_normalized_brca_v1.parquet",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gme_normalized_brca_v1/snapshot_date=2026-03-15/gme_normalized_brca_v1.parquet",
+      "filename": "gme_normalized_brca_v1.parquet",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "34183",
+      "content_disposition": "attachment; filename=\"gme_normalized_brca_v1.parquet\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gme_normalized_brca_v1/snapshot_date=2026-03-15/gme_normalized_brca_v1_manifest.json",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gme_normalized_brca_v1/snapshot_date=2026-03-15/gme_normalized_brca_v1_manifest.json",
+      "filename": "gme_normalized_brca_v1_manifest.json",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "5904",
+      "content_disposition": "attachment; filename=\"gme_normalized_brca_v1_manifest.json\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gme_normalized_brca_v1/snapshot_date=2026-03-15/gme_normalized_brca_v1_report.json",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gme_normalized_brca_v1/snapshot_date=2026-03-15/gme_normalized_brca_v1_report.json",
+      "filename": "gme_normalized_brca_v1_report.json",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "772",
+      "content_disposition": "attachment; filename=\"gme_normalized_brca_v1_report.json\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_exomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_exomes_normalized_brca_v1.csv",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_exomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_exomes_normalized_brca_v1.csv",
+      "filename": "gnomad_exomes_normalized_brca_v1.csv",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "25289431",
+      "content_disposition": "attachment; filename=\"gnomad_exomes_normalized_brca_v1.csv\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_exomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_exomes_normalized_brca_v1.parquet",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_exomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_exomes_normalized_brca_v1.parquet",
+      "filename": "gnomad_exomes_normalized_brca_v1.parquet",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "2541184",
+      "content_disposition": "attachment; filename=\"gnomad_exomes_normalized_brca_v1.parquet\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_exomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_exomes_normalized_brca_v1_manifest.json",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_exomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_exomes_normalized_brca_v1_manifest.json",
+      "filename": "gnomad_exomes_normalized_brca_v1_manifest.json",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "6238",
+      "content_disposition": "attachment; filename=\"gnomad_exomes_normalized_brca_v1_manifest.json\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_exomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_exomes_normalized_brca_v1_report.json",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_exomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_exomes_normalized_brca_v1_report.json",
+      "filename": "gnomad_exomes_normalized_brca_v1_report.json",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "2441",
+      "content_disposition": "attachment; filename=\"gnomad_exomes_normalized_brca_v1_report.json\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_genomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_genomes_normalized_brca_v1.csv",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_genomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_genomes_normalized_brca_v1.csv",
+      "filename": "gnomad_genomes_normalized_brca_v1.csv",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "31358424",
+      "content_disposition": "attachment; filename=\"gnomad_genomes_normalized_brca_v1.csv\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_genomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_genomes_normalized_brca_v1.parquet",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_genomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_genomes_normalized_brca_v1.parquet",
+      "filename": "gnomad_genomes_normalized_brca_v1.parquet",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "3095624",
+      "content_disposition": "attachment; filename=\"gnomad_genomes_normalized_brca_v1.parquet\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_genomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_genomes_normalized_brca_v1_manifest.json",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_genomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_genomes_normalized_brca_v1_manifest.json",
+      "filename": "gnomad_genomes_normalized_brca_v1_manifest.json",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "6270",
+      "content_disposition": "attachment; filename=\"gnomad_genomes_normalized_brca_v1_manifest.json\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_genomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_genomes_normalized_brca_v1_report.json",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_genomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_genomes_normalized_brca_v1_report.json",
+      "filename": "gnomad_genomes_normalized_brca_v1_report.json",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "2457",
+      "content_disposition": "attachment; filename=\"gnomad_genomes_normalized_brca_v1_report.json\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=shgp_normalized_brca_v1/snapshot_date=2026-03-15/shgp_normalized_brca_v1.csv",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=shgp_normalized_brca_v1/snapshot_date=2026-03-15/shgp_normalized_brca_v1.csv",
+      "filename": "shgp_normalized_brca_v1.csv",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "880828",
+      "content_disposition": "attachment; filename=\"shgp_normalized_brca_v1.csv\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=shgp_normalized_brca_v1/snapshot_date=2026-03-15/shgp_normalized_brca_v1.parquet",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=shgp_normalized_brca_v1/snapshot_date=2026-03-15/shgp_normalized_brca_v1.parquet",
+      "filename": "shgp_normalized_brca_v1.parquet",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "87667",
+      "content_disposition": "attachment; filename=\"shgp_normalized_brca_v1.parquet\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=shgp_normalized_brca_v1/snapshot_date=2026-03-15/shgp_normalized_brca_v1_manifest.json",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=shgp_normalized_brca_v1/snapshot_date=2026-03-15/shgp_normalized_brca_v1_manifest.json",
+      "filename": "shgp_normalized_brca_v1_manifest.json",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "6443",
+      "content_disposition": "attachment; filename=\"shgp_normalized_brca_v1_manifest.json\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=shgp_normalized_brca_v1/snapshot_date=2026-03-15/shgp_normalized_brca_v1_report.json",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=shgp_normalized_brca_v1/snapshot_date=2026-03-15/shgp_normalized_brca_v1_report.json",
+      "filename": "shgp_normalized_brca_v1_report.json",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "817",
+      "content_disposition": "attachment; filename=\"shgp_normalized_brca_v1_report.json\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=supervisor_variant_registry_brca_arab_pre_gme_v2/snapshot_date=2026-03-15/supervisor_variant_registry_brca_arab_pre_gme_v2.csv",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=supervisor_variant_registry_brca_arab_pre_gme_v2/snapshot_date=2026-03-15/supervisor_variant_registry_brca_arab_pre_gme_v2.csv",
+      "filename": "supervisor_variant_registry_brca_arab_pre_gme_v2.csv",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "31520101",
+      "content_disposition": "attachment; filename=\"supervisor_variant_registry_brca_arab_pre_gme_v2.csv\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=supervisor_variant_registry_brca_arab_pre_gme_v2/snapshot_date=2026-03-15/supervisor_variant_registry_brca_arab_pre_gme_v2.parquet",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=supervisor_variant_registry_brca_arab_pre_gme_v2/snapshot_date=2026-03-15/supervisor_variant_registry_brca_arab_pre_gme_v2.parquet",
+      "filename": "supervisor_variant_registry_brca_arab_pre_gme_v2.parquet",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "5855251",
+      "content_disposition": "attachment; filename=\"supervisor_variant_registry_brca_arab_pre_gme_v2.parquet\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=supervisor_variant_registry_brca_arab_v2/snapshot_date=2026-03-15/supervisor_variant_registry_brca_arab_v2.parquet",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=supervisor_variant_registry_brca_arab_v2/snapshot_date=2026-03-15/supervisor_variant_registry_brca_arab_v2.parquet",
+      "filename": "supervisor_variant_registry_brca_arab_v2.parquet",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "5876742",
+      "content_disposition": "attachment; filename=\"supervisor_variant_registry_brca_arab_v2.parquet\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=supervisor_variant_registry_brca_arab_v2/snapshot_date=2026-03-15/supervisor_variant_registry_brca_arab_v2_report.json",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=supervisor_variant_registry_brca_arab_v2/snapshot_date=2026-03-15/supervisor_variant_registry_brca_arab_v2_report.json",
+      "filename": "supervisor_variant_registry_brca_arab_v2_report.json",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "1022",
+      "content_disposition": "attachment; filename=\"supervisor_variant_registry_brca_arab_v2_report.json\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/normalization_report/snapshot_date=2026-03-15/brca_normalization_report.json",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/normalization_report/snapshot_date=2026-03-15/brca_normalization_report.json",
+      "filename": "brca_normalization_report.json",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "10618",
+      "content_disposition": "attachment; filename=\"brca_normalization_report.json\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/source=avdb_uae/version=workbook-created-2025-06-27/stage=liftover/build=GRCh37_to_GRCh38/snapshot_date=2026-03-13/avdb_uae_liftover.parquet",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/source=avdb_uae/version=workbook-created-2025-06-27/stage=liftover/build=GRCh37_to_GRCh38/snapshot_date=2026-03-13/avdb_uae_liftover.parquet",
+      "filename": "avdb_uae_liftover.parquet",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "86156",
+      "content_disposition": "attachment; filename=\"avdb_uae_liftover.parquet\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/source=avdb_uae/version=workbook-created-2025-06-27/stage=liftover/build=GRCh37_to_GRCh38/snapshot_date=2026-03-13/avdb_uae_liftover_report.json",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/source=avdb_uae/version=workbook-created-2025-06-27/stage=liftover/build=GRCh37_to_GRCh38/snapshot_date=2026-03-13/avdb_uae_liftover_report.json",
+      "filename": "avdb_uae_liftover_report.json",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "2601",
+      "content_disposition": "attachment; filename=\"avdb_uae_liftover_report.json\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/results/checkpoint=supervisor_variant_registry_brca_arab_v2/snapshot_date=2026-03-15/supervisor_variant_registry_brca_arab_v2.csv",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/results/checkpoint=supervisor_variant_registry_brca_arab_v2/snapshot_date=2026-03-15/supervisor_variant_registry_brca_arab_v2.csv",
+      "filename": "supervisor_variant_registry_brca_arab_v2.csv",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "31647450",
+      "content_disposition": "attachment; filename=\"supervisor_variant_registry_brca_arab_v2.csv\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/final/supervisor_variant_registry_brca_v1.csv",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/final/supervisor_variant_registry_brca_v1.csv",
+      "filename": "supervisor_variant_registry_brca_v1.csv",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "25491095",
+      "content_disposition": "attachment; filename=\"supervisor_variant_registry_brca_v1.csv\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/final/supervisor_variant_registry_brca_v1.parquet",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/final/supervisor_variant_registry_brca_v1.parquet",
+      "filename": "supervisor_variant_registry_brca_v1.parquet",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "4850426",
+      "content_disposition": "attachment; filename=\"supervisor_variant_registry_brca_v1.parquet\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/manifest.json",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/manifest.json",
+      "filename": "manifest.json",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "1494",
+      "content_disposition": "attachment; filename=\"manifest.json\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/pre_gme/supervisor_variant_registry_brca_pre_gme_v1.csv",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/pre_gme/supervisor_variant_registry_brca_pre_gme_v1.csv",
+      "filename": "supervisor_variant_registry_brca_pre_gme_v1.csv",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "26178502",
+      "content_disposition": "attachment; filename=\"supervisor_variant_registry_brca_pre_gme_v1.csv\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/pre_gme/supervisor_variant_registry_brca_pre_gme_v1.parquet",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/pre_gme/supervisor_variant_registry_brca_pre_gme_v1.parquet",
+      "filename": "supervisor_variant_registry_brca_pre_gme_v1.parquet",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "4837428",
+      "content_disposition": "attachment; filename=\"supervisor_variant_registry_brca_pre_gme_v1.parquet\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/pre_gme/supervisor_variant_registry_brca_pre_gme_v1.xlsx",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/pre_gme/supervisor_variant_registry_brca_pre_gme_v1.xlsx",
+      "filename": "supervisor_variant_registry_brca_pre_gme_v1.xlsx",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "11815817",
+      "content_disposition": "attachment; filename=\"supervisor_variant_registry_brca_pre_gme_v1.xlsx\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/review_bundle.json",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/review_bundle.json",
+      "filename": "review_bundle.json",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "642972",
+      "content_disposition": "attachment; filename=\"review_bundle.json\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/avdb_uae/version=workbook-created-2025-06-27/build=GRCh37/snapshot_date=2026-03-13/avdb_uae.xlsx",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/avdb_uae/version=workbook-created-2025-06-27/build=GRCh37/snapshot_date=2026-03-13/avdb_uae.xlsx",
+      "filename": "avdb_uae.xlsx",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "58800",
+      "content_disposition": "attachment; filename=\"avdb_uae.xlsx\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/avdb_uae/version=workbook-created-2025-06-27/build=GRCh37/snapshot_date=2026-03-13/manifest.json",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/avdb_uae/version=workbook-created-2025-06-27/build=GRCh37/snapshot_date=2026-03-13/manifest.json",
+      "filename": "manifest.json",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "809",
+      "content_disposition": "attachment; filename=\"manifest.json\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/clinvar/lastmod-20260302/snapshot_date=2026-03-03/clinvar.vcf.gz",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/clinvar/lastmod-20260302/snapshot_date=2026-03-03/clinvar.vcf.gz",
+      "filename": "clinvar.vcf.gz",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "190245250",
+      "content_disposition": "attachment; filename=\"clinvar.vcf.gz\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/clinvar/lastmod-20260302/snapshot_date=2026-03-03/clinvar.vcf.gz.tbi",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/clinvar/lastmod-20260302/snapshot_date=2026-03-03/clinvar.vcf.gz.tbi",
+      "filename": "clinvar.vcf.gz.tbi",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "609359",
+      "content_disposition": "attachment; filename=\"clinvar.vcf.gz.tbi\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/clinvar/lastmod-20260302/snapshot_date=2026-03-03/manifest.json",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/clinvar/lastmod-20260302/snapshot_date=2026-03-03/manifest.json",
+      "filename": "manifest.json",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "580",
+      "content_disposition": "attachment; filename=\"manifest.json\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gme/release=20161025-hg38/build=hg38/snapshot_date=2026-03-08/hg38_gme.txt.gz",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gme/release=20161025-hg38/build=hg38/snapshot_date=2026-03-08/hg38_gme.txt.gz",
+      "filename": "hg38_gme.txt.gz",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "10405578",
+      "content_disposition": "attachment; filename=\"hg38_gme.txt.gz\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gme/release=20161025-hg38/build=hg38/snapshot_date=2026-03-08/manifest.json",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gme/release=20161025-hg38/build=hg38/snapshot_date=2026-03-08/manifest.json",
+      "filename": "manifest.json",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "602",
+      "content_disposition": "attachment; filename=\"manifest.json\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr13/snapshot_date=2026-03-03/gnomad.exomes.v4.1.sites.chr13.vcf.bgz",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr13/snapshot_date=2026-03-03/gnomad.exomes.v4.1.sites.chr13.vcf.bgz",
+      "filename": "gnomad.exomes.v4.1.sites.chr13.vcf.bgz",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "3540233028",
+      "content_disposition": "attachment; filename=\"gnomad.exomes.v4.1.sites.chr13.vcf.bgz\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr13/snapshot_date=2026-03-03/gnomad.exomes.v4.1.sites.chr13.vcf.bgz.tbi",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr13/snapshot_date=2026-03-03/gnomad.exomes.v4.1.sites.chr13.vcf.bgz.tbi",
+      "filename": "gnomad.exomes.v4.1.sites.chr13.vcf.bgz.tbi",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "36968",
+      "content_disposition": "attachment; filename=\"gnomad.exomes.v4.1.sites.chr13.vcf.bgz.tbi\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr13/snapshot_date=2026-03-03/manifest.json",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr13/snapshot_date=2026-03-03/manifest.json",
+      "filename": "manifest.json",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "680",
+      "content_disposition": "attachment; filename=\"manifest.json\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr17/snapshot_date=2026-03-03/gnomad.exomes.v4.1.sites.chr17.vcf.bgz",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr17/snapshot_date=2026-03-03/gnomad.exomes.v4.1.sites.chr17.vcf.bgz",
+      "filename": "gnomad.exomes.v4.1.sites.chr17.vcf.bgz",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "12017042594",
+      "content_disposition": "attachment; filename=\"gnomad.exomes.v4.1.sites.chr17.vcf.bgz\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr17/snapshot_date=2026-03-03/gnomad.exomes.v4.1.sites.chr17.vcf.bgz.tbi",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr17/snapshot_date=2026-03-03/gnomad.exomes.v4.1.sites.chr17.vcf.bgz.tbi",
+      "filename": "gnomad.exomes.v4.1.sites.chr17.vcf.bgz.tbi",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "55983",
+      "content_disposition": "attachment; filename=\"gnomad.exomes.v4.1.sites.chr17.vcf.bgz.tbi\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr17/snapshot_date=2026-03-03/manifest.json",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr17/snapshot_date=2026-03-03/manifest.json",
+      "filename": "manifest.json",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "680",
+      "content_disposition": "attachment; filename=\"manifest.json\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr13/snapshot_date=2026-03-03/gnomad.genomes.v4.1.sites.chr13.vcf.bgz",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr13/snapshot_date=2026-03-03/gnomad.genomes.v4.1.sites.chr13.vcf.bgz",
+      "filename": "gnomad.genomes.v4.1.sites.chr13.vcf.bgz",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "17100492651",
+      "content_disposition": "attachment; filename=\"gnomad.genomes.v4.1.sites.chr13.vcf.bgz\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr13/snapshot_date=2026-03-03/gnomad.genomes.v4.1.sites.chr13.vcf.bgz.tbi",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr13/snapshot_date=2026-03-03/gnomad.genomes.v4.1.sites.chr13.vcf.bgz.tbi",
+      "filename": "gnomad.genomes.v4.1.sites.chr13.vcf.bgz.tbi",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "92856",
+      "content_disposition": "attachment; filename=\"gnomad.genomes.v4.1.sites.chr13.vcf.bgz.tbi\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr13/snapshot_date=2026-03-03/manifest.json",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr13/snapshot_date=2026-03-03/manifest.json",
+      "filename": "manifest.json",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "684",
+      "content_disposition": "attachment; filename=\"manifest.json\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr17/snapshot_date=2026-03-03/gnomad.genomes.v4.1.sites.chr17.vcf.bgz",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr17/snapshot_date=2026-03-03/gnomad.genomes.v4.1.sites.chr17.vcf.bgz",
+      "filename": "gnomad.genomes.v4.1.sites.chr17.vcf.bgz",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "17412317144",
+      "content_disposition": "attachment; filename=\"gnomad.genomes.v4.1.sites.chr17.vcf.bgz\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr17/snapshot_date=2026-03-03/gnomad.genomes.v4.1.sites.chr17.vcf.bgz.tbi",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr17/snapshot_date=2026-03-03/gnomad.genomes.v4.1.sites.chr17.vcf.bgz.tbi",
+      "filename": "gnomad.genomes.v4.1.sites.chr17.vcf.bgz.tbi",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "77219",
+      "content_disposition": "attachment; filename=\"gnomad.genomes.v4.1.sites.chr17.vcf.bgz.tbi\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr17/snapshot_date=2026-03-03/manifest.json",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr17/snapshot_date=2026-03-03/manifest.json",
+      "filename": "manifest.json",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "684",
+      "content_disposition": "attachment; filename=\"manifest.json\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/shgp_saudi_af/version=figshare-28059686-v1/snapshot_date=2026-03-13/Saudi_Arabian_Allele_Frequencies.txt",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/shgp_saudi_af/version=figshare-28059686-v1/snapshot_date=2026-03-13/Saudi_Arabian_Allele_Frequencies.txt",
+      "filename": "Saudi_Arabian_Allele_Frequencies.txt",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "640405367",
+      "content_disposition": "attachment; filename=\"Saudi_Arabian_Allele_Frequencies.txt\""
+    },
+    {
+      "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/shgp_saudi_af/version=figshare-28059686-v1/snapshot_date=2026-03-13/manifest.json",
+      "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/shgp_saudi_af/version=figshare-28059686-v1/snapshot_date=2026-03-13/manifest.json",
+      "filename": "manifest.json",
+      "status_line": "HTTP/2 200 ",
+      "content_length": "932",
+      "content_disposition": "attachment; filename=\"manifest.json\""
+    }
+  ]
+}
