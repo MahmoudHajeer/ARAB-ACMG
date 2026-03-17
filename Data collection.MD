@@ -5,7 +5,8 @@ This project is computational. "Data collection" means dataset acquisition, vers
 ## Phase 1: Freeze Scope (Do This First)
 - Genes: BRCA1, BRCA2
 - Preferred genome build: GRCh38
-- Variant types: SNVs and small indels (exclude SVs unless explicitly modeled)
+- Variant types: SNVs 
+ (exclude SVs unless explicitly modeled)
 
 Why this matters: without a frozen scope, the dataset becomes unbounded and hard to reproduce.
 

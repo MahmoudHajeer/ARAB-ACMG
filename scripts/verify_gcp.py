@@ -11,6 +11,39 @@ PROJECT_ID: Final[str] = "genome-services-platform"
 BUCKET_NAME: Final[str] = "mahmoud-arab-acmg-research-data"
 DATASETS: Final[list[str]] = ["arab_acmg_raw", "arab_acmg_harmonized", "arab_acmg_results"]
 
+
+def verify_gcs_connectivity() -> bool:
+    """
+    Backward-compatible helper used by tests.
+    Returns True if the configured GCS bucket is reachable.
+    """
+    try:
+        storage_client = storage.Client(project=PROJECT_ID)
+        storage_client.get_bucket(BUCKET_NAME)
+        return True
+    except Exception:
+        return False
+
+
+def verify_bq_connectivity() -> bool:
+    """
+    Backward-compatible helper used by tests.
+    Returns True only if all required BigQuery datasets are reachable.
+    """
+    try:
+        bq_client = bigquery.Client(project=PROJECT_ID)
+        results = []
+        for dataset_id in DATASETS:
+            dataset_ref = f"{PROJECT_ID}.{dataset_id}"
+            try:
+                bq_client.get_dataset(dataset_ref)
+                results.append(True)
+            except Exception:
+                results.append(False)
+        return all(results)
+    except Exception:
+        return False
+
 class InfrastructurePipeline:
     """
     [AI-Agent: Gemini 2.0 Flash]: Manages the verification of GCP resources.
