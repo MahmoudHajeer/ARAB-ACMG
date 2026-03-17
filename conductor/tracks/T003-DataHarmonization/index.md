@@ -305,3 +305,23 @@ Do not rewrite previous entries.
 - Files changed: `README.md`, `scripts/README.md`, `scripts/build_brca_normalized_artifacts.py`, `scripts/refresh_supervisor_review_bundle.py`, `scripts/update_source_review_state.py`, `scripts/verify_brca_normalized_artifacts.py`, `scripts/gcs_public_policy.py`, `scripts/runtime_config.py`, `scripts/sync_public_gcs_downloads.py`, `tests/test_refresh_supervisor_review_bundle.py`, `tests/test_gcs_public_policy.py`, `tests/test_sync_public_gcs_downloads.py`, `ui/README.md`, `ui/app.js`, `ui/controlled_access.py`, `ui/review_bundle.py`, `ui/source_review.py`, `ui/review_bundle.json`, `ui/source_review.json`, `GOOGLE_AI_STUDIO_HANDOFF.md`, `conductor/checkpoints/2026-03-17-t003-public-gcs-studio-handoff.md`, `conductor/setup_state.json`, `conductor/tracks/T003-DataHarmonization/index.md`
 - Verification run + result: `python3 -m py_compile scripts/runtime_config.py scripts/gcs_public_policy.py scripts/sync_public_gcs_downloads.py scripts/update_source_review_state.py scripts/refresh_supervisor_review_bundle.py scripts/build_brca_normalized_artifacts.py scripts/verify_brca_normalized_artifacts.py ui/review_bundle.py ui/source_review.py ui/controlled_access.py ui/service.py (pass)`, `node --check ui/app.js (pass)`, `python3 -m pytest -q tests (56 passed)`, `python3 scripts/update_source_review_state.py (pass)`, `python3 scripts/refresh_supervisor_review_bundle.py (pass: normalized_downloads=5 artifact_groups=7)`, `python3 scripts/sync_public_gcs_downloads.py (pass: count=66, all HTTP 200 with attachment headers)`, `python3 scripts/verify_brca_normalized_artifacts.py (pass)`, `Playwright CLI local browser checks (pass: download start event for hg38_gme.txt.gz and supervisor_variant_registry_brca_arab_v2.csv)`
 - Next exact action: Continue `5.1` with the actual GE suites/checkpoints for the frozen normalized artifacts, then expose those validation outputs in the static supervisor surface without reintroducing live query dependencies.
+
+### Entry 31
+- Timestamp: `2026-03-17T20:34:24+03:00`
+- Agent: `Codex`
+- Task ID: `5.1`
+- Status: `Started`
+- Summary: Started a targeted audit of the remaining dirty files after the cleanup pass to decide what could be deleted safely. The goal was to remove only truly obsolete files and avoid deleting scripts or docs that are still part of the active low-cost pipeline, tests, or Conductor references.
+- Files changed: `conductor/tracks/T003-DataHarmonization/index.md`
+- Verification run + result: `repo-wide reference audit only before implementation`
+- Next exact action: Delete only files with no active references, then record which dirty files must stay because they still serve the current workflow.
+
+### Entry 32
+- Timestamp: `2026-03-17T20:34:24+03:00`
+- Agent: `Codex`
+- Task ID: `5.1`
+- Status: `Completed`
+- Summary: Completed the active-file audit. Only `WALKTHROUGH.md` was confirmed obsolete and left deleted; the remaining dirty files were retained because they still participate in the roadmap, active raw-freeze scripts, infrastructure tests, or UI design guidance.
+- Files changed: `WALKTHROUGH.md`, `conductor/checkpoints/2026-03-17-t003-active-file-audit.md`, `conductor/setup_state.json`, `conductor/tracks/T003-DataHarmonization/index.md`
+- Verification run + result: `rg -n '(Data collection\\.MD|WALKTHROUGH\\.md|ingest_clinvar_cloud\\.py|ingest_gnomad_parquet\\.py|verify_gcp\\.py|visual_identity\\.md)' -S . (pass: only WALKTHROUGH.md had no active references)`, `python3 -m pytest -q tests/test_gcp_connectivity.py (pass)`
+- Next exact action: Continue `5.1` with the actual GE suites/checkpoints for the frozen normalized artifacts, then expose those validation outputs in the static supervisor surface.
