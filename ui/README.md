@@ -2,7 +2,7 @@
 
 ## What it shows
 - Live Conductor track statuses and progress from `/api/overview`
-- Separate workflow pages for `Overview`, `Raw Sources`, `Normalization`, `Legacy Pre-GME`, `Legacy Final`, `Arab Extension`, `Data Downloads`, and `Controlled Access`
+- Separate workflow pages for `Overview`, `Raw Sources`, `Build Conversion`, `Normalization`, `Legacy Pre-GME`, `Legacy Final`, `Arab Extension`, `Data Downloads`, and `Controlled Access`
 - Frozen 10-row evidence samples for raw source packages, normalized per-source artifacts, checkpoint tables, and workflow steps
 - A preserved legacy baseline (`pre-GME` + `final`) that stays separate from the new Arab-extension checkpoints
 - A structured download center for every derived artifact shown in the dashboard
@@ -16,6 +16,7 @@
 - The deployed UI no longer queries BigQuery at runtime for samples, counts, or workflow evidence.
 - BigQuery is reserved for the historical raw source-of-truth mirrors only.
 - The active T003 workflow is GCS-first and exports normalized Parquet/checkpoint artifacts to GCS, then composes the review surface into `ui/review_bundle.json`.
+- The legacy live-registry SQL helpers and BigQuery sample endpoints were removed from the active runtime path.
 
 ## Local run
 From repo root:

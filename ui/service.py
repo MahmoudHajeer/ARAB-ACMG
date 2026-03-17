@@ -42,11 +42,6 @@ def styles() -> FileResponse:
     return FileResponse(UI_ROOT / "styles.css", headers=NO_STORE_HEADERS)
 
 
-@app.get("/status_snapshot.json")
-def snapshot() -> FileResponse:
-    return FileResponse(UI_ROOT / "status_snapshot.json", headers=NO_STORE_HEADERS)
-
-
 @app.get("/review_bundle.json")
 def bundle_file() -> JSONResponse:
     return JSONResponse(review_bundle(), headers=NO_STORE_HEADERS)

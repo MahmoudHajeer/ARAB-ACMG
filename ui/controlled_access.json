@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-13T12:33:37.772540+00:00",
+  "generated_at": "2026-03-17T10:38:55.372074+00:00",
   "scope_note": "This section tracks high-value Arab and Arab-adjacent datasets that are not directly downloadable. It records only source-backed access instructions reviewed from official provider pages.",
   "decision_note": "Priority is driven by cohort scale, coordinate readiness, and value for population-frequency evidence. Controlled datasets are not merged into the pipeline until approval is granted and the raw bytes are frozen.",
   "process_guides": [

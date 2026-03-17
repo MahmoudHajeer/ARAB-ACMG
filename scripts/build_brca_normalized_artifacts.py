@@ -3,7 +3,7 @@
 This script is the first real T003 normalization pass. It keeps the workflow
 explicit and cheap:
 1. Read the frozen source manifests so every output is tied to a known source package.
-2. Fetch only the BRCA1/BRCA2 windows from the public VCF sources.
+2. Fetch only the BRCA1/BRCA2 windows from the frozen raw VCF mirrors in GCS.
 3. Convert table-style Arab frequency sources into minimal VCF rows with explicit raw locators.
 4. Normalize every ready source with `bcftools norm` against a local GRCh38 chr13/chr17 reference.
 5. Persist per-source normalized Parquet snapshots, a normalization report, and two checkpoint artifacts:
@@ -134,6 +134,10 @@ CLINVAR_MANIFEST_URI: Final[str] = (
     "gs://mahmoud-arab-acmg-research-data/raw/sources/clinvar/lastmod-20260302/"
     "snapshot_date=2026-03-03/manifest.json"
 )
+CLINVAR_FROZEN_RAW_URI: Final[str] = (
+    "gs://mahmoud-arab-acmg-research-data/raw/sources/clinvar/lastmod-20260302/"
+    "snapshot_date=2026-03-03/clinvar.vcf.gz"
+)
 CLINVAR_PUBLIC_URL: Final[str] = "https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/clinvar.vcf.gz"
 GNOMAD_SOURCE_URIS: Final[dict[str, dict[str, str]]] = {
     "genomes_chr13": {
@@ -220,6 +224,13 @@ def command_output(cmd: list[str]) -> str:
     return subprocess.run(cmd, check=True, capture_output=True, text=True).stdout.strip()
 
 
+def download_binary(source_ref: str, target_path: Path) -> None:
+    if source_ref.startswith("gs://"):
+        subprocess.run(["gcloud", "storage", "cp", source_ref, str(target_path)], check=True, capture_output=True, text=True)
+        return
+    subprocess.run(["curl", "-L", "-o", str(target_path), source_ref], check=True)
+
+
 def sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -243,6 +254,16 @@ def download_gcs_json(storage_client: storage.Client, uri: str) -> dict[str, Any
     bucket_name, object_name = parse_gs_uri(uri)
     blob = storage_client.bucket(bucket_name).blob(object_name)
     return json.loads(blob.download_as_text())
+
+
+def public_gcs_url(uri: str) -> str:
+    bucket_name, object_name = parse_gs_uri(uri)
+    return f"https://storage.googleapis.com/{bucket_name}/{object_name}"
+
+
+def gcs_uri_exists(storage_client: storage.Client, uri: str) -> bool:
+    bucket_name, object_name = parse_gs_uri(uri)
+    return storage_client.bucket(bucket_name).blob(object_name).exists()
 
 
 def upload_file(
@@ -461,6 +482,35 @@ def parse_source_artifact(manifest: dict[str, Any], *, key: str, display_name: s
     )
 
 
+def with_resolved_source_uri(
+    storage_client: storage.Client,
+    source: SourceArtifact,
+    *,
+    fallback_uri: str | None = None,
+) -> SourceArtifact:
+    if source.source_artifact_uri.startswith("gs://") and gcs_uri_exists(storage_client, source.source_artifact_uri):
+        return source
+    if fallback_uri is not None and gcs_uri_exists(storage_client, fallback_uri):
+        notes = source.notes
+        if "fallback_uri_applied" not in notes:
+            notes = (notes + " " if notes else "") + f"fallback_uri_applied={fallback_uri}"
+        return SourceArtifact(
+            key=source.key,
+            display_name=source.display_name,
+            source_kind=source.source_kind,
+            source_version=source.source_version,
+            source_build=source.source_build,
+            snapshot_date=source.snapshot_date,
+            upstream_url=source.upstream_url,
+            source_artifact_uri=fallback_uri,
+            source_artifact_sha256=source.source_artifact_sha256,
+            manifest_uri=source.manifest_uri,
+            row_count=source.row_count,
+            notes=notes,
+        )
+    return source
+
+
 def count_vcf_records(vcf_path: Path) -> int:
     count = 0
     with vcf_path.open("r", encoding="utf-8") as handle:
@@ -554,12 +604,25 @@ def normalize_public_vcf_source(
     query_format: str,
     query_columns: list[str],
     parser: callable,
+    localize_input: bool = False,
 ) -> tuple[pd.DataFrame, dict[str, Any], pd.DataFrame]:
     raw_vcf = temp_dir / f"{source.key}_raw_subset.vcf"
     working_vcf = temp_dir / f"{source.key}_working.vcf"
     normalized_vcf = temp_dir / f"{source.key}_normalized.vcf"
+    extraction_url = public_gcs_url(source.source_artifact_uri)
+    input_target: str = extraction_url
 
-    run(["bcftools", "view", "-r", ",".join(regions), "-Ov", "-o", str(raw_vcf), public_url])
+    if localize_input:
+        localized_vcf = temp_dir / Path(source.source_artifact_uri).name
+        localized_index = temp_dir / f"{localized_vcf.name}.tbi"
+        source_index_uri = f"{source.source_artifact_uri}.tbi"
+        # [AI-Agent: Codex]: Localize smaller VCF sources when remote range reads are unstable; the bytes still come from the frozen GCS mirror.
+        download_binary(source.source_artifact_uri, localized_vcf)
+        download_binary(source_index_uri, localized_index)
+        input_target = str(localized_vcf)
+
+    # [AI-Agent: Codex]: Read the BRCA slice from the frozen GCS mirror so the build uses the exact archived source bytes.
+    run(["bcftools", "view", "-r", ",".join(regions), "-Ov", "-o", str(raw_vcf), input_target])
     if rename_map_path is not None:
         run(["bcftools", "annotate", "--rename-chrs", str(rename_map_path), "-Ov", "-o", str(working_vcf), str(raw_vcf)])
     else:
@@ -576,7 +639,8 @@ def normalize_public_vcf_source(
         "display_name": source.display_name,
         "source_artifact_uri": source.source_artifact_uri,
         "source_artifact_sha256": source.source_artifact_sha256,
-        "public_extraction_url": public_url,
+        "frozen_extraction_url": extraction_url,
+        "upstream_public_reference": public_url,
         "region_filters": regions,
         "source_rows_before_normalization": before_count,
         "normalized_rows": int(len(frame)),
@@ -584,7 +648,7 @@ def normalize_public_vcf_source(
         "normalization_tool": "bcftools norm",
         "normalization_tool_version": command_output(["bcftools", "--version"]).splitlines()[0],
         "notes": [
-            "BRCA windows were fetched directly from the provider VCF to avoid localizing the full source archive.",
+            "BRCA windows were fetched from the frozen raw GCS mirror instead of the changing provider endpoint.",
             f"Per-row provenance still points back to the frozen raw source artifact: {source.source_artifact_uri}",
         ],
     }
@@ -1551,7 +1615,18 @@ def main() -> None:
     shgp_manifest = download_gcs_json(storage_client, SHGP_MANIFEST_URI)
     gme_manifest = download_gcs_json(storage_client, GME_MANIFEST_URI)
 
-    clinvar_source = parse_source_artifact(clinvar_manifest, key="clinvar", display_name="ClinVar GRCh38 VCF", source_kind="VCF", source_build="GRCh38", manifest_uri=CLINVAR_MANIFEST_URI)
+    clinvar_source = with_resolved_source_uri(
+        storage_client,
+        parse_source_artifact(
+            clinvar_manifest,
+            key="clinvar",
+            display_name="ClinVar GRCh38 VCF",
+            source_kind="VCF",
+            source_build="GRCh38",
+            manifest_uri=CLINVAR_MANIFEST_URI,
+        ),
+        fallback_uri=CLINVAR_FROZEN_RAW_URI,
+    )
     shgp_source = parse_source_artifact(shgp_manifest, key="shgp_saudi_af", display_name="SHGP Saudi allele-frequency table", source_kind="TSV frequency table", source_build="GRCh38", manifest_uri=SHGP_MANIFEST_URI)
     gme_source = parse_source_artifact(gme_manifest, key="gme_hg38", display_name="GME hg38 summary table", source_kind="Summary table", source_build="GRCh38", manifest_uri=GME_MANIFEST_URI)
 
@@ -1592,6 +1667,7 @@ def main() -> None:
             query_format=QUERY_FORMATS["clinvar"],
             query_columns=["CHROM", "POS", "ID", "REF", "ALT", "OLD_REC", "ALLELEID", "CLNSIG", "CLNREVSTAT", "GENEINFO", "MC", "CLNVC", "CLNHGVS", "CLNDN", "CLNDISDB"],
             parser=parse_clinvar_frame,
+            localize_input=True,
         )
 
         gnomad_genomes_frames: list[pd.DataFrame] = []

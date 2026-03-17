@@ -1,11 +1,13 @@
 import pandas as pd
 
 from scripts.build_brca_normalized_artifacts import (
+    SourceArtifact,
     build_checkpoint,
     convert_table_variant,
     parse_clinvar_omim_pairs,
     uri_prefix,
     variant_type,
+    with_resolved_source_uri,
 )
 
 
@@ -42,6 +44,55 @@ def test_parse_clinvar_omim_pairs_keeps_only_omim_backed_items():
 def test_uri_prefix_preserves_gs_prefixes():
     assert uri_prefix("gs://bucket/path/file.parquet") == "gs://bucket/path/"
 
+
+
+def test_with_resolved_source_uri_applies_accessible_fallback():
+    class Blob:
+        def __init__(self, existing: set[tuple[str, str]], bucket_name: str, object_name: str):
+            self._existing = existing
+            self._key = (bucket_name, object_name)
+
+        def exists(self) -> bool:
+            return self._key in self._existing
+
+    class Bucket:
+        def __init__(self, existing: set[tuple[str, str]], bucket_name: str):
+            self._existing = existing
+            self._bucket_name = bucket_name
+
+        def blob(self, object_name: str) -> Blob:
+            return Blob(self._existing, self._bucket_name, object_name)
+
+    class Client:
+        def __init__(self, existing: set[tuple[str, str]]):
+            self._existing = existing
+
+        def bucket(self, bucket_name: str) -> Bucket:
+            return Bucket(self._existing, bucket_name)
+
+    source = SourceArtifact(
+        key="clinvar",
+        display_name="ClinVar",
+        source_kind="VCF",
+        source_version="v1",
+        source_build="GRCh38",
+        snapshot_date="2026-03-03",
+        upstream_url="https://example.org/clinvar.vcf.gz",
+        source_artifact_uri="gs://bucket/missing/file.vcf.gz",
+        source_artifact_sha256="abc",
+        manifest_uri="gs://bucket/manifest.json",
+        row_count=None,
+        notes="legacy manifest path",
+    )
+
+    resolved = with_resolved_source_uri(
+        Client({("bucket", "good/file.vcf.gz")}),
+        source,
+        fallback_uri="gs://bucket/good/file.vcf.gz",
+    )
+
+    assert resolved.source_artifact_uri == "gs://bucket/good/file.vcf.gz"
+    assert "fallback_uri_applied=gs://bucket/good/file.vcf.gz" in resolved.notes
 
 
 def test_build_checkpoint_combines_gnomad_counts_without_hiding_inputs():

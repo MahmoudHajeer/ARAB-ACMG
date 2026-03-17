@@ -264,3 +264,24 @@ Do not rewrite previous entries.
 - Files changed: `scripts/refresh_supervisor_review_bundle.py`, `scripts/update_source_review_state.py`, `tests/test_refresh_supervisor_review_bundle.py`, `ui/index.html`, `ui/app.js`, `ui/styles.css`, `ui/review_bundle.json`, `ui/source_review.json`, `conductor/setup_state.json`, `conductor/tracks/T003-DataHarmonization/index.md`
 - Verification run + result: `python3 -m py_compile scripts/refresh_supervisor_review_bundle.py scripts/update_source_review_state.py (pass)`, `python3 scripts/update_source_review_state.py (pass)`, `python3 scripts/refresh_supervisor_review_bundle.py (pass: artifact_groups=7)`, `python3 -m pytest -q tests/test_refresh_supervisor_review_bundle.py tests/test_ui_service.py tests/test_traceability.py (25 passed)`, `python3 -m pytest -q tests (85 passed)`, `node --check ui/app.js (pass)`, `artifact URL audit over ui/review_bundle.json (pass: checked=70, status=ok)`, `artifact header audit (pass: content_disposition=ok)`, `local Playwright check on http://127.0.0.1:8099/#artifacts (pass: click starts download event for clinvar.vcf.gz)`, `gcloud run deploy supervisor-ui --source ui --region europe-west1 --project genome-services-platform --allow-unauthenticated --quiet (pass: revision supervisor-ui-00032-kp2)`, `live Playwright check on https://supervisor-ui-142306018756.europe-west1.run.app/#artifacts (pass: click starts download event for clinvar.vcf.gz)`, `curl -s https://supervisor-ui-142306018756.europe-west1.run.app/api/health (pass: {\"status\":\"ok\"})`
 - Next exact action: Keep `5.1` open for the actual GE implementation; build GE suites/checkpoints for the frozen normalized artifacts and publish the validation outputs into the same static supervisor surface.
+
+### Entry 27
+- Timestamp: `2026-03-17T13:31:07+03:00`
+- Agent: `Codex`
+- Task ID: `5.1`
+- Status: `Started`
+- Summary: Starting a conservative workspace refactor and cleanup pass before the GE implementation. The goal is to identify the currently active low-cost pipeline, remove generated clutter and obsolete scripts without changing results, and leave the repo ready for the next phase and Google Studio-based collaboration.
+- Files changed: `conductor/tracks/T003-DataHarmonization/index.md`
+- Verification run + result: `state update only before implementation`
+- Next exact action: Inventory the active runtime pipeline and classify scripts/files into keep vs legacy candidates before any deletion or movement.
+
+### Entry 28
+- Timestamp: `2026-03-17T13:53:03+03:00`
+- Agent: `Codex`
+- Task ID: `5.1`
+- Status: `Completed`
+- Summary: Completed a conservative workspace refactor before GE implementation. The repo now keeps only the active GCS-first source-freeze, normalization, review-bundle, and validation paths, while obsolete BigQuery/live-registry and raw-layer GE scripts/tests were removed.
+- Files changed: `.gitignore`, `README.md`, `scripts/README.md`, `ui/README.md`, `ui/service.py`, `scripts/build_brca_normalized_artifacts.py`, `tests/test_build_brca_normalized_artifacts.py`, `conductor/checkpoints/2026-03-17-t003-workspace-refactor-cleanup.md`, `conductor/setup_state.json`, `conductor/tracks/T003-DataHarmonization/index.md`, plus removal of legacy scripts/tests/UI helper modules and raw GE artifacts`
+- Verification run + result: `python3 -m py_compile ... active scripts/ui modules (pass)`, `node --check ui/app.js (pass)`, `pytest -q tests (52 passed)`, `pytest -q tests/test_build_brca_normalized_artifacts.py tests/test_refresh_supervisor_review_bundle.py tests/test_verify_brca_normalized_artifacts.py (13 passed)`, `local Uvicorn + browser smoke check on http://127.0.0.1:8080 (pass)`
+- Next exact action: Implement the actual harmonized GE suites/checkpoints against the current frozen normalized artifacts, then rerun the authenticated GCS refresh/verification scripts once the network session is stable.
+

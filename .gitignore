@@ -3,6 +3,7 @@ data/
 *.vcf
 *.vcf.gz
 *.vcf.gz.tbi
+*.vcf.bgz.tbi
 *.csv
 *.tsv
 *.xlsx
@@ -53,7 +54,16 @@ venv.bak/
 .coverage
 htmlcov/
 .pytest_cache/
+logs/
+output/
 
 # Conductor / Temporary
 .gemini/
 /Users/macbookpro/.gemini/tmp/
+arab_acmg_dbt/.user.yml
+great_expectations/checkpoints/
+great_expectations/gx/
+great_expectations/plugins/
+great_expectations/profilers/
+great_expectations/uncommitted/
+great_expectations/validation_definitions/
