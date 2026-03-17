@@ -35,10 +35,15 @@ from typing import Any, Final, Iterable
 import pandas as pd
 from google.cloud import storage
 
+try:
+    from scripts.runtime_config import bucket_name, project_id
+except ModuleNotFoundError:
+    from runtime_config import bucket_name, project_id  # type: ignore[no-redef]
+
 ROOT: Final[Path] = Path(__file__).resolve().parents[1]
 UI_DIR: Final[Path] = ROOT / "ui"
-PROJECT_ID: Final[str] = "genome-services-platform"
-BUCKET_NAME: Final[str] = "mahmoud-arab-acmg-research-data"
+PROJECT_ID: Final[str] = project_id()
+BUCKET_NAME: Final[str] = bucket_name()
 SNAPSHOT_DATE: Final[str] = dt.date.today().isoformat()
 RUN_ID: Final[str] = f"brca-normalize-{dt.datetime.now(dt.UTC).strftime('%Y%m%dT%H%M%SZ')}"
 TIMESTAMP_UTC: Final[str] = dt.datetime.now(dt.UTC).isoformat()

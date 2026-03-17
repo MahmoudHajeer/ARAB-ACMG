@@ -8,6 +8,7 @@ This research project investigates the misclassification of genetic variants in 
 - **Historical raw archive only**: BigQuery raw mirrors, kept for audit/reference
 - **Active build path**: `scripts/build_brca_normalized_artifacts.py`
 - **Static review surface**: FastAPI UI serving frozen JSON and GCS downloads
+- **Cloud handoff note**: GitHub-first transfer/setup is documented in `GOOGLE_AI_STUDIO_HANDOFF.md`
 
 ## Active Workflow
 1. Freeze or refresh raw/public source packages into GCS.

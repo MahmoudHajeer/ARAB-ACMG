@@ -22,9 +22,14 @@ from typing import Final
 import pandas as pd
 from google.cloud import storage
 
+try:
+    from scripts.runtime_config import project_id
+except ModuleNotFoundError:
+    from runtime_config import project_id  # type: ignore[no-redef]
+
 ROOT: Final[Path] = Path(__file__).resolve().parents[1]
 UI_DIR: Final[Path] = ROOT / "ui"
-PROJECT_ID: Final[str] = "genome-services-platform"
+PROJECT_ID: Final[str] = project_id()
 GME_DUPLICATE_IGNORED_COLUMNS: Final[tuple[str, ...]] = (
     "source_id",
     "source_row_number",

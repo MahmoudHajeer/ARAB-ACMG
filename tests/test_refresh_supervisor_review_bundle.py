@@ -44,8 +44,8 @@ def test_build_artifact_catalog_groups_raw_and_derived_entries():
                 "title": "ClinVar normalized",
                 "simple_summary": "normalized artifact",
                 "row_count": 100,
-                "download_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/test/clinvar.csv",
-                "table_ref": "gs://bucket/clinvar.parquet",
+                "download_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=clinvar_normalized_brca_v1/snapshot_date=2026-03-15/clinvar_normalized_brca_v1.csv",
+                "table_ref": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=clinvar_normalized_brca_v1/snapshot_date=2026-03-15/clinvar_normalized_brca_v1.parquet",
             }
         ],
         raw_datasets={
@@ -55,7 +55,7 @@ def test_build_artifact_catalog_groups_raw_and_derived_entries():
                     "title": "ClinVar raw",
                     "simple_summary": "raw preview",
                     "row_count": 5,
-                    "table_ref": "gs://bucket/clinvar_raw.vcf.gz",
+                    "table_ref": "gs://mahmoud-arab-acmg-research-data/raw/sources/clinvar/lastmod-20260302/snapshot_date=2026-03-03/clinvar.vcf.gz",
                     "notes": ["raw note"],
                 }
             ]
@@ -81,9 +81,12 @@ def test_build_artifact_catalog_groups_raw_and_derived_entries():
         "review_documents",
     }.issubset(set(groups))
     assert groups["raw_public_sources"]["entries"][0]["files"][0]["gs_uri"].endswith("clinvar.vcf.gz")
-    assert groups["normalized_artifacts"]["entries"][0]["files"][0]["public_url"].endswith("clinvar.csv")
+    assert groups["normalized_artifacts"]["entries"][0]["files"][0]["public_url"].endswith("clinvar_normalized_brca_v1.csv")
     assert groups["legacy_checkpoint_artifacts"]["entries"][0]["title"] == "legacy_pre"
     assert groups["arab_extension_artifacts"]["entries"][1]["title"] == "arab_final"
+    reference_files = groups["reference_study_artifacts"]["entries"][0]["files"]
+    assert all("raw/sources/uae_brca_pmc12011969" not in file_item["gs_uri"] for file_item in reference_files)
+    assert all(file_item["access"] == "public" for file_item in reference_files)
 
 
 def test_schema_lineage_summary_reports_added_and_missing_columns():

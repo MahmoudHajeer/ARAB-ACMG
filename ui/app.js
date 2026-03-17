@@ -1046,7 +1046,17 @@ function renderArtifactCatalog(payload) {
                                 <td><span class="column-kind ${escapeHtml(file.kind)}">${escapeHtml(file.kind_label)}</span></td>
                                 <td>${escapeHtml(file.label)}</td>
                                 <td><code class="truncate">${escapeHtml(file.gs_uri || file.public_url)}</code></td>
-                                <td><a class="action-button secondary-link compact-link" href="${escapeHtml(file.public_url)}" target="_blank" rel="noreferrer">${escapeHtml(file.kind === "manifest" || file.kind === "report" || file.kind === "bundle" ? "Open file" : "Download")}</a></td>
+                                <td>
+                                  <div class="action-row compact-actions">
+                                    <span class="column-kind ${escapeHtml(file.access === "public" ? "required" : file.access === "restricted" ? "context_extra" : "extra")}">${escapeHtml(file.access_label || "Unknown")}</span>
+                                    ${
+                                      file.public_url
+                                        ? `<a class="action-button secondary-link compact-link" href="${escapeHtml(file.public_url)}" target="_blank" rel="noreferrer">${escapeHtml(file.action_label || "Download")}</a>`
+                                        : ""
+                                    }
+                                  </div>
+                                  ${file.access_reason ? `<div class="metric-sub">${escapeHtml(file.access_reason)}</div>` : ""}
+                                </td>
                               </tr>
                             `
                             )

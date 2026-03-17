@@ -27,6 +27,8 @@ This directory now keeps only the active, supported entry points for the current
   - Main BRCA normalization build. Produces normalized Parquet artifacts, checkpoint tables, manifests, and the frozen review bundle inputs.
 - `refresh_supervisor_review_bundle.py`
   - Re-compose the static supervisor bundle from the frozen artifacts without re-running the heavy normalization path.
+- `sync_public_gcs_downloads.py`
+  - Publish only the safe supervisor download-center objects for anonymous GCS access and verify that downloads start without authentication.
 - `verify_brca_normalized_artifacts.py`
   - Validate canonical keys, artifact existence, public downloads, and checkpoint schema relationships.
 
@@ -42,6 +44,7 @@ This directory now keeps only the active, supported entry points for the current
 ```bash
 python3 scripts/build_brca_normalized_artifacts.py
 python3 scripts/verify_brca_normalized_artifacts.py
+python3 scripts/sync_public_gcs_downloads.py
 uvicorn ui.service:app --host 0.0.0.0 --port 8080
 ```
 

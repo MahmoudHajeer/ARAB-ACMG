@@ -18,8 +18,12 @@ import pandas as pd
 from google.cloud import storage
 
 try:
+    from scripts.gcs_public_policy import is_public_safe_gcs_uri, public_url_for_gs_uri
+    from scripts.runtime_config import bucket_name
     from scripts.freeze_arab_study_sources import STUDY_SOURCES, apply_extract_spec
 except ModuleNotFoundError:
+    from gcs_public_policy import is_public_safe_gcs_uri, public_url_for_gs_uri  # type: ignore[no-redef]
+    from runtime_config import bucket_name  # type: ignore[no-redef]
     from freeze_arab_study_sources import STUDY_SOURCES, apply_extract_spec
 
 ROOT: Final[Path] = Path(__file__).resolve().parents[1]
@@ -28,7 +32,7 @@ SOURCE_FREEZE_FILE: Final[Path] = ROOT / "conductor" / "source-freeze.md"
 REVIEW_BUNDLE_FILE: Final[Path] = ROOT / "ui" / "review_bundle.json"
 SHGP_LOCAL_FILE: Final[Path] = Path("/Users/macbookpro/Desktop/storage/raw/shgp/Saudi_Arabian_Allele_Frequencies.txt")
 AVDB_LOCAL_FILE: Final[Path] = Path("/Users/macbookpro/Desktop/storage/raw/uae/avdb_uae.xlsx")
-BUCKET_NAME: Final[str] = "mahmoud-arab-acmg-research-data"
+BUCKET_NAME: Final[str] = bucket_name()
 AVDB_LIFTOVER_OBJECT: Final[str] = (
     "frozen/harmonized/source=avdb_uae/version=workbook-created-2025-06-27/"
     "stage=liftover/build=GRCh37_to_GRCh38/snapshot_date=2026-03-13/avdb_uae_liftover.parquet"
@@ -498,11 +502,7 @@ def build_raw_manifest_uri(snapshot_entry: dict[str, str] | None) -> str | None:
 def storage_console_url(uri: str) -> str:
     if not uri.startswith("gs://"):
         return uri
-    bucket_and_path = uri.removeprefix("gs://")
-    if "/" not in bucket_and_path:
-        return f"https://storage.googleapis.com/{bucket_and_path}"
-    bucket_name, object_name = bucket_and_path.split("/", 1)
-    return f"https://storage.googleapis.com/{bucket_name}/{object_name}"
+    return public_url_for_gs_uri(uri)
 
 
 def build_source_decision_summary(entries: list[dict[str, object]]) -> list[dict[str, object]]:
@@ -612,9 +612,15 @@ def build_source_entry(
     if snapshot_entry and snapshot_entry.get("upstream_url") and not str(snapshot_entry["upstream_url"]).startswith("file://"):
         extra_links.append({"label": "Upstream source", "url": storage_console_url(snapshot_entry["upstream_url"])})
     if snapshot_entry and snapshot_entry.get("raw_vault_prefix"):
-        extra_links.append({"label": "Raw vault prefix", "url": storage_console_url(snapshot_entry["raw_vault_prefix"])})
+        if is_public_safe_gcs_uri(snapshot_entry["raw_vault_prefix"]):
+            extra_links.append({"label": "Raw vault prefix", "url": storage_console_url(snapshot_entry["raw_vault_prefix"])})
+        else:
+            extra_links.append({"label": "Raw vault prefix", "url": "Private GCS audit copy (not exposed publicly)."})
     if manifest_uri:
-        extra_links.append({"label": "Raw manifest", "url": storage_console_url(manifest_uri)})
+        if is_public_safe_gcs_uri(manifest_uri):
+            extra_links.append({"label": "Raw manifest", "url": storage_console_url(manifest_uri)})
+        else:
+            extra_links.append({"label": "Raw manifest", "url": "Private GCS audit copy (not exposed publicly)."})
     if lift_details is not None:
         extra_links.append({"label": "Liftover report", "url": storage_console_url(str(lift_details["report_uri"]))})
         extra_links.append({"label": "Lifted Parquet", "url": storage_console_url(str(lift_details["parquet_uri"]))})

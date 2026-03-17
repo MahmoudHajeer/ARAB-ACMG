@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-17T10:39:21.219505+00:00",
+  "generated_at": "2026-03-17T16:39:51.185430+00:00",
   "workflow_categories": [
     {
       "id": "raw_freeze",
@@ -967,11 +967,11 @@
         },
         {
           "label": "Raw vault prefix",
-          "url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/"
+          "url": "Private GCS audit copy (not exposed publicly)."
         },
         {
           "label": "Raw manifest",
-          "url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/manifest.json"
+          "url": "Private GCS audit copy (not exposed publicly)."
         }
       ],
       "workflow_position": {
@@ -1141,11 +1141,11 @@
         },
         {
           "label": "Raw vault prefix",
-          "url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/"
+          "url": "Private GCS audit copy (not exposed publicly)."
         },
         {
           "label": "Raw manifest",
-          "url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/manifest.json"
+          "url": "Private GCS audit copy (not exposed publicly)."
         }
       ],
       "workflow_position": {

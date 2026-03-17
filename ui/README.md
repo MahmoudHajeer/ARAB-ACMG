@@ -6,6 +6,7 @@
 - Frozen 10-row evidence samples for raw source packages, normalized per-source artifacts, checkpoint tables, and workflow steps
 - A preserved legacy baseline (`pre-GME` + `final`) that stays separate from the new Arab-extension checkpoints
 - A structured download center for every derived artifact shown in the dashboard
+- Public-safe GCS downloads only; restricted raw study workbooks remain private and are not exposed as anonymous downloads
 - Step-by-step frozen evidence for the BRCA1/BRCA2 normalization workflow
 - Build-logic notes explaining how the checkpoints are assembled from normalized source artifacts
 - Short scientific notes explaining why the BRCA windows are authoritative across ClinVar, gnomAD genomes, gnomAD exomes, SHGP, and GME
@@ -38,6 +39,7 @@ Run:
 ```bash
 python3 scripts/build_brca_normalized_artifacts.py
 python3 scripts/verify_brca_normalized_artifacts.py
+python3 scripts/sync_public_gcs_downloads.py
 ```
 
 This updates:

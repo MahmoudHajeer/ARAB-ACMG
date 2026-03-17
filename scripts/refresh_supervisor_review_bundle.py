@@ -24,10 +24,34 @@ from typing import Any, Final
 import pandas as pd
 from google.cloud import storage
 
+try:
+    from scripts.gcs_public_policy import (
+        BUCKET_NAME,
+        attachment_header_value,
+        default_action_label,
+        gcs_access_profile,
+        is_public_safe_gcs_uri,
+        object_public_url,
+        parse_gs_uri,
+        public_url_for_gs_uri,
+    )
+    from scripts.runtime_config import project_id
+except ModuleNotFoundError:
+    from gcs_public_policy import (  # type: ignore[no-redef]
+        BUCKET_NAME,
+        attachment_header_value,
+        default_action_label,
+        gcs_access_profile,
+        is_public_safe_gcs_uri,
+        object_public_url,
+        parse_gs_uri,
+        public_url_for_gs_uri,
+    )
+    from runtime_config import project_id  # type: ignore[no-redef]
+
 ROOT: Final[Path] = Path(__file__).resolve().parents[1]
 UI_DIR: Final[Path] = ROOT / "ui"
-PROJECT_ID: Final[str] = "genome-services-platform"
-BUCKET_NAME: Final[str] = "mahmoud-arab-acmg-research-data"
+PROJECT_ID: Final[str] = project_id()
 CURRENT_BUNDLE_PATH: Final[Path] = UI_DIR / "review_bundle.json"
 LEGACY_BUNDLE_URI: Final[str] = (
     "gs://mahmoud-arab-acmg-research-data/"
@@ -86,15 +110,11 @@ AVDB_STANDARDIZATION_FILES: Final[list[dict[str, str]]] = [
 
 REFERENCE_STUDY_FILES: Final[dict[str, list[dict[str, str]]]] = {
     "saudi_breast_cancer_pmc10474689": [
-        {"label": "Raw workbook", "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/saudi_breast_cancer_pmc10474689_moesm1.xls", "kind": "workbook"},
-        {"label": "Raw manifest", "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/manifest.json", "kind": "manifest"},
         {"label": "De-identified CSV", "uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/variant_carriers.csv", "kind": "csv"},
         {"label": "De-identified parquet", "uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/variant_carriers.parquet", "kind": "parquet"},
         {"label": "Extract manifest", "uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/variant_carriers.manifest.json", "kind": "manifest"},
     ],
     "uae_brca_pmc12011969": [
-        {"label": "Raw workbook", "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/uae_brca_pmc12011969_moesm1.xlsx", "kind": "workbook"},
-        {"label": "Raw manifest", "uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/manifest.json", "kind": "manifest"},
         {"label": "Family-screening CSV", "uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/family_screening_variant_rows.csv", "kind": "csv"},
         {"label": "Family-screening parquet", "uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/family_screening_variant_rows.parquet", "kind": "parquet"},
         {"label": "Family-screening manifest", "uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/family_screening_variant_rows.manifest.json", "kind": "manifest"},
@@ -122,25 +142,8 @@ FILE_KIND_LABELS: Final[dict[str, str]] = {
     "bundle": "BUNDLE",
     "document": "DOC",
 }
-
-
-def parse_gs_uri(uri: str) -> tuple[str, str]:
-    if not uri.startswith("gs://"):
-        raise ValueError(f"Unsupported URI: {uri}")
-    bucket_name, object_name = uri[5:].split("/", 1)
-    return bucket_name, object_name
-
-
 def json_dump(path: Path, payload: dict[str, Any]) -> None:
     path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-
-
-def public_object_url(object_name: str) -> str:
-    return f"https://storage.googleapis.com/{BUCKET_NAME}/{object_name}"
-
-
-def object_public_url(bucket_name: str, object_name: str) -> str:
-    return f"https://storage.googleapis.com/{bucket_name}/{object_name}"
 
 
 def download_json_from_gcs(storage_client: storage.Client, uri: str) -> dict[str, Any]:
@@ -162,10 +165,10 @@ def upload_public_csv(storage_client: storage.Client, frame: pd.DataFrame, objec
         frame.to_csv(csv_path, index=False)
         blob = storage_client.bucket(BUCKET_NAME).blob(object_name)
         blob.upload_from_filename(str(csv_path), content_type="text/csv")
-        blob.content_disposition = f'attachment; filename="{csv_path.name}"'
+        blob.content_disposition = attachment_header_value(f"gs://{BUCKET_NAME}/{object_name}")
         blob.patch()
         blob.make_public()
-    return {"gs_uri": f"gs://{BUCKET_NAME}/{object_name}", "public_url": public_object_url(object_name)}
+    return {"gs_uri": f"gs://{BUCKET_NAME}/{object_name}", "public_url": public_url_for_gs_uri(f"gs://{BUCKET_NAME}/{object_name}")}
 
 
 def csv_object_from_parquet_uri(parquet_uri: str) -> str:
@@ -204,15 +207,17 @@ def infer_file_kind(uri: str) -> str:
 
 
 def public_gs_uri(storage_client: storage.Client | None, uri: str) -> str:
+    public_url = public_url_for_gs_uri(uri)
     bucket_name, object_name = parse_gs_uri(uri)
-    public_url = object_public_url(bucket_name, object_name)
+    if not is_public_safe_gcs_uri(uri):
+        return ""
     if storage_client is None or bucket_name != BUCKET_NAME:
         return public_url
     blob = storage_client.bucket(bucket_name).blob(object_name)
     if not blob.exists():
         LOGGER.warning("Missing GCS object in artifact catalog: %s", uri)
         return public_url
-    attachment = f'attachment; filename="{Path(object_name).name}"'
+    attachment = attachment_header_value(uri)
     blob.reload()
     changed = False
     if blob.content_disposition != attachment:
@@ -233,14 +238,20 @@ def publish_storage_files(storage_client: storage.Client | None, files: list[dic
     for file_item in files:
         uri = file_item["uri"]
         if uri.startswith("gs://"):
+            access_profile = gcs_access_profile(uri)
+            public_url = public_gs_uri(storage_client, uri) if access_profile["access"] == "public" else ""
             published.append(
                 {
                     "label": file_item["label"],
                     "kind": file_item["kind"],
                     "kind_label": FILE_KIND_LABELS.get(file_item["kind"], file_item["kind"].upper()),
                     "gs_uri": uri,
-                    "public_url": public_gs_uri(storage_client, uri),
+                    "public_url": public_url,
                     "filename": Path(uri).name,
+                    "access": access_profile["access"],
+                    "access_label": access_profile["access_label"],
+                    "access_reason": access_profile["access_reason"],
+                    "action_label": default_action_label(file_item["kind"], access=access_profile["access"]),
                 }
             )
             continue
@@ -252,6 +263,10 @@ def publish_storage_files(storage_client: storage.Client | None, files: list[dic
                 "gs_uri": "",
                 "public_url": uri,
                 "filename": Path(uri).name or uri,
+                "access": "external",
+                "access_label": "External",
+                "access_reason": "Resolved outside the project bucket.",
+                "action_label": default_action_label(file_item["kind"], access="public"),
             }
         )
     return published
@@ -544,22 +559,24 @@ def build_artifact_catalog(
                     key="uae_brca_reference",
                     title="UAE BRCA study review package",
                     stage="reference_study_artifacts",
-                    overview="Frozen workbook and de-identified extract files used to review the UAE BRCA study as supporting evidence only.",
+                    overview="De-identified extract files used to review the UAE BRCA study as supporting evidence only. The raw workbook remains private in GCS.",
                     row_count=int(uae_source.get("row_count", 0)),
                     files=REFERENCE_STUDY_FILES["uae_brca_pmc12011969"],
                     review_label="Reference-only study package",
                     links=([{"label": "Publication", "url": uae_source["upstream_url"]}] if uae_source.get("upstream_url") else []),
+                    references=["The raw workbook is retained privately in GCS because it originated as a patient-level study supplement."],
                 ),
                 derived_catalog_entry(
                     storage_client=storage_client,
                     key="saudi_brca_reference",
                     title="Saudi breast-cancer study review package",
                     stage="reference_study_artifacts",
-                    overview="Frozen workbook and de-identified extract files used to review the Saudi BRCA study. This source stays blocked for normalization.",
+                    overview="De-identified extract files used to review the Saudi BRCA study. The raw workbook remains private in GCS and the source stays blocked for normalization.",
                     row_count=int(saudi_source.get("row_count", 0)),
                     files=REFERENCE_STUDY_FILES["saudi_breast_cancer_pmc10474689"],
                     review_label="Blocked study package",
                     links=([{"label": "Publication", "url": saudi_source["upstream_url"]}] if saudi_source.get("upstream_url") else []),
+                    references=["The raw workbook is retained privately in GCS because it originated as a patient-level study supplement."],
                 ),
             ],
         },
@@ -682,7 +699,7 @@ def refresh_bundle() -> dict[str, Any]:
     json_dump(CURRENT_BUNDLE_PATH, bundle)
     upload_blob = storage_client.bucket(BUCKET_NAME).blob(REVIEW_BUNDLE_OBJECT)
     upload_blob.upload_from_string(json.dumps(bundle, indent=2), content_type="application/json")
-    upload_blob.content_disposition = f'attachment; filename="{Path(REVIEW_BUNDLE_OBJECT).name}"'
+    upload_blob.content_disposition = attachment_header_value(f"gs://{BUCKET_NAME}/{REVIEW_BUNDLE_OBJECT}")
     upload_blob.patch()
     upload_blob.make_public()
 

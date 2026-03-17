@@ -285,3 +285,23 @@ Do not rewrite previous entries.
 - Verification run + result: `python3 -m py_compile ... active scripts/ui modules (pass)`, `node --check ui/app.js (pass)`, `pytest -q tests (52 passed)`, `pytest -q tests/test_build_brca_normalized_artifacts.py tests/test_refresh_supervisor_review_bundle.py tests/test_verify_brca_normalized_artifacts.py (13 passed)`, `local Uvicorn + browser smoke check on http://127.0.0.1:8080 (pass)`
 - Next exact action: Implement the actual harmonized GE suites/checkpoints against the current frozen normalized artifacts, then rerun the authenticated GCS refresh/verification scripts once the network session is stable.
 
+
+### Entry 29
+- Timestamp: `2026-03-17T14:10:00+03:00`
+- Agent: `Codex`
+- Task ID: `5.1`
+- Status: `Started`
+- Summary: Starting a storage-access and environment-hardening pass after the workspace refactor. The goal is to remove authenticated-download dependency by making the frozen GCS review artifacts publicly fetchable, then document a clean GitHub-to-Google-Studio handoff path that relies on stable public source artifacts rather than fragile local auth state.
+- Files changed: `conductor/tracks/T003-DataHarmonization/index.md`
+- Verification run + result: `state update only before implementation`
+- Next exact action: Audit the frozen artifact bucket/object access policy, make required objects public with download-friendly headers, test downloads in a real browser, then write the minimal Studio handoff setup documentation.`
+
+### Entry 30
+- Timestamp: `2026-03-17T19:05:00+03:00`
+- Agent: `Codex`
+- Task ID: `5.1`
+- Status: `Completed`
+- Summary: Completed the public-download and Studio-handoff hardening pass. The supervisor download center now publishes only allowlisted safe GCS objects anonymously, the private Saudi/UAE raw workbooks are no longer exposed as public download links, and the repo now includes a GitHub-first handoff guide for Google AI Studio / cloud-workspace execution.
+- Files changed: `README.md`, `scripts/README.md`, `scripts/build_brca_normalized_artifacts.py`, `scripts/refresh_supervisor_review_bundle.py`, `scripts/update_source_review_state.py`, `scripts/verify_brca_normalized_artifacts.py`, `scripts/gcs_public_policy.py`, `scripts/runtime_config.py`, `scripts/sync_public_gcs_downloads.py`, `tests/test_refresh_supervisor_review_bundle.py`, `tests/test_gcs_public_policy.py`, `tests/test_sync_public_gcs_downloads.py`, `ui/README.md`, `ui/app.js`, `ui/controlled_access.py`, `ui/review_bundle.py`, `ui/source_review.py`, `ui/review_bundle.json`, `ui/source_review.json`, `GOOGLE_AI_STUDIO_HANDOFF.md`, `conductor/checkpoints/2026-03-17-t003-public-gcs-studio-handoff.md`, `conductor/setup_state.json`, `conductor/tracks/T003-DataHarmonization/index.md`
+- Verification run + result: `python3 -m py_compile scripts/runtime_config.py scripts/gcs_public_policy.py scripts/sync_public_gcs_downloads.py scripts/update_source_review_state.py scripts/refresh_supervisor_review_bundle.py scripts/build_brca_normalized_artifacts.py scripts/verify_brca_normalized_artifacts.py ui/review_bundle.py ui/source_review.py ui/controlled_access.py ui/service.py (pass)`, `node --check ui/app.js (pass)`, `python3 -m pytest -q tests (56 passed)`, `python3 scripts/update_source_review_state.py (pass)`, `python3 scripts/refresh_supervisor_review_bundle.py (pass: normalized_downloads=5 artifact_groups=7)`, `python3 scripts/sync_public_gcs_downloads.py (pass: count=66, all HTTP 200 with attachment headers)`, `python3 scripts/verify_brca_normalized_artifacts.py (pass)`, `Playwright CLI local browser checks (pass: download start event for hg38_gme.txt.gz and supervisor_variant_registry_brca_arab_v2.csv)`
+- Next exact action: Continue `5.1` with the actual GE suites/checkpoints for the frozen normalized artifacts, then expose those validation outputs in the static supervisor surface without reintroducing live query dependencies.

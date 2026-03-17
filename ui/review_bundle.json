@@ -11612,7 +11612,11 @@
                 "kind_label": "SOURCE",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/clinvar/lastmod-20260302/snapshot_date=2026-03-03/clinvar.vcf.gz",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/clinvar/lastmod-20260302/snapshot_date=2026-03-03/clinvar.vcf.gz",
-                "filename": "clinvar.vcf.gz"
+                "filename": "clinvar.vcf.gz",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               },
               {
                 "label": "Index",
@@ -11620,7 +11624,11 @@
                 "kind_label": "INDEX",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/clinvar/lastmod-20260302/snapshot_date=2026-03-03/clinvar.vcf.gz.tbi",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/clinvar/lastmod-20260302/snapshot_date=2026-03-03/clinvar.vcf.gz.tbi",
-                "filename": "clinvar.vcf.gz.tbi"
+                "filename": "clinvar.vcf.gz.tbi",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               },
               {
                 "label": "Manifest",
@@ -11628,7 +11636,11 @@
                 "kind_label": "MANIFEST",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/clinvar/lastmod-20260302/snapshot_date=2026-03-03/manifest.json",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/clinvar/lastmod-20260302/snapshot_date=2026-03-03/manifest.json",
-                "filename": "manifest.json"
+                "filename": "manifest.json",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Open file"
               }
             ],
             "links": [
@@ -11656,7 +11668,11 @@
                 "kind_label": "SOURCE",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr13/snapshot_date=2026-03-03/gnomad.genomes.v4.1.sites.chr13.vcf.bgz",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr13/snapshot_date=2026-03-03/gnomad.genomes.v4.1.sites.chr13.vcf.bgz",
-                "filename": "gnomad.genomes.v4.1.sites.chr13.vcf.bgz"
+                "filename": "gnomad.genomes.v4.1.sites.chr13.vcf.bgz",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               },
               {
                 "label": "chr13 index",
@@ -11664,7 +11680,11 @@
                 "kind_label": "INDEX",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr13/snapshot_date=2026-03-03/gnomad.genomes.v4.1.sites.chr13.vcf.bgz.tbi",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr13/snapshot_date=2026-03-03/gnomad.genomes.v4.1.sites.chr13.vcf.bgz.tbi",
-                "filename": "gnomad.genomes.v4.1.sites.chr13.vcf.bgz.tbi"
+                "filename": "gnomad.genomes.v4.1.sites.chr13.vcf.bgz.tbi",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               },
               {
                 "label": "chr13 manifest",
@@ -11672,7 +11692,11 @@
                 "kind_label": "MANIFEST",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr13/snapshot_date=2026-03-03/manifest.json",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr13/snapshot_date=2026-03-03/manifest.json",
-                "filename": "manifest.json"
+                "filename": "manifest.json",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Open file"
               },
               {
                 "label": "chr17 VCF.BGZ",
@@ -11680,7 +11704,11 @@
                 "kind_label": "SOURCE",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr17/snapshot_date=2026-03-03/gnomad.genomes.v4.1.sites.chr17.vcf.bgz",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr17/snapshot_date=2026-03-03/gnomad.genomes.v4.1.sites.chr17.vcf.bgz",
-                "filename": "gnomad.genomes.v4.1.sites.chr17.vcf.bgz"
+                "filename": "gnomad.genomes.v4.1.sites.chr17.vcf.bgz",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               },
               {
                 "label": "chr17 index",
@@ -11688,7 +11716,11 @@
                 "kind_label": "INDEX",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr17/snapshot_date=2026-03-03/gnomad.genomes.v4.1.sites.chr17.vcf.bgz.tbi",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr17/snapshot_date=2026-03-03/gnomad.genomes.v4.1.sites.chr17.vcf.bgz.tbi",
-                "filename": "gnomad.genomes.v4.1.sites.chr17.vcf.bgz.tbi"
+                "filename": "gnomad.genomes.v4.1.sites.chr17.vcf.bgz.tbi",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               },
               {
                 "label": "chr17 manifest",
@@ -11696,7 +11728,11 @@
                 "kind_label": "MANIFEST",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr17/snapshot_date=2026-03-03/manifest.json",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=genomes/chrom=chr17/snapshot_date=2026-03-03/manifest.json",
-                "filename": "manifest.json"
+                "filename": "manifest.json",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Open file"
               }
             ],
             "links": [
@@ -11724,7 +11760,11 @@
                 "kind_label": "SOURCE",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr13/snapshot_date=2026-03-03/gnomad.exomes.v4.1.sites.chr13.vcf.bgz",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr13/snapshot_date=2026-03-03/gnomad.exomes.v4.1.sites.chr13.vcf.bgz",
-                "filename": "gnomad.exomes.v4.1.sites.chr13.vcf.bgz"
+                "filename": "gnomad.exomes.v4.1.sites.chr13.vcf.bgz",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               },
               {
                 "label": "chr13 index",
@@ -11732,7 +11772,11 @@
                 "kind_label": "INDEX",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr13/snapshot_date=2026-03-03/gnomad.exomes.v4.1.sites.chr13.vcf.bgz.tbi",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr13/snapshot_date=2026-03-03/gnomad.exomes.v4.1.sites.chr13.vcf.bgz.tbi",
-                "filename": "gnomad.exomes.v4.1.sites.chr13.vcf.bgz.tbi"
+                "filename": "gnomad.exomes.v4.1.sites.chr13.vcf.bgz.tbi",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               },
               {
                 "label": "chr13 manifest",
@@ -11740,7 +11784,11 @@
                 "kind_label": "MANIFEST",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr13/snapshot_date=2026-03-03/manifest.json",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr13/snapshot_date=2026-03-03/manifest.json",
-                "filename": "manifest.json"
+                "filename": "manifest.json",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Open file"
               },
               {
                 "label": "chr17 VCF.BGZ",
@@ -11748,7 +11796,11 @@
                 "kind_label": "SOURCE",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr17/snapshot_date=2026-03-03/gnomad.exomes.v4.1.sites.chr17.vcf.bgz",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr17/snapshot_date=2026-03-03/gnomad.exomes.v4.1.sites.chr17.vcf.bgz",
-                "filename": "gnomad.exomes.v4.1.sites.chr17.vcf.bgz"
+                "filename": "gnomad.exomes.v4.1.sites.chr17.vcf.bgz",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               },
               {
                 "label": "chr17 index",
@@ -11756,7 +11808,11 @@
                 "kind_label": "INDEX",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr17/snapshot_date=2026-03-03/gnomad.exomes.v4.1.sites.chr17.vcf.bgz.tbi",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr17/snapshot_date=2026-03-03/gnomad.exomes.v4.1.sites.chr17.vcf.bgz.tbi",
-                "filename": "gnomad.exomes.v4.1.sites.chr17.vcf.bgz.tbi"
+                "filename": "gnomad.exomes.v4.1.sites.chr17.vcf.bgz.tbi",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               },
               {
                 "label": "chr17 manifest",
@@ -11764,7 +11820,11 @@
                 "kind_label": "MANIFEST",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr17/snapshot_date=2026-03-03/manifest.json",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gnomad_v4.1/release=4.1/cohort=exomes/chrom=chr17/snapshot_date=2026-03-03/manifest.json",
-                "filename": "manifest.json"
+                "filename": "manifest.json",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Open file"
               }
             ],
             "links": [
@@ -11792,7 +11852,11 @@
                 "kind_label": "SOURCE",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/shgp_saudi_af/version=figshare-28059686-v1/snapshot_date=2026-03-13/Saudi_Arabian_Allele_Frequencies.txt",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/shgp_saudi_af/version=figshare-28059686-v1/snapshot_date=2026-03-13/Saudi_Arabian_Allele_Frequencies.txt",
-                "filename": "Saudi_Arabian_Allele_Frequencies.txt"
+                "filename": "Saudi_Arabian_Allele_Frequencies.txt",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               },
               {
                 "label": "Manifest",
@@ -11800,7 +11864,11 @@
                 "kind_label": "MANIFEST",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/shgp_saudi_af/version=figshare-28059686-v1/snapshot_date=2026-03-13/manifest.json",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/shgp_saudi_af/version=figshare-28059686-v1/snapshot_date=2026-03-13/manifest.json",
-                "filename": "manifest.json"
+                "filename": "manifest.json",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Open file"
               }
             ],
             "links": [
@@ -11828,7 +11896,11 @@
                 "kind_label": "SOURCE",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gme/release=20161025-hg38/build=hg38/snapshot_date=2026-03-08/hg38_gme.txt.gz",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gme/release=20161025-hg38/build=hg38/snapshot_date=2026-03-08/hg38_gme.txt.gz",
-                "filename": "hg38_gme.txt.gz"
+                "filename": "hg38_gme.txt.gz",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               },
               {
                 "label": "Manifest",
@@ -11836,7 +11908,11 @@
                 "kind_label": "MANIFEST",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/gme/release=20161025-hg38/build=hg38/snapshot_date=2026-03-08/manifest.json",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/gme/release=20161025-hg38/build=hg38/snapshot_date=2026-03-08/manifest.json",
-                "filename": "manifest.json"
+                "filename": "manifest.json",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Open file"
               }
             ],
             "links": [],
@@ -11866,7 +11942,11 @@
                 "kind_label": "WORKBOOK",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/avdb_uae/version=workbook-created-2025-06-27/build=GRCh37/snapshot_date=2026-03-13/avdb_uae.xlsx",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/avdb_uae/version=workbook-created-2025-06-27/build=GRCh37/snapshot_date=2026-03-13/avdb_uae.xlsx",
-                "filename": "avdb_uae.xlsx"
+                "filename": "avdb_uae.xlsx",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               },
               {
                 "label": "Raw manifest",
@@ -11874,7 +11954,11 @@
                 "kind_label": "MANIFEST",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/avdb_uae/version=workbook-created-2025-06-27/build=GRCh37/snapshot_date=2026-03-13/manifest.json",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/avdb_uae/version=workbook-created-2025-06-27/build=GRCh37/snapshot_date=2026-03-13/manifest.json",
-                "filename": "manifest.json"
+                "filename": "manifest.json",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Open file"
               },
               {
                 "label": "Lifted parquet",
@@ -11882,7 +11966,11 @@
                 "kind_label": "PARQUET",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/source=avdb_uae/version=workbook-created-2025-06-27/stage=liftover/build=GRCh37_to_GRCh38/snapshot_date=2026-03-13/avdb_uae_liftover.parquet",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/source=avdb_uae/version=workbook-created-2025-06-27/stage=liftover/build=GRCh37_to_GRCh38/snapshot_date=2026-03-13/avdb_uae_liftover.parquet",
-                "filename": "avdb_uae_liftover.parquet"
+                "filename": "avdb_uae_liftover.parquet",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               },
               {
                 "label": "Liftover report",
@@ -11890,7 +11978,11 @@
                 "kind_label": "REPORT",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/source=avdb_uae/version=workbook-created-2025-06-27/stage=liftover/build=GRCh37_to_GRCh38/snapshot_date=2026-03-13/avdb_uae_liftover_report.json",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/source=avdb_uae/version=workbook-created-2025-06-27/stage=liftover/build=GRCh37_to_GRCh38/snapshot_date=2026-03-13/avdb_uae_liftover_report.json",
-                "filename": "avdb_uae_liftover_report.json"
+                "filename": "avdb_uae_liftover_report.json",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Open file"
               }
             ],
             "links": [
@@ -11925,7 +12017,11 @@
                 "kind_label": "CSV",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=clinvar_normalized_brca_v1/snapshot_date=2026-03-15/clinvar_normalized_brca_v1.csv",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=clinvar_normalized_brca_v1/snapshot_date=2026-03-15/clinvar_normalized_brca_v1.csv",
-                "filename": "clinvar_normalized_brca_v1.csv"
+                "filename": "clinvar_normalized_brca_v1.csv",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               },
               {
                 "label": "Parquet artifact",
@@ -11933,7 +12029,11 @@
                 "kind_label": "PARQUET",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=clinvar_normalized_brca_v1/snapshot_date=2026-03-15/clinvar_normalized_brca_v1.parquet",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=clinvar_normalized_brca_v1/snapshot_date=2026-03-15/clinvar_normalized_brca_v1.parquet",
-                "filename": "clinvar_normalized_brca_v1.parquet"
+                "filename": "clinvar_normalized_brca_v1.parquet",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               },
               {
                 "label": "Artifact manifest",
@@ -11941,7 +12041,11 @@
                 "kind_label": "MANIFEST",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=clinvar_normalized_brca_v1/snapshot_date=2026-03-15/clinvar_normalized_brca_v1_manifest.json",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=clinvar_normalized_brca_v1/snapshot_date=2026-03-15/clinvar_normalized_brca_v1_manifest.json",
-                "filename": "clinvar_normalized_brca_v1_manifest.json"
+                "filename": "clinvar_normalized_brca_v1_manifest.json",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Open file"
               },
               {
                 "label": "Artifact report",
@@ -11949,7 +12053,11 @@
                 "kind_label": "REPORT",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=clinvar_normalized_brca_v1/snapshot_date=2026-03-15/clinvar_normalized_brca_v1_report.json",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=clinvar_normalized_brca_v1/snapshot_date=2026-03-15/clinvar_normalized_brca_v1_report.json",
-                "filename": "clinvar_normalized_brca_v1_report.json"
+                "filename": "clinvar_normalized_brca_v1_report.json",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Open file"
               }
             ],
             "links": [],
@@ -11970,7 +12078,11 @@
                 "kind_label": "CSV",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_genomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_genomes_normalized_brca_v1.csv",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_genomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_genomes_normalized_brca_v1.csv",
-                "filename": "gnomad_genomes_normalized_brca_v1.csv"
+                "filename": "gnomad_genomes_normalized_brca_v1.csv",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               },
               {
                 "label": "Parquet artifact",
@@ -11978,7 +12090,11 @@
                 "kind_label": "PARQUET",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_genomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_genomes_normalized_brca_v1.parquet",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_genomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_genomes_normalized_brca_v1.parquet",
-                "filename": "gnomad_genomes_normalized_brca_v1.parquet"
+                "filename": "gnomad_genomes_normalized_brca_v1.parquet",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               },
               {
                 "label": "Artifact manifest",
@@ -11986,7 +12102,11 @@
                 "kind_label": "MANIFEST",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_genomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_genomes_normalized_brca_v1_manifest.json",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_genomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_genomes_normalized_brca_v1_manifest.json",
-                "filename": "gnomad_genomes_normalized_brca_v1_manifest.json"
+                "filename": "gnomad_genomes_normalized_brca_v1_manifest.json",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Open file"
               },
               {
                 "label": "Artifact report",
@@ -11994,7 +12114,11 @@
                 "kind_label": "REPORT",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_genomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_genomes_normalized_brca_v1_report.json",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_genomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_genomes_normalized_brca_v1_report.json",
-                "filename": "gnomad_genomes_normalized_brca_v1_report.json"
+                "filename": "gnomad_genomes_normalized_brca_v1_report.json",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Open file"
               }
             ],
             "links": [],
@@ -12015,7 +12139,11 @@
                 "kind_label": "CSV",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_exomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_exomes_normalized_brca_v1.csv",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_exomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_exomes_normalized_brca_v1.csv",
-                "filename": "gnomad_exomes_normalized_brca_v1.csv"
+                "filename": "gnomad_exomes_normalized_brca_v1.csv",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               },
               {
                 "label": "Parquet artifact",
@@ -12023,7 +12151,11 @@
                 "kind_label": "PARQUET",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_exomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_exomes_normalized_brca_v1.parquet",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_exomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_exomes_normalized_brca_v1.parquet",
-                "filename": "gnomad_exomes_normalized_brca_v1.parquet"
+                "filename": "gnomad_exomes_normalized_brca_v1.parquet",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               },
               {
                 "label": "Artifact manifest",
@@ -12031,7 +12163,11 @@
                 "kind_label": "MANIFEST",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_exomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_exomes_normalized_brca_v1_manifest.json",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_exomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_exomes_normalized_brca_v1_manifest.json",
-                "filename": "gnomad_exomes_normalized_brca_v1_manifest.json"
+                "filename": "gnomad_exomes_normalized_brca_v1_manifest.json",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Open file"
               },
               {
                 "label": "Artifact report",
@@ -12039,7 +12175,11 @@
                 "kind_label": "REPORT",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_exomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_exomes_normalized_brca_v1_report.json",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gnomad_exomes_normalized_brca_v1/snapshot_date=2026-03-15/gnomad_exomes_normalized_brca_v1_report.json",
-                "filename": "gnomad_exomes_normalized_brca_v1_report.json"
+                "filename": "gnomad_exomes_normalized_brca_v1_report.json",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Open file"
               }
             ],
             "links": [],
@@ -12060,7 +12200,11 @@
                 "kind_label": "CSV",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=shgp_normalized_brca_v1/snapshot_date=2026-03-15/shgp_normalized_brca_v1.csv",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=shgp_normalized_brca_v1/snapshot_date=2026-03-15/shgp_normalized_brca_v1.csv",
-                "filename": "shgp_normalized_brca_v1.csv"
+                "filename": "shgp_normalized_brca_v1.csv",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               },
               {
                 "label": "Parquet artifact",
@@ -12068,7 +12212,11 @@
                 "kind_label": "PARQUET",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=shgp_normalized_brca_v1/snapshot_date=2026-03-15/shgp_normalized_brca_v1.parquet",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=shgp_normalized_brca_v1/snapshot_date=2026-03-15/shgp_normalized_brca_v1.parquet",
-                "filename": "shgp_normalized_brca_v1.parquet"
+                "filename": "shgp_normalized_brca_v1.parquet",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               },
               {
                 "label": "Artifact manifest",
@@ -12076,7 +12224,11 @@
                 "kind_label": "MANIFEST",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=shgp_normalized_brca_v1/snapshot_date=2026-03-15/shgp_normalized_brca_v1_manifest.json",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=shgp_normalized_brca_v1/snapshot_date=2026-03-15/shgp_normalized_brca_v1_manifest.json",
-                "filename": "shgp_normalized_brca_v1_manifest.json"
+                "filename": "shgp_normalized_brca_v1_manifest.json",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Open file"
               },
               {
                 "label": "Artifact report",
@@ -12084,7 +12236,11 @@
                 "kind_label": "REPORT",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=shgp_normalized_brca_v1/snapshot_date=2026-03-15/shgp_normalized_brca_v1_report.json",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=shgp_normalized_brca_v1/snapshot_date=2026-03-15/shgp_normalized_brca_v1_report.json",
-                "filename": "shgp_normalized_brca_v1_report.json"
+                "filename": "shgp_normalized_brca_v1_report.json",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Open file"
               }
             ],
             "links": [],
@@ -12105,7 +12261,11 @@
                 "kind_label": "CSV",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gme_normalized_brca_v1/snapshot_date=2026-03-15/gme_normalized_brca_v1.csv",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gme_normalized_brca_v1/snapshot_date=2026-03-15/gme_normalized_brca_v1.csv",
-                "filename": "gme_normalized_brca_v1.csv"
+                "filename": "gme_normalized_brca_v1.csv",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               },
               {
                 "label": "Parquet artifact",
@@ -12113,7 +12273,11 @@
                 "kind_label": "PARQUET",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gme_normalized_brca_v1/snapshot_date=2026-03-15/gme_normalized_brca_v1.parquet",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gme_normalized_brca_v1/snapshot_date=2026-03-15/gme_normalized_brca_v1.parquet",
-                "filename": "gme_normalized_brca_v1.parquet"
+                "filename": "gme_normalized_brca_v1.parquet",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               },
               {
                 "label": "Artifact manifest",
@@ -12121,7 +12285,11 @@
                 "kind_label": "MANIFEST",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gme_normalized_brca_v1/snapshot_date=2026-03-15/gme_normalized_brca_v1_manifest.json",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gme_normalized_brca_v1/snapshot_date=2026-03-15/gme_normalized_brca_v1_manifest.json",
-                "filename": "gme_normalized_brca_v1_manifest.json"
+                "filename": "gme_normalized_brca_v1_manifest.json",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Open file"
               },
               {
                 "label": "Artifact report",
@@ -12129,7 +12297,11 @@
                 "kind_label": "REPORT",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gme_normalized_brca_v1/snapshot_date=2026-03-15/gme_normalized_brca_v1_report.json",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=gme_normalized_brca_v1/snapshot_date=2026-03-15/gme_normalized_brca_v1_report.json",
-                "filename": "gme_normalized_brca_v1_report.json"
+                "filename": "gme_normalized_brca_v1_report.json",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Open file"
               }
             ],
             "links": [],
@@ -12157,7 +12329,11 @@
                 "kind_label": "CSV",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/pre_gme/supervisor_variant_registry_brca_pre_gme_v1.csv",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/pre_gme/supervisor_variant_registry_brca_pre_gme_v1.csv",
-                "filename": "supervisor_variant_registry_brca_pre_gme_v1.csv"
+                "filename": "supervisor_variant_registry_brca_pre_gme_v1.csv",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               },
               {
                 "label": "Parquet artifact",
@@ -12165,7 +12341,11 @@
                 "kind_label": "PARQUET",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/pre_gme/supervisor_variant_registry_brca_pre_gme_v1.parquet",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/pre_gme/supervisor_variant_registry_brca_pre_gme_v1.parquet",
-                "filename": "supervisor_variant_registry_brca_pre_gme_v1.parquet"
+                "filename": "supervisor_variant_registry_brca_pre_gme_v1.parquet",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               },
               {
                 "label": "Review workbook",
@@ -12173,7 +12353,11 @@
                 "kind_label": "WORKBOOK",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/pre_gme/supervisor_variant_registry_brca_pre_gme_v1.xlsx",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/pre_gme/supervisor_variant_registry_brca_pre_gme_v1.xlsx",
-                "filename": "supervisor_variant_registry_brca_pre_gme_v1.xlsx"
+                "filename": "supervisor_variant_registry_brca_pre_gme_v1.xlsx",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               }
             ],
             "links": [],
@@ -12196,7 +12380,11 @@
                 "kind_label": "CSV",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/final/supervisor_variant_registry_brca_v1.csv",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/final/supervisor_variant_registry_brca_v1.csv",
-                "filename": "supervisor_variant_registry_brca_v1.csv"
+                "filename": "supervisor_variant_registry_brca_v1.csv",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               },
               {
                 "label": "Parquet artifact",
@@ -12204,7 +12392,11 @@
                 "kind_label": "PARQUET",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/final/supervisor_variant_registry_brca_v1.parquet",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/final/supervisor_variant_registry_brca_v1.parquet",
-                "filename": "supervisor_variant_registry_brca_v1.parquet"
+                "filename": "supervisor_variant_registry_brca_v1.parquet",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               }
             ],
             "links": [],
@@ -12234,7 +12426,11 @@
                 "kind_label": "CSV",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=supervisor_variant_registry_brca_arab_pre_gme_v2/snapshot_date=2026-03-15/supervisor_variant_registry_brca_arab_pre_gme_v2.csv",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=supervisor_variant_registry_brca_arab_pre_gme_v2/snapshot_date=2026-03-15/supervisor_variant_registry_brca_arab_pre_gme_v2.csv",
-                "filename": "supervisor_variant_registry_brca_arab_pre_gme_v2.csv"
+                "filename": "supervisor_variant_registry_brca_arab_pre_gme_v2.csv",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               },
               {
                 "label": "Parquet artifact",
@@ -12242,7 +12438,11 @@
                 "kind_label": "PARQUET",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=supervisor_variant_registry_brca_arab_pre_gme_v2/snapshot_date=2026-03-15/supervisor_variant_registry_brca_arab_pre_gme_v2.parquet",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=supervisor_variant_registry_brca_arab_pre_gme_v2/snapshot_date=2026-03-15/supervisor_variant_registry_brca_arab_pre_gme_v2.parquet",
-                "filename": "supervisor_variant_registry_brca_arab_pre_gme_v2.parquet"
+                "filename": "supervisor_variant_registry_brca_arab_pre_gme_v2.parquet",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               }
             ],
             "links": [],
@@ -12265,7 +12465,11 @@
                 "kind_label": "CSV",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/results/checkpoint=supervisor_variant_registry_brca_arab_v2/snapshot_date=2026-03-15/supervisor_variant_registry_brca_arab_v2.csv",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/results/checkpoint=supervisor_variant_registry_brca_arab_v2/snapshot_date=2026-03-15/supervisor_variant_registry_brca_arab_v2.csv",
-                "filename": "supervisor_variant_registry_brca_arab_v2.csv"
+                "filename": "supervisor_variant_registry_brca_arab_v2.csv",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               },
               {
                 "label": "Parquet artifact",
@@ -12273,7 +12477,11 @@
                 "kind_label": "PARQUET",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=supervisor_variant_registry_brca_arab_v2/snapshot_date=2026-03-15/supervisor_variant_registry_brca_arab_v2.parquet",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=supervisor_variant_registry_brca_arab_v2/snapshot_date=2026-03-15/supervisor_variant_registry_brca_arab_v2.parquet",
-                "filename": "supervisor_variant_registry_brca_arab_v2.parquet"
+                "filename": "supervisor_variant_registry_brca_arab_v2.parquet",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               },
               {
                 "label": "Artifact report",
@@ -12281,7 +12489,11 @@
                 "kind_label": "REPORT",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=supervisor_variant_registry_brca_arab_v2/snapshot_date=2026-03-15/supervisor_variant_registry_brca_arab_v2_report.json",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/checkpoint=supervisor_variant_registry_brca_arab_v2/snapshot_date=2026-03-15/supervisor_variant_registry_brca_arab_v2_report.json",
-                "filename": "supervisor_variant_registry_brca_arab_v2_report.json"
+                "filename": "supervisor_variant_registry_brca_arab_v2_report.json",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Open file"
               }
             ],
             "links": [],
@@ -12302,32 +12514,20 @@
             "title": "UAE BRCA study review package",
             "group": "reference_study_artifacts",
             "stage": "Reference-only study package",
-            "overview": "Frozen workbook and de-identified extract files used to review the UAE BRCA study as supporting evidence only.",
+            "overview": "De-identified extract files used to review the UAE BRCA study as supporting evidence only. The raw workbook remains private in GCS.",
             "row_count": 83,
             "files": [
-              {
-                "label": "Raw workbook",
-                "kind": "workbook",
-                "kind_label": "WORKBOOK",
-                "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/uae_brca_pmc12011969_moesm1.xlsx",
-                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/uae_brca_pmc12011969_moesm1.xlsx",
-                "filename": "uae_brca_pmc12011969_moesm1.xlsx"
-              },
-              {
-                "label": "Raw manifest",
-                "kind": "manifest",
-                "kind_label": "MANIFEST",
-                "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/manifest.json",
-                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/manifest.json",
-                "filename": "manifest.json"
-              },
               {
                 "label": "Family-screening CSV",
                 "kind": "csv",
                 "kind_label": "CSV",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/family_screening_variant_rows.csv",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/family_screening_variant_rows.csv",
-                "filename": "family_screening_variant_rows.csv"
+                "filename": "family_screening_variant_rows.csv",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               },
               {
                 "label": "Family-screening parquet",
@@ -12335,7 +12535,11 @@
                 "kind_label": "PARQUET",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/family_screening_variant_rows.parquet",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/family_screening_variant_rows.parquet",
-                "filename": "family_screening_variant_rows.parquet"
+                "filename": "family_screening_variant_rows.parquet",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               },
               {
                 "label": "Family-screening manifest",
@@ -12343,7 +12547,11 @@
                 "kind_label": "MANIFEST",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/family_screening_variant_rows.manifest.json",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/family_screening_variant_rows.manifest.json",
-                "filename": "family_screening_variant_rows.manifest.json"
+                "filename": "family_screening_variant_rows.manifest.json",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Open file"
               },
               {
                 "label": "Cancer-cohort CSV",
@@ -12351,7 +12559,11 @@
                 "kind_label": "CSV",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/cancer_cohort_variant_rows.csv",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/cancer_cohort_variant_rows.csv",
-                "filename": "cancer_cohort_variant_rows.csv"
+                "filename": "cancer_cohort_variant_rows.csv",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               },
               {
                 "label": "Cancer-cohort parquet",
@@ -12359,7 +12571,11 @@
                 "kind_label": "PARQUET",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/cancer_cohort_variant_rows.parquet",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/cancer_cohort_variant_rows.parquet",
-                "filename": "cancer_cohort_variant_rows.parquet"
+                "filename": "cancer_cohort_variant_rows.parquet",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               },
               {
                 "label": "Cancer-cohort manifest",
@@ -12367,7 +12583,11 @@
                 "kind_label": "MANIFEST",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/cancer_cohort_variant_rows.manifest.json",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=uae_brca_pmc12011969/version=moesm1/snapshot_date=2026-03-12/cancer_cohort_variant_rows.manifest.json",
-                "filename": "cancer_cohort_variant_rows.manifest.json"
+                "filename": "cancer_cohort_variant_rows.manifest.json",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Open file"
               }
             ],
             "links": [
@@ -12376,7 +12596,9 @@
                 "url": "https://pmc.ncbi.nlm.nih.gov/articles/instance/12572518/bin/432_2025_6188_MOESM1_ESM.xlsx"
               }
             ],
-            "references": [],
+            "references": [
+              "The raw workbook is retained privately in GCS because it originated as a patient-level study supplement."
+            ],
             "download_note": ""
           },
           {
@@ -12384,32 +12606,20 @@
             "title": "Saudi breast-cancer study review package",
             "group": "reference_study_artifacts",
             "stage": "Blocked study package",
-            "overview": "Frozen workbook and de-identified extract files used to review the Saudi BRCA study. This source stays blocked for normalization.",
+            "overview": "De-identified extract files used to review the Saudi BRCA study. The raw workbook remains private in GCS and the source stays blocked for normalization.",
             "row_count": 38,
             "files": [
-              {
-                "label": "Raw workbook",
-                "kind": "workbook",
-                "kind_label": "WORKBOOK",
-                "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/saudi_breast_cancer_pmc10474689_moesm1.xls",
-                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/saudi_breast_cancer_pmc10474689_moesm1.xls",
-                "filename": "saudi_breast_cancer_pmc10474689_moesm1.xls"
-              },
-              {
-                "label": "Raw manifest",
-                "kind": "manifest",
-                "kind_label": "MANIFEST",
-                "gs_uri": "gs://mahmoud-arab-acmg-research-data/raw/sources/saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/manifest.json",
-                "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/raw/sources/saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/manifest.json",
-                "filename": "manifest.json"
-              },
               {
                 "label": "De-identified CSV",
                 "kind": "csv",
                 "kind_label": "CSV",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/variant_carriers.csv",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/variant_carriers.csv",
-                "filename": "variant_carriers.csv"
+                "filename": "variant_carriers.csv",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               },
               {
                 "label": "De-identified parquet",
@@ -12417,7 +12627,11 @@
                 "kind_label": "PARQUET",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/variant_carriers.parquet",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/variant_carriers.parquet",
-                "filename": "variant_carriers.parquet"
+                "filename": "variant_carriers.parquet",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Download"
               },
               {
                 "label": "Extract manifest",
@@ -12425,7 +12639,11 @@
                 "kind_label": "MANIFEST",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/variant_carriers.manifest.json",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/source=saudi_breast_cancer_pmc10474689/version=moesm1/snapshot_date=2026-03-12/variant_carriers.manifest.json",
-                "filename": "variant_carriers.manifest.json"
+                "filename": "variant_carriers.manifest.json",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Open file"
               }
             ],
             "links": [
@@ -12434,7 +12652,9 @@
                 "url": "https://pmc.ncbi.nlm.nih.gov/articles/instance/10474689/bin/13073_2023_1220_MOESM1_ESM.xls"
               }
             ],
-            "references": [],
+            "references": [
+              "The raw workbook is retained privately in GCS because it originated as a patient-level study supplement."
+            ],
             "download_note": ""
           }
         ]
@@ -12458,7 +12678,11 @@
                 "kind_label": "BUNDLE",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/review_bundle.json",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/review_bundle.json",
-                "filename": "review_bundle.json"
+                "filename": "review_bundle.json",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Open file"
               },
               {
                 "label": "Supervisor review manifest",
@@ -12466,7 +12690,11 @@
                 "kind_label": "MANIFEST",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/manifest.json",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/supervisor_review/snapshot_date=2026-03-12/manifest.json",
-                "filename": "manifest.json"
+                "filename": "manifest.json",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Open file"
               },
               {
                 "label": "Normalization report",
@@ -12474,7 +12702,11 @@
                 "kind_label": "REPORT",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/harmonized/normalization_report/snapshot_date=2026-03-15/brca_normalization_report.json",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/harmonized/normalization_report/snapshot_date=2026-03-15/brca_normalization_report.json",
-                "filename": "brca_normalization_report.json"
+                "filename": "brca_normalization_report.json",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Open file"
               },
               {
                 "label": "Arab intake report",
@@ -12482,7 +12714,11 @@
                 "kind_label": "REPORT",
                 "gs_uri": "gs://mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/snapshot_date=2026-03-12/intake_report.json",
                 "public_url": "https://storage.googleapis.com/mahmoud-arab-acmg-research-data/frozen/arab_variant_evidence/snapshot_date=2026-03-12/intake_report.json",
-                "filename": "intake_report.json"
+                "filename": "intake_report.json",
+                "access": "public",
+                "access_label": "Public",
+                "access_reason": "Anonymous download allowed.",
+                "action_label": "Open file"
               }
             ],
             "links": [],
